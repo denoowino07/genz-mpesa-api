@@ -3,189 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Platform - GenzTrending.com</title>
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Trading Platform - GenzTrending</title>
+    <link href="https://googleapis.com" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0c1017;
-            --card-bg: #161d26;
-            --primary-green: #00e676;
-            --text-main: #ffffff;
-            --text-muted: #8492a6;
-            --border-color: #242f3d;
-            --accent-blue: #2196f3;
-            --danger-red: #ff4a4a;
-        }
-
+        :root { --bg-color: #0c1017; --card-bg: #161d26; --primary-green: #00e676; --text-main: #ffffff; --text-muted: #8492a6; --border-color: #242f3d; --danger-red: #ff4a4a; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-size: 14px; padding-bottom: 70px; }
-
-        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #11171f; border-bottom: 1px solid var(--border-color); }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .account-badge { background-color: #1e293b; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; border: 1px solid var(--border-color); }
-        .btn-action { color: #000; font-weight: 700; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-size: 12px; border: none; cursor: pointer; }
-        
-        .trade-tabs { display: flex; gap: 8px; padding: 12px 15px; overflow-x: auto; }
-        .tab-btn { background-color: #1c2633; color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
-
-        .market-info-box { padding: 0 15px 10px 15px; }
-        .asset-tag { background: #161d26; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .price-container { display: flex; align-items: center; gap: 10px; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-size: 14px; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #11171f; border-bottom: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 20px; }
+        .account-badge { background-color: #1e293b; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .btn-action { color: #000; font-weight: 700; padding: 8px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px; }
+        .market-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
         .asset-price { font-size: 28px; font-weight: 800; font-family: monospace; }
-        .trend-arrow { font-size: 24px; font-weight: bold; transition: 0.1s; }
-        
-        /* CHATI KAA HAPA KATIKATI */
-        .chart-section { padding: 0 15px; margin: 15px 0; width: 100%; }
-        .chart-container { background-color: #11171f; border: 1px solid var(--border-color); border-radius: 12px; height: 180px; width: 100%; padding: 10px; position: relative; }
+        .chart-container { background-color: #11171f; border: 1px solid var(--border-color); border-radius: 12px; height: 180px; width: 100%; padding: 10px; margin-bottom: 20px; }
         canvas { width: 100%; height: 100%; display: block; }
-
-        .stake-section { background-color: #161d26; padding: 20px; border-radius: 16px 16px 0 0; margin-top: 40px; position: fixed; bottom: 0; left: 0; width: 100%; border-top: 1px solid var(--border-color); }
+        .stake-section { background-color: #161d26; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); }
         .amount-control { display: flex; justify-content: space-between; align-items: center; background-color: #0c1017; border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; margin-bottom: 15px; }
         .amt-btn { background: #1c2633; border: none; color: #ff9100; font-size: 20px; font-weight: 700; width: 40px; height: 40px; border-radius: 6px; cursor: pointer; }
         .amt-val { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 700; text-align: center; width: 100%; outline: none; }
-        
         .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn-trade { border: none; padding: 18px; font-weight: 700; border-radius: 8px; cursor: pointer; font-size: 16px; transition: 0.1s; }
-        .btn-trade:active { transform: scale(0.98); }
-        
-        .pnl-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; font-weight: 600; }
+        .btn-trade { border: none; padding: 18px; font-weight: 700; border-radius: 8px; cursor: pointer; font-size: 16px; }
     </style>
 </head>
 <body>
-
     <header>
-        <div class="header-left">
-            <div class="account-badge">
-                <select id="account-type" onchange="toggleAccountType()" style="background:transparent; color:#ffa726; border:none; font-weight:800; outline:none; cursor:pointer; font-size:14px;">
-                    <option value="demo" style="background:#161d26; color:#fff;">Demo (D)</option>
-                    <option value="real" style="background:#161d26; color:#fff;">Real (R)</option>
-                </select>
-                <span id="wallet-balance">$10,000.00</span>
-            </div>
-            <button class="btn-action" style="background-color: var(--primary-green);" onclick="triggerDeposit()">DEPOSIT</button>
-            <button class="btn-action" style="background-color: #e2e8f0; color: #000;" onclick="triggerWithdraw()">WITHDRAW</button>
+        <div class="account-badge">
+            <select id="account-type" onchange="toggleWallet()" style="background:transparent; color:#ffa726; border:none; font-weight:800; outline:none; cursor:pointer;">
+                <option value="demo" style="background:#161d26; color:#fff;">Demo (D)</option>
+                <option value="real" style="background:#161d26; color:#fff;">Real (R)</option>
+            </select>
+            <span id="wallet-balance">$10,000.00</span>
+        </div>
+        <div>
+            <button class="btn-action" style="background-color: var(--primary-green);" onclick="deposit()">DEPOSIT</button>
+            <button class="btn-action" style="background-color: #e2e8f0; color:#000;" onclick="withdraw()">WITHDRAW</button>
         </div>
     </header>
 
-    <div class="trade-tabs">
-        <button class="tab-btn">Matches/Differs</button>
-        <button class="tab-btn" style="background:#2b394a; color:#fff;">Even/Odd</button>
-        <button class="tab-btn">Over/Under</button>
-    </div>
-
-    <!-- Sehemu ya Ticks na Bei Inayokimbia -->
-    <div class="market-info-box">
-        <div class="asset-tag">
-            <div>
-                <span style="font-size: 12px; color: var(--text-muted); display: block;">VOLATILITY 10 (1S) INDEX</span>
-                <div class="price-container">
-                    <span class="asset-price" id="live-price">9379.00</span>
-                    <span class="trend-arrow" id="live-arrow">▲</span>
-                </div>
-            </div>
-            <div style="text-align: right;">
-                <span style="font-size: 11px; color: var(--text-muted);">Ticks Analysis</span>
-                <div style="font-size: 14px; font-weight: 700; color: var(--primary-green);" id="tick-counter">Tick: 5</div>
+    <div class="market-box">
+        <div>
+            <span style="font-size: 12px; color: var(--text-muted);">VOLATILITY 10 (1S) INDEX</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span class="asset-price" id="live-price">9379.00</span>
+                <span id="live-arrow" style="font-size:24px;">▲</span>
             </div>
         </div>
+        <div id="tick-counter" style="font-weight:700; color:var(--primary-green);">Tick: 5</div>
     </div>
 
-    <!-- SEHEMU YA CHATI KATIKATI -->
-    <div class="chart-section">
-        <div class="chart-container">
-            <canvas id="customFastChart"></canvas>
-        </div>
-    </div>
+    <div class="chart-container"><canvas id="fastCanvasChart"></canvas></div>
 
-    <!-- Sehemu ya Kuendesha Order -->
     <div class="stake-section">
-        <div class="pnl-row">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:600;">
             <span style="color: var(--text-muted);">Payout: <span style="color: var(--primary-green);">+95%</span></span>
-            <span id="pnl-display" style="color: #fff;">Last Trade: $0.00</span>
+            <span id="pnl-display">Last Trade: $0.00</span>
         </div>
-
         <div class="amount-control">
-            <button class="amt-btn" onclick="adjustAmount(-1)">−</button>
+            <button class="amt-btn" onclick="adjust(-1)">−</button>
             <input type="number" class="amt-val" id="trade-amount" value="10">
-            <button class="amt-btn" onclick="adjustAmount(1)">+</button>
+            <button class="amt-btn" onclick="adjust(1)">+</button>
         </div>
-
         <div class="action-btns">
-            <button class="btn-trade" style="background-color: var(--primary-green); color: #000;" onclick="executeLiveTrade('BUY')">▲ BUY (Higher)</button>
-            <button class="btn-trade" style="background-color: var(--danger-red); color: #fff;" onclick="executeLiveTrade('SELL')">▼ SELL (Lower)</button>
+            <button class="btn-trade" style="background-color: var(--primary-green); color:#000;" onclick="trade('BUY')">▲ BUY</button>
+            <button class="btn-trade" style="background-color: var(--danger-red); color:#fff;" onclick="trade('SELL')">▼ SELL</button>
         </div>
     </div>
 
     <script>
-        const userId = localStorage.getItem('tradeUserId');
-        let localBalances = { demo: 10000.00, real: 0.00 };
-
-        // 1. SETUP YA CHATI JEPESI YA HTML5 CANVAS
-        const canvas = document.getElementById('customFastChart');
-        const ctx = canvas.getContext('2d');
-        let priceHistory = Array(30).fill(9379.00); // Inatunza pointi 30 za nyuma
-
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
+        let wallets = { demo: 10000.00, real: 0.00 };
+        function toggleWallet() {
+            const type = document.getElementById('account-type').value;
+            document.getElementById('wallet-balance').innerText = '$' + wallets[type].toFixed(2);
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
 
-        function drawChart() {
+        const canvas = document.getElementById('fastCanvasChart');
+        const ctx = canvas.getContext('2d');
+        let points = Array(25).fill(9379.00);
+
+        function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            let minPrice = Math.min(...priceHistory) - 1;
-            let maxPrice = Math.max(...priceHistory) + 1;
-            let priceRange = maxPrice - minPrice;
-
-            ctx.beginPath();
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
-            ctx.lineJoin = 'round';
-
-            for (let i = 0; i < priceHistory.length; i++) {
-                let x = (canvas.width / (priceHistory.length - 1)) * i;
-                let y = canvas.height - ((priceHistory[i] - minPrice) / priceRange) * canvas.height;
-                
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
+            let min = Math.min(...points) - 1, max = Math.max(...points) + 1, range = max - min;
+            ctx.beginPath(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+            for (let i = 0; i < points.length; i++) {
+                let x = (canvas.width / (points.length - 1)) * i;
+                let y = canvas.height - ((points[i] - min) / range) * canvas.height;
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
             }
             ctx.stroke();
-
-            // Chora nukta ya mwisho ya live price display
-            let lastX = canvas.width;
-            let lastY = canvas.height - ((priceHistory[priceHistory.length - 1] - minPrice) / priceRange) * canvas.height;
-            ctx.beginPath();
-            ctx.fillStyle = '#00e676';
-            ctx.arc(lastX - 2, lastY, 4, 0, 2 * Math.PI);
-            ctx.fill();
         }
 
-        // 2. INJINI YA NAMBA KUKIMBIA KWA KASI SANA (Kila milisekunde 250)
-        let currentPrice = 9379.00;
+        let price = 9379.00;
         setInterval(() => {
-            let change = (Math.random() - 0.5) * 5; 
-            let oldPrice = currentPrice;
-            currentPrice += change;
+            let drift = (Math.random() - 0.5) * 4;
+            let old = price; price += drift;
+            document.getElementById('live-price').innerText = price.toFixed(2);
+            document.getElementById('live-arrow').innerText = price > old ? "▲" : "▼";
+            document.getElementById('live-arrow').style.color = price > old ? "var(--primary-green)" : "var(--danger-red)";
+            document.getElementById('live-price').style.color = price > old ? "var(--primary-green)" : "var(--danger-red)";
+            document.getElementById('tick-counter').innerText = "Tick: " + Math.floor(Math.random() * 10);
+            points.push(price); points.shift(); draw();
+        }, 300);
 
-            const priceElement = document.getElementById('live-price');
-            const arrowElement = document.getElementById('live-arrow');
-            const tickElement = document.getElementById('tick-counter');
+        function trade(dir) {
+            const type = document.getElementById('account-type').value;
+            const amt = parseFloat(document.getElementById('trade-amount').value);
+            if(amt > wallets[type]) { alert("Insufficient funds!"); return; }
+            
+            document.getElementById('pnl-display').innerText = "Processing...";
+            fetch('/api/trade', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: amt })
+            }).then(res => res.json()).then(data => {
+                wallets[type] += data.pnl;
+                toggleWallet();
+                document.getElementById('pnl-display').innerText = data.result + ": " + (data.pnl > 0 ? "+$" : "-$") + Math.abs(data.pnl).toFixed(2);
+                document.getElementById('pnl-display').style.color = data.result === "WIN" ? "var(--primary-green)" : "var(--danger-red)";
+            });
+        }
 
-            if(priceElement && arrowElement) {
-                priceElement.innerText = currentPrice.toFixed(2);
-
-                if(currentPrice > oldPrice) {
-                    priceElement.style.color = "var(--primary-green)";
-                    arrowElement.innerText = "▲";
-                    arrowElement.style.color = "var(--primary-green)";
-                } else {
-                    priceElement.style.color = "var(--danger-red)";
-                    arrowElement.innerText = "▼";
-                    arrowElement.style.color = "var(--danger-red)";
-                }
-            }
-            if(tickElement) {
+        function deposit() {
+            let phone = prompt("Enter Safaricom Number:");
+            let amt = prompt("Amount in USD:", "10");
+            if(phone && amt) { wallets.real += parseFloat(amt); toggleWallet(); alert("Deposit success!"); }
+        }
+        function withdraw() {
+            let phone = prompt("Enter M-Pesa Number:");
+            let amt = prompt("Amount in USD:");
+            const type = document.getElementById('account-type').value;
+            if(wallets[type] >= parseFloat(amt)) { wallets[type] -= parseFloat(amt); toggleWallet(); alert("Withdrawal processing!"); }
+            else { alert("Insufficient funds!"); }
+        }
+        function adjust(v) { let input = document.getElementById('trade-amount'); input.value = Math.max(1, parseFloat(input.value) + v); }
+        window.addEventListener('resize', () => { canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight; draw(); });
+        canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight;
+    </script>
+</body>
+</html>
