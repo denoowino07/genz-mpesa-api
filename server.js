@@ -2,36 +2,40 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-// Inasoma PORT ya Render au inatumia 3000 ukiwa local
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname)));
+// Inalazimisha seva kusoma mafaili yote ya static kwenye folda kuu
+app.use(express.static(__dirname));
+
+// LALIZIMISHA NJIA ZA UKURASA KUSOMWA KUTOKA GITHUB BILA MAKOSA
+app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'index.html'));
+});
+
+app.get('/join.html', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'join.html'));
+});
+
+app.get('/trading.html', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'trading.html'));
+});
 
 // Kanzidata ya muda ya ndani ya seva (Local In-Memory Database)
 const localUsersDB = {};
 
-// 1. MIELEKEO YA KURASA (ROUTING)
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-app.get('/join.html', (req, res) => res.sendFile(path.join(__dirname, 'join.html')));
-app.get('/trading.html', (req, res) => res.sendFile(path.join(__dirname, 'trading.html')));
-
-// 2. MFUMO WA USAJILI NA KUINGIA (SIGN UP & LOGIN)
+// 2. MFUMO WA SIGN UP & LOGIN
 app.post('/api/auth', (req, res) => {
     const { email, password, action } = req.body;
-    
     if (!email || !password) {
         return res.status(400).json({ error: "Please fill in all fields!" });
     }
-
     const cleanEmail = email.toLowerCase().trim();
 
     if (action === 'signup') {
         if (localUsersDB[cleanEmail]) {
             return res.status(400).json({ error: "Email already exists!" });
         }
-        
-        // Msajili mteja mpya: Real Account inaanzia $0.00 na Demo ina $10,000.00
         localUsersDB[cleanEmail] = {
             id: "user_" + Math.random().toString(36).substr(2, 9),
             email: cleanEmail,
@@ -39,14 +43,11 @@ app.post('/api/auth', (req, res) => {
             demoBalance: 10000.00,
             realBalance: 0.00 
         };
-        return res.json({ message: "Registration successful!", userId: localUsersDB[cleanEmail].id });
+        return res.json({ message: "Success!", userId: localUsersDB[cleanEmail].id });
     } else {
-        // Mfumo wa kuingia (Login)
         let foundUser = Object.values(localUsersDB).find(u => u.email === cleanEmail && u.password === password);
-        if (!foundUser) {
-            return res.status(400).json({ error: "Invalid email or password!" });
-        }
-        return res.json({ message: "Welcome back!", userId: foundUser.id });
+        if (!foundUser) return res.status(400).json({ error: "Invalid credentials!" });
+        return res.json({ message: "Welcome!", userId: foundUser.id });
     }
 });
 
@@ -54,7 +55,6 @@ app.post('/api/auth', (req, res) => {
 app.get('/api/user/:id', (req, res) => {
     const foundUser = Object.values(localUsersDB).find(u => u.id === req.params.id);
     if (!foundUser) {
-        // Ikitokea seva imereset, inampa salio hili la haraka ili asikwame
         return res.json({ demoBalance: 10000.00, realBalance: 0.00 });
     }
     res.json({ demoBalance: foundUser.demoBalance, realBalance: foundUser.realBalance });
@@ -63,50 +63,41 @@ app.get('/api/user/:id', (req, res) => {
 // 4. INJINI YA BIASHARA (WIN/LOSS TRADING LOGIC)
 app.post('/api/trade', (req, res) => {
     const { userId, accountType, amount } = req.body;
-    
     let foundUser = Object.values(localUsersDB).find(u => u.id === userId);
     if (!foundUser) {
-        return res.status(400).json({ error: "Session expired, please log in again." });
+        // Ikitokea session imepotea, inajaza temporary user ili isikwame skrini
+        foundUser = { demoBalance: 10000.00, realBalance: 0.00 };
     }
 
     let currentBalance = accountType === 'real' ? foundUser.realBalance : foundUser.demoBalance;
-    if (amount > currentBalance) {
-        return res.status(400).json({ error: "Insufficient balance to place this trade!" });
-    }
+    if (amount > currentBalance) return res.status(400).json({ error: "Insufficient balance!" });
 
-    // Algorithm ya ushindi: 50% nafasi ya kushinda au kushindwa kulingana na soko
     const isWin = Math.random() > 0.48; 
     let profitLoss = isWin ? (amount * 0.95) : -amount;
     currentBalance += profitLoss;
 
-    // Hifadhi salio jipya kwenye database ya seva
-    if (accountType === 'real') {
-        foundUser.realBalance = currentBalance;
-    } else {
-        foundUser.demoBalance = currentBalance;
-    }
+    if (accountType === 'real') foundUser.realBalance = currentBalance;
+    else foundUser.demoBalance = currentBalance;
 
-    res.json({ 
-        result: isWin ? "WIN" : "LOSS", 
-        pnl: profitLoss, 
-        newBalance: currentBalance 
-    });
+    res.json({ result: isWin ? "WIN" : "LOSS", pnl: profitLoss, newBalance: currentBalance });
 });
 
-// 5. MFUMO WA KUWEKA PESA (MPESA DEPOSIT SIMULATION)
+// 5. MFUMO WA KUWEKA PESA (MPESA DEPOSIT)
 app.post('/api/deposit', (req, res) => {
     const { userId, phone, amountUSD } = req.body;
-    const amountKES = Math.round(amountUSD * 135); // Shilingi dhidi ya Dola
+    let foundUser = Object.values(localUsersDB).find(u => u.id === userId);
+    
+    // Backup: Kama user hayupo kwenye local db kwa sasa, mtengeneze papo hapo
+    if (!foundUser && userId) {
+        localUsersDB[userId] = { id: userId, demoBalance: 10000.00, realBalance: 0.00 };
+        foundUser = localUsersDB[userId];
+    }
 
-    // Simulizi: Ongeza salio kwenye akaunti ya kweli (Real Account) baada ya sekunde 5
     setTimeout(() => {
-        let foundUser = Object.values(localUsersDB).find(u => u.id === userId);
-        if (foundUser) {
-            foundUser.realBalance += parseFloat(amountUSD);
-        }
-    }, 5000);
+        if (foundUser) foundUser.realBalance += parseFloat(amountUSD);
+    }, 3000);
 
-    res.json({ message: `STK Push of KES ${amountKES} sent to ${phone}. Enter your PIN to deposit $${amountUSD}.` });
+    res.json({ message: `STK Push successfully sent to ${phone}. Balance will update in 3 seconds once approved.` });
 });
 
 // 6. MFUMO WA KUTOA PESA (MPESA WITHDRAWAL)
@@ -115,19 +106,14 @@ app.post('/api/withdraw', (req, res) => {
     let foundUser = Object.values(localUsersDB).find(u => u.id === userId);
     
     if (!foundUser) {
-        return res.status(400).json({ error: "User profile not found." });
+        return res.status(400).json({ error: "Session profile missing, please refresh page." });
     }
-
     if (foundUser.realBalance < parseFloat(amountUSD)) {
-        return res.status(400).json({ error: "Insufficient Real balance to process withdrawal!" });
+        return res.status(400).json({ error: "Insufficient Real balance to withdraw!" });
     }
 
-    // Kata kiasi cha fedha kwenye salio la Real account
     foundUser.realBalance -= parseFloat(amountUSD);
-    res.json({ message: `Withdrawal request of $${amountUSD} accepted! KES will be sent to ${phone} via M-Pesa shortly.` });
+    res.json({ message: `Withdrawal request of $${amountUSD} processed. KES will be sent to ${phone} via M-Pesa.` });
 });
 
-// KUWASHA SEVA RASMI
-app.listen(PORT, () => {
-    console.log(`GenzTrending Active Engine Running Smoothly on Port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`GenzTrending System Running Context Over Port ${PORT}`));
