@@ -56,7 +56,6 @@ app.get('/', (req, res) => {
 
                 <!-- 1. VIEW: DASHBOARD -->
                 <div id="view-dashboard" class="view-section">
-                    <!-- System Status -->
                     <div class="mb-8 p-6 rounded-lg card-bg neon-border flex flex-col md:flex-row justify-between items-center">
                         <div>
                             <h2 class="text-xl font-semibold mb-2 text-white">FX Markets Are Live</h2>
@@ -67,7 +66,6 @@ app.get('/', (req, res) => {
                         </div>
                     </div>
 
-                    <!-- Financial Stats Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div class="p-6 rounded-lg card-bg border border-gray-800">
                             <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Account Balance</h3>
@@ -137,30 +135,33 @@ app.get('/', (req, res) => {
                                             <td class="py-3">0.50</td>
                                             <td class="py-3 text-green-400 font-bold">+$75.00</td>
                                         </tr>
-                                        <tr>
-                                            <td class="py-3 text-gray-500">Today, 11:05</td>
-                                            <td class="py-3 font-bold text-white">GBP/USD</td>
-                                            <td class="py-3 text-red-500">SELL</td>
-                                            <td class="py-3">1.00</td>
-                                            <td class="py-3 text-red-400 font-bold">-$32.10</td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <div class="p-6 rounded-lg card-bg border border-gray-800 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-lg font-semibold text-white mb-4">Live Market News</h3>
-                                <div class="space-y-4">
-                                    <div class="border-l-2 border-[#00ff66] pl-3">
-                                        <h4 class="text-sm font-bold text-white hover:text-[#00ff66] cursor-pointer">Federal Reserve interest rate decisions...</h4>
-                                        <p class="text-xs text-gray-500 mt-1">15 mins ago</p>
-                                    </div>
+                    </div>
+                </div>
+
+                <!-- 2. VIEW: WALLET -->
+                <div id="view-wallet" class="view-section hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 space-y-6">
+                            <div class="p-6 rounded-lg card-bg neon-border">
+                                <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Total Crypto Wallet</h3>
+                                <p class="text-3xl font-bold mt-2 text-white font-mono">$5,240.15</p>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 p-6 rounded-lg card-bg border border-gray-800">
+                            <h3 class="text-xl font-bold text-white mb-6">Fund Your Account</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="p-4 bg-[#0d1117] rounded-lg border border-gray-800">
+                                    <h4 class="font-semibold text-[#00ff66] mb-3">Deposit Funds</h4>
+                                    <button class="w-full bg-[#00ff66] text-black font-bold py-2 rounded text-sm">Generate Address</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. VIEW: WALLET (DEPOSIT & WITHDRAW) -->
-                <div id="view-wallet" class="view-section hidden">
+                <!-- 3. VIEW: LOGIN -->
+                <div id="view-login" class="view-section hidden max-w-md mx-auto p-6 rounded-lg card-bg neon-border my-12">
