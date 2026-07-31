@@ -12,6 +12,9 @@
         .bg-neon-green:hover { background-color: #00cc52; }
         .card-bg { background-color: #0d1117; }
         .badge-bg { background-color: rgba(0, 255, 102, 0.05); border: 1px solid rgba(0, 255, 102, 0.15); }
+        
+        /* HAU KIPENGELE CHA MUHIMU: Kinafanya kurasa zenye neno hidden zificheke mwanzoni */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col justify-between">
@@ -67,7 +70,7 @@
             </div>
         </div>
 
-        <!-- VIEW 1: DASHBOARD -->
+        <!-- VIEW 1: DASHBOARD (Itafichwa mwanzoni, inafunguka baada ya kuingia) -->
         <div id="view-dashboard" class="view-section hidden">
             <div class="mb-8 p-6 rounded-lg card-bg border border-[#00ff66] flex flex-col md:flex-row justify-between items-center">
                 <div>
@@ -138,17 +141,14 @@
             document.getElementById('view-' + viewName).classList.remove('hidden');
 
             var mainNav = document.getElementById('main-nav');
+            var authBtns = document.getElementById('auth-nav-buttons');
+            
+            // Kama mtumiaji yupo kwenye login au register, ficha menu kuu
+            if(viewName === 'login' || viewName === 'register' || viewName === 'landing') {
+                mainNav.classList.add('hidden');
+                mainNav.classList.remove('md:flex');
+                authBtns.classList.remove('hidden');
+            }
+
             if (!mainNav.classList.contains('hidden')) {
                 document.getElementById('nav-dashboard').className = viewName === 'dashboard' ? 'text-white font-medium' : 'text-gray-400 font-medium';
-                document.getElementById('nav-wallet').className = viewName === 'wallet' ? 'text-white font-medium' : 'text-gray-400 font-medium';
-            }
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-        function loginSuccess() {
-            document.getElementById('main-nav').classList.remove('hidden');
-            document.getElementById('auth-nav-buttons').classList.add('hidden');
-            switchView('dashboard');
-        }
-    </script>
-</body>
-</html>
