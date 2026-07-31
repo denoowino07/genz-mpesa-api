@@ -4,31 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GenzTrending.com - Professional Trading Platform</title>
-    <!-- CSS na Head Content -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #0c1017; --primary-green: #00e676; /* ...styles removed for brevity... */ }
-        /* CSS yote iko hapa */
+        :root {
+            --bg-color: #0c1017;
+            --card-bg: #161d26;
+            --primary-green: #00e676;
+            --text-main: #ffffff;
+            --text-muted: #8492a6;
+            --border-color: #242f3d;
+            --accent-blue: #2196f3;
+            --danger-red: #ff4a4a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-size: 14px; overflow-x: hidden; }
+
+        /* SCREENS CONFIG */
+        .screen { display: none; }
+        .active-screen { display: block; }
+
+        /* NAV BAR */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; max-width: 1400px; margin: 0 auto; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--text-main); text-decoration: none; cursor: pointer; }
+        .logo span { color: var(--primary-green); }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin-right: 25px; font-size: 15px; font-weight: 500; cursor: pointer; }
+        .btn-nav { background-color: var(--primary-green); color: #000; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 14px; cursor: pointer; }
+        
+        .hero-section { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 60px 20px; max-width: 800px; margin: 0 auto; }
+        .badge { background: rgba(0, 230, 118, 0.1); color: var(--primary-green); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; margin-bottom: 30px; border: 1px solid rgba(0, 230, 118, 0.2); }
+        h1 { font-size: 50px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; }
+        h1 span { color: var(--primary-green); }
+        .hero-desc { color: var(--text-muted); font-size: 18px; line-height: 1.6; margin-bottom: 40px; max-width: 600px; }
+        .cta-buttons { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 320px; margin-bottom: 40px; }
+        .btn-main { background-color: var(--primary-green); color: #000; border: none; padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; text-align: center; width: 100%; }
+        .btn-main:hover { box-shadow: 0 0 15px rgba(0, 230, 118, 0.4); }
+        .btn-demo { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 500; cursor: pointer; text-align: center; width: 100%; }
+        
+        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; }
+        .feature-item { font-size: 14px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .feature-item span { color: var(--primary-green); }
+
+        /* AUTH SCREEN */
+        .auth-container { max-width: 400px; margin: 60px auto; padding: 30px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; text-align: center; }
+        .auth-container h2 { margin-bottom: 20px; font-weight: 800; }
+        .auth-form { display: flex; flex-direction: column; gap: 15px; }
+        .auth-form input { background: #0c1017; border: 1px solid var(--border-color); padding: 14px; color: #fff; border-radius: 8px; font-size: 15px; width: 100%; outline: none; }
+        .auth-toggle { margin-top: 15px; font-size: 14px; color: var(--text-muted); }
+        .auth-toggle span { color: var(--primary-green); cursor: pointer; font-weight: 700; text-decoration: underline; }
+
+        /* TRADING INTERFACE */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #11171f; border-bottom: 1px solid var(--border-color); }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .account-badge { background-color: #1e293b; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; border: 1px solid var(--border-color); }
+        .btn-action { color: #000; font-weight: 700; padding: 8px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px; }
+        
+        .trade-tabs { display: flex; gap: 8px; padding: 12px 15px; overflow-x: auto; }
+        .tab-btn { background-color: #1c2633; color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+        .market-info-box { padding: 0 15px 10px 15px; }
+        .asset-tag { background: #161d26; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .price-container { display: flex; align-items: center; gap: 10px; }
+        .asset-price { font-size: 28px; font-weight: 800; font-family: monospace; }
+        .trend-arrow { font-size: 24px; font-weight: bold; }
+        
+        .chart-section { padding: 0 15px; margin: 15px 0; width: 100%; }
+        .chart-container { background-color: #11171f; border: 1px solid var(--border-color); border-radius: 12px; height: 180px; width: 100%; padding: 10px; }
+        canvas { width: 100%; height: 100%; display: block; }
+
+        .stake-section { background-color: #161d26; padding: 20px; border-radius: 16px 16px 0 0; margin-top: 40px; border-top: 1px solid var(--border-color); }
+        .amount-control { display: flex; justify-content: space-between; align-items: center; background-color: #0c1017; border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; margin-bottom: 15px; }
+        .amt-btn { background: #1c2633; border: none; color: #ff9100; font-size: 20px; font-weight: 700; width: 40px; height: 40px; border-radius: 6px; cursor: pointer; }
+        .amt-val { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 700; text-align: center; width: 100%; outline: none; }
+        
+        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-trade { border: none; padding: 18px; font-weight: 700; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        .pnl-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; font-weight: 600; }
     </style>
 </head>
 <body>
+
+    <!-- NAV BAR -->
+    <nav id="global-nav">
+        <div class="logo" onclick="changeScreen('home-screen')">Genz<span>Trending</span></div>
+        <div class="nav-links">
+            <a onclick="changeScreen('home-screen')">Home</a>
+            <a onclick="openAuth('login')">Log In</a>
+        </div>
+        <a class="btn-nav" onclick="openAuth('signup')">Sign Up</a>
+    </nav>
+
     <!-- 1. LANDING HERO SCREEN -->
     <div id="home-screen" class="screen active-screen">
-        <!-- Contet ya kodi -->
+        <section class="hero-section">
+            <div class="badge">✨ Over 1 million traders and counting</div>
+            <h1>Trading Made Easy, <br><span>Trade Smart</span></h1>
+            <p class="hero-desc">The best Trusted Binary Automated trading platform with fast withdrawals and fast response customer service</p>
+            <div class="cta-buttons">
+                <button class="btn-main" onclick="openAuth('signup')">Get Started — It's Free →</button>
+                <button class="btn-demo" onclick="enterDirectDemo()">▷ Try Demo</button>
+            </div>
+            <div class="features-grid">
+                <div class="feature-item"><span>⚡</span> &lt;1s execution</div>
+                <div class="feature-item"><span>%</span> Up to 95% payout</div>
+                <div class="feature-item"><span>🛡️</span> Bank-level security</div>
+                <div class="feature-item"><span>💰</span> Zero fees</div>
+            </div>
+        </section>
     </div>
 
     <!-- 2. SIGNUP / LOGIN SCREEN -->
     <div id="auth-screen" class="screen">
-        <!-- Content ya kodi -->
+        <div class="auth-container">
+            <h2 id="auth-title">Create Account</h2>
+            <form class="auth-form" onsubmit="handleAuthForm(event)">
+                <input type="email" id="auth-email" placeholder="Email Address" required>
+                <input type="password" id="auth-password" placeholder="Password" required>
+                <button type="submit" class="btn-main" style="border-radius:8px;" id="auth-btn">Sign Up & Start Trading</button>
+            </form>
+            <div class="auth-toggle" id="auth-toggle-text">
+                Already have an account? <span onclick="openAuth('login')">Log in here</span>
+            </div>
+        </div>
     </div>
 
-    <!-- 3. TRADING MAIN DASHBOARD -->
+    <!-- 3. TRADING PLATFORM INTERFACE -->
     <div id="trading-screen" class="screen">
-        <!-- Content ya kodi -->
-    </div>
-
-    <script>
-        // JS iliyorekebishwa
-        // executeTradeLogic na handleAuthForm zimesahihishwa
-    </script>
-</body>
-</html>
+        <header>
+            <div class="header-left">
+                <div class="account-badge">
+                    <select id="account-type" onchange="toggleWalletType()" style="background:transparent; color:#ffa726; border:none; font-weight:800; outline:none; cursor:pointer; font-size:14px;">
+                        <option value="demo" style="background:#161d26; color:#fff;">Demo (D)</option>
+                        <option value="real" style="background:#161d26; color:#fff;">Real (R)</option>
+                    </select>
+                    <span id="wallet-balance">$10,000.00</span>
+                </div>
