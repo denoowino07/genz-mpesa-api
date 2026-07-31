@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Njia kuu ya Trading Dashboard
+// Njia kuu ya Trading Dashboard yenye Chati ya TradingView
 app.get('/', (req, res) => {
     res.send(`
         <!DOCTYPE html>
@@ -62,25 +62,52 @@ app.get('/', (req, res) => {
 
                 <!-- Grid ya Takwimu za Forex -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <!-- Kadi 1 -->
                     <div class="p-6 rounded-lg card-bg border border-gray-800">
                         <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Jumla ya Mtaji (Balance)</h3>
                         <p class="text-3xl font-bold mt-2 text-white font-mono">$12,450.80</p>
                         <span class="text-xs text-green-500">+4.5% Leo</span>
                     </div>
 
-                    <!-- Kadi 2 -->
                     <div class="p-6 rounded-lg card-bg border border-gray-800">
                         <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Trades Zinazofanya Kazi</h3>
                         <p class="text-3xl font-bold mt-2 neon-text font-mono">3 Active</p>
                         <span class="text-xs text-[#00ff66]">Faida ya sasa: +$142.20</span>
                     </div>
 
-                    <!-- Kadi 3 -->
                     <div class="p-6 rounded-lg card-bg border border-gray-800">
                         <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Win Rate ya Bot</h3>
                         <p class="text-3xl font-bold mt-2 text-white font-mono">78.4%</p>
                         <span class="text-xs text-gray-500">Kutokana na trades 150 zilizopita</span>
+                    </div>
+                </div>
+
+                <!-- CHATI YA TRADINGVIEW (Mpya) -->
+                <div class="mb-8 p-4 rounded-lg card-bg border border-gray-800">
+                    <h3 class="text-lg font-semibold text-white mb-4">Chati ya Masoko ya Forex (Live Advanced Chart)</h3>
+                    <div class="w-full" style="height: 500px;">
+                        <!-- TradingView Widget BEGIN -->
+                        <div class="tradingview-widget-container" style="height:100%;width:100%">
+                            <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
+                            <script type="text/javascript" src="https://tradingview.com"></script>
+                            <script type="text/javascript">
+                            new TradingView.widget({
+                                "width": "100%",
+                                "height": "100%",
+                                "symbol": "FX:EURUSD",
+                                "interval": "15",
+                                "timezone": "Etc/UTC",
+                                "theme": "dark",
+                                "style": "1",
+                                "locale": "en",
+                                "toolbar_bg": "#161b22",
+                                "enable_publishing": false,
+                                "hide_side_toolbar": false,
+                                "allow_symbol_change": true,
+                                "container_id": "tradingview_chart"
+                            });
+                            </script>
+                        </div>
+                        <!-- TradingView Widget END -->
                     </div>
                 </div>
 
