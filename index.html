@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GenZTrending - Trading Made Easy</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://tailwindcss.com"></script>
     <style>
         body { background-color: #06090e; color: #c9d1d9; }
         .neon-green { color: #00ff66; }
@@ -132,16 +132,15 @@
         <!-- VIEW 3: LOGIN FORM -->
         <div id="view-login" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-[#00ff66]/30" style="display: none;">
             <h3 class="text-2xl font-bold text-white text-center mb-6">Sign In</h3>
-            <div class="space-y-4">
-                <input type="email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
-                <input type="password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
-                <button onclick="loginSuccess('Real Account')" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Access Account</button>
-            </div>
+            <form onsubmit="handleAuth(event, '/auth/login')" class="space-y-4">
+                <input type="email" id="login-email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
+                <input type="password" id="login-password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
+                <button type="submit" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Access Account</button>
+            </form>
             <p class="text-sm text-center text-gray-500 mt-4">Don't have an account? <span onclick="switchView('register')" class="text-[#00ff66] cursor-pointer hover:underline font-bold">Create one</span></p>
         </div>
 
         <!-- VIEW 4: REGISTER FORM -->
         <div id="view-register" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-gray-800" style="display: none;">
             <h3 class="text-2xl font-bold text-white text-center mb-6">Create Free Account</h3>
-            <div class="space-y-4">
-                <input type="text" placeholder="Full Name" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+            <form onsubmit="handleAuth(event, '/auth/register')" class="space-y-4">
