@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Configuration for your live custom domain
+const DOMAIN_URL = "https://genztrending.co";
+const MPESA_API_URL = "https://onrender.com";
+
 app.get('/', (req, res) => {
     res.send(`
         <!DOCTYPE html>
@@ -9,7 +13,7 @@ app.get('/', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>GenZTrending - FX & Wallet</title>
+            <title>GenZTrending - Live FX Dashboard</title>
             <script src="https://tailwindcss.com"></script>
             <style>
                 body { background-color: #0d1117; color: #c9d1d9; }
@@ -25,7 +29,7 @@ app.get('/', (req, res) => {
                 <div class="container mx-auto flex justify-between items-center">
                     <h1 class="text-2xl font-bold neon-text tracking-wider cursor-pointer" onclick="switchView('dashboard')">GENZTRENDING</h1>
                     <nav class="space-x-6 hidden md:flex">
-                        <button onclick="switchView('dashboard')" id="nav-dashboard" class="text-white hover:text-[#00ff66] transition font-medium">Dashboard</button>
+                        <button onclick="switchView('dashboard')" id="nav-dashboard" class="text-white font-medium">Dashboard</button>
                         <button onclick="switchView('wallet')" id="nav-wallet" class="text-gray-400 hover:text-[#00ff66] transition font-medium">My Wallet</button>
                     </nav>
                     <div class="space-x-3">
@@ -35,15 +39,14 @@ app.get('/', (req, res) => {
                 </div>
             </header>
 
-            <!-- Main Content Container -->
+            <!-- Main Content -->
             <main class="container mx-auto p-6 flex-grow">
-
                 <!-- VIEW 1: DASHBOARD -->
                 <div id="view-dashboard" class="view-section">
                     <div class="mb-8 p-6 rounded-lg card-bg neon-border flex flex-col md:flex-row justify-between items-center">
                         <div>
                             <h2 class="text-xl font-semibold mb-2 text-white">FX Markets Are Live</h2>
-                            <p class="text-gray-400">Your automated algorithm systems are analyzing current market trends.</p>
+                            <p class="text-gray-400">Your automated systems are live on genztrending.co analyzing trends.</p>
                         </div>
                         <div class="mt-4 md:mt-0 bg-green-900/30 text-[#00ff66] px-4 py-2 rounded border border-[#00ff66]/30 font-mono text-sm animate-pulse">● Bot Status: ACTIVE</div>
                     </div>
@@ -87,15 +90,17 @@ app.get('/', (req, res) => {
                 <div id="view-wallet" class="view-section hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1 p-6 rounded-lg card-bg neon-border">
-                            <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Crypto Wallet</h3>
+                            <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Crypto & Mobile Wallet</h3>
                             <p class="text-3xl font-bold mt-2 text-white font-mono">$5,240.15</p>
                         </div>
                         <div class="lg:col-span-2 p-6 rounded-lg card-bg border border-gray-800">
-                            <h3 class="text-xl font-bold text-white mb-6">Deposit Funds</h3>
+                            <h3 class="text-xl font-bold text-white mb-6">Deposit Funds Via M-Pesa</h3>
                             <div class="p-4 bg-[#0d1117] rounded-lg border border-gray-800">
-                                <label class="block text-xs text-gray-400 mb-1">Select Asset</label>
-                                <select class="w-full bg-[#161b22] text-white p-2 rounded mb-3 border border-gray-800"><option>USDT (TRC20)</option><option>Bitcoin (BTC)</option></select>
-                                <button class="w-full bg-[#00ff66] text-black font-bold py-2 rounded text-sm">Generate Wallet Address</button>
+                                <label class="block text-xs text-gray-400 mb-1">Enter Phone Number</label>
+                                <input type="text" placeholder="e.g. 2547XXXXXXXX or 2557XXXXXXXX" class="w-full bg-[#161b22] text-white p-2 rounded mb-3 border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+                                <label class="block text-xs text-gray-400 mb-1">Amount</label>
+                                <input type="number" placeholder="Amount" class="w-full bg-[#161b22] text-white p-2 rounded mb-4 border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+                                <button class="w-full bg-[#00ff66] text-black font-bold py-2 rounded text-sm hover:bg-[#00cc52] transition">Pay with M-Pesa</button>
                             </div>
                         </div>
                     </div>
@@ -116,7 +121,6 @@ app.get('/', (req, res) => {
                     <input type="email" placeholder="Email Address" class="w-full bg-[#0d1117] text-white p-3 rounded mb-4 border border-gray-800 focus:outline-none focus:border-[#00ff66]">
                     <button onclick="switchView('dashboard')" class="w-full bg-[#00ff66] text-black font-bold py-3 rounded">Register Now</button>
                 </div>
-
             </main>
 
             <footer class="border-t border-gray-800 bg-[#161b22] p-4 text-center text-sm text-gray-500">
@@ -127,7 +131,6 @@ app.get('/', (req, res) => {
                 function switchView(viewName) {
                     document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
                     document.getElementById('view-' + viewName).classList.remove('hidden');
-                    
                     document.getElementById('nav-dashboard').className = viewName === 'dashboard' ? 'text-white font-medium' : 'text-gray-400 hover:text-[#00ff66] font-medium';
                     document.getElementById('nav-wallet').className = viewName === 'wallet' ? 'text-white font-medium' : 'text-gray-400 hover:text-[#00ff66] font-medium';
                 }
