@@ -1,13 +1,15 @@
 {
-  "name": "autotraders-clone",
+  "name": "genztrending-platform",
   "version": "1.0.0",
-  "description": "Automated Trading Platform UI with Demo Interface",
+  "description": "Full Trading Platform with M-Pesa and Win/Loss Logic",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "mongoose": "^8.3.1",
+    "axios": "^1.6.8"
   },
   "author": "",
   "license": "ISC"
