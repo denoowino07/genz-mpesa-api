@@ -21,13 +21,11 @@
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold text-white tracking-wider cursor-pointer" onclick="window.location.reload()">GENZTRENDING</h1>
             
-            <!-- Main navigation inside the platform (Hidden by default) -->
             <nav id="main-nav" class="space-x-6 hidden">
                 <button onclick="switchView('dashboard')" id="nav-dashboard" class="text-white font-medium text-sm">Dashboard</button>
                 <button onclick="switchView('wallet')" id="nav-wallet" class="text-gray-400 font-medium text-sm">My Wallet</button>
             </nav>
 
-            <!-- Authentication top buttons -->
             <div class="flex items-center space-x-6" id="auth-nav-buttons">
                 <button onclick="switchView('login')" class="text-gray-300 hover:text-white font-medium text-sm transition">Log in</button>
                 <button onclick="switchView('register')" class="bg-neon-green text-black font-bold px-4 py-2 rounded-full text-sm transition">Get Started</button>
@@ -37,23 +35,20 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT CONTAINER -->
+    <!-- MAIN CONTENT -->
     <main class="container mx-auto px-6 flex-grow flex flex-col justify-center my-8">
 
         <!-- VIEW 0: LANDING PAGE -->
-        <div id="view-landing" class="view-section text-center max-w-2xl mx-auto py-12">
+        <div id="view-landing" class="view-section text-center max-w-2xl mx-auto py-12" style="display: block;">
             <div class="inline-flex items-center gap-2 badge-bg text-[#00ff66] px-4 py-1.5 rounded-full text-xs font-medium mb-8">
                 ✨ Over 1 million traders and counting
             </div>
-
             <h2 class="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight leading-tight">
                 Trading Made Easy, <br><span class="neon-green">Trade Smart</span>
             </h2>
-
             <p class="text-gray-400 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
                 The best Trusted Binary Automated trading platform with fast withdrawals and fast response customer service
             </p>
-
             <div class="flex flex-col items-center gap-4 max-w-xs mx-auto mb-16 w-full">
                 <button onclick="switchView('register')" class="w-full bg-neon-green text-black font-bold py-3.5 rounded-full text-sm transition tracking-wide shadow-lg shadow-green-500/10">
                     Get Started – It's Free →
@@ -62,7 +57,6 @@
                     ▷ Try Demo
                 </button>
             </div>
-
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-gray-400 border-t border-gray-900 pt-8">
                 <div class="flex items-center justify-center gap-1.5">⚡ &lt;1s execution</div>
                 <div class="flex items-center justify-center gap-1.5">📈 Up to 95% payout</div>
@@ -71,8 +65,8 @@
             </div>
         </div>
 
-        <!-- VIEW 1: DASHBOARD TERMINAL -->
-        <div id="view-dashboard" class="view-section max-w-5xl mx-auto w-full hidden">
+        <!-- VIEW 1: DASHBOARD -->
+        <div id="view-dashboard" class="view-section max-w-5xl mx-auto w-full" style="display: none;">
             <div class="mb-8 p-6 rounded-lg card-bg border border-[#00ff66]/30 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
                     <h2 class="text-xl font-semibold text-white">FX Markets Are Live</h2>
@@ -80,23 +74,14 @@
                 </div>
                 <div class="bg-green-900/30 text-[#00ff66] px-4 py-2 rounded border border-[#00ff66]/30 font-mono text-sm animate-pulse">● Bot Status: ACTIVE</div>
             </div>
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="p-6 rounded-lg card-bg border border-gray-800">
                     <h3 class="text-sm text-gray-400" id="balance-title">Real Account Balance</h3>
                     <p class="text-3xl font-bold text-white font-mono mt-2" id="account-balance">$12,450.80</p>
                 </div>
-                <div class="p-6 rounded-lg card-bg border border-gray-800">
-                    <h3 class="text-sm text-gray-400">Active Trades</h3>
-                    <p class="text-3xl font-bold text-[#00ff66] font-mono mt-2">3 Running</p>
-                </div>
-                <div class="p-6 rounded-lg card-bg border border-gray-800">
-                    <h3 class="text-sm text-gray-400">Bot Win Rate</h3>
-                    <p class="text-3xl font-bold text-white font-mono mt-2">78.4%</p>
-                </div>
+                <div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm text-gray-400">Active Trades</h3><p class="text-3xl font-bold text-[#00ff66] font-mono mt-2">3 Running</p></div>
+                <div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm text-gray-400">Bot Win Rate</h3><p class="text-3xl font-bold text-white font-mono mt-2">78.4%</p></div>
             </div>
-
-            <!-- TradingView Widget -->
             <div class="mb-8 p-4 rounded-lg card-bg border border-gray-800">
                 <h3 class="text-lg font-semibold text-white mb-4">Live Advanced Forex Chart</h3>
                 <div style="height: 450px; width:100%">
@@ -110,39 +95,46 @@
         </div>
 
         <!-- VIEW 2: WALLET -->
-        <div id="view-wallet" class="view-section max-w-5xl mx-auto w-full hidden">
+        <div id="view-wallet" class="view-section max-w-5xl mx-auto w-full" style="display: none;">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-1 p-6 rounded-lg card-bg border border-[#00ff66]/20">
-                    <h3 class="text-gray-400 text-sm">Main Wallet Balance</h3>
-                    <p class="text-3xl font-bold text-white font-mono mt-2">$5,240.15</p>
-                </div>
+                <div class="lg:col-span-1 p-6 rounded-lg card-bg border border-[#00ff66]/20"><h3 class="text-gray-400 text-sm">Main Wallet Balance</h3><p class="text-3xl font-bold text-white font-mono mt-2">$5,240.15</p></div>
                 <div class="lg:col-span-2 p-6 rounded-lg card-bg border border-gray-800">
                     <h3 class="text-xl font-bold text-white mb-6">Deposit Funds Via M-Pesa</h3>
                     <div class="p-4 bg-[#06090e] rounded-lg border border-gray-800">
-                        <label class="block text-xs text-gray-400 mb-1">M-Pesa Phone Number</label>
-                        <input type="text" placeholder="e.g. 2557XXXXXXXX" class="w-full bg-[#161b22] text-white p-2.5 rounded mb-4 border border-gray-800 focus:outline-none focus:border-[#00ff66]">
-                        <label class="block text-xs text-gray-400 mb-1">Amount ($)</label>
-                        <input type="number" placeholder="Amount" class="w-full bg-[#161b22] text-white p-2.5 rounded mb-4 border border-gray-800 focus:outline-none focus:border-[#00ff66]">
-                        <button onclick="alert('Processing M-Pesa Payment... Check phone')" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm">Pay with M-Pesa</button>
+                        <input type="text" placeholder="Phone Number" class="w-full bg-[#161b22] text-white p-2.5 rounded mb-4 border border-gray-800">
+                        <input type="number" placeholder="Amount" class="w-full bg-[#161b22] text-white p-2.5 rounded mb-4 border border-gray-800">
+                        <button class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm">Pay with M-Pesa</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- VIEW 3: LOGIN FORM -->
-        <div id="view-login" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-[#00ff66]/30 hidden">
+        <div id="view-login" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-[#00ff66]/30" style="display: none;">
             <h3 class="text-2xl font-bold text-white text-center mb-6">Sign In</h3>
-            <div class="space-y-4">
-                <input type="email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
-                <input type="password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
-                <button onclick="loginSuccess('Real Account')" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Access Account</button>
-            </div>
-            <p class="text-sm text-center text-gray-500 mt-4">Don't have an account? <span onclick="switchView('register')" class="text-[#00ff66] cursor-pointer hover:underline font-bold">Create one</span></p>
+            <form onsubmit="submitForm(event, '/auth/login', 'Real Account')" class="space-y-4">
+                <input type="email" id="login-email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
+                <input type="password" id="login-password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
+                <button type="submit" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Access Account</button>
+            </form>
         </div>
 
-        <!-- VIEW 4: REGISTER FORM -->
-        <div id="view-register" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-gray-800 hidden">
+        <!-- VIEW 4: REGISTER FORM (JOIN) -->
+        <div id="view-register" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-gray-800" style="display: none;">
             <h3 class="text-2xl font-bold text-white text-center mb-6">Create Free Account</h3>
-            <div class="space-y-4">
-                <input type="text" placeholder="Full Name" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
-                <input type="email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+            <form onsubmit="submitForm(event, '/auth/register', 'Real Account')" class="space-y-4">
+                <input type="text" id="reg-name" placeholder="Full Name" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
+                <input type="email" id="reg-email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
+                <input type="password" id="reg-password" placeholder="Choose Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
+                <button type="submit" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Register & Open Terminal</button>
+            </form>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-xs text-gray-600 border-t border-gray-950 bg-[#0d1117]">
+        <p>&copy; 2026 GenZTrending FX. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function switchView(viewName) {
