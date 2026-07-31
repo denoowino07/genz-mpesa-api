@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Njia kuu ya Trading Dashboard yenye Chati ya TradingView
+// Njia kuu ya Trading Dashboard yenye Chati, Historia na Habari
 app.get('/', (req, res) => {
     res.send(`
         <!DOCTYPE html>
@@ -81,11 +81,10 @@ app.get('/', (req, res) => {
                     </div>
                 </div>
 
-                <!-- CHATI YA TRADINGVIEW (Mpya) -->
+                <!-- Chati ya TradingView -->
                 <div class="mb-8 p-4 rounded-lg card-bg border border-gray-800">
                     <h3 class="text-lg font-semibold text-white mb-4">Chati ya Masoko ya Forex (Live Advanced Chart)</h3>
-                    <div class="w-full" style="height: 500px;">
-                        <!-- TradingView Widget BEGIN -->
+                    <div class="w-full" style="height: 450px;">
                         <div class="tradingview-widget-container" style="height:100%;width:100%">
                             <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
                             <script type="text/javascript" src="https://tradingview.com"></script>
@@ -107,59 +106,64 @@ app.get('/', (req, res) => {
                             });
                             </script>
                         </div>
-                        <!-- TradingView Widget END -->
                     </div>
                 </div>
 
-                <!-- Sehemu ya Live Currency Pairs -->
-                <div class="p-6 rounded-lg card-bg border border-gray-800">
-                    <h3 class="text-lg font-semibold text-white mb-4">Mifano ya Jozi za Sarafu (Live Watchlist)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left font-mono">
-                            <thead>
-                                <tr class="border-b border-gray-800 text-gray-400 text-sm">
-                                    <th class="pb-3">Pair</th>
-                                    <th class="pb-3">Bei ya Sasa</th>
-                                    <th class="pb-3">Mabadiliko (24h)</th>
-                                    <th class="pb-3">Hatua</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-800/50 text-sm">
-                                <tr>
-                                    <td class="py-3 font-bold text-white">EUR / USD</td>
-                                    <td class="py-3">1.08420</td>
-                                    <td class="py-3 text-green-500">+0.24%</td>
-                                    <td class="py-3"><span class="text-[#00ff66] bg-green-950/40 px-2 py-1 rounded text-xs border border-green-800">BUY</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 font-bold text-white">GBP / USD</td>
-                                    <td class="py-3">1.26510</td>
-                                    <td class="py-3 text-red-500">-0.12%</td>
-                                    <td class="py-3"><span class="text-red-400 bg-red-950/40 px-2 py-1 rounded text-xs border border-red-900">SELL</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 font-bold text-white">USD / JPY</td>
-                                    <td class="py-3">151.340</td>
-                                    <td class="py-3 text-green-500">+0.45%</td>
-                                    <td class="py-3"><span class="text-[#00ff66] bg-green-950/40 px-2 py-1 rounded text-xs border border-green-800">BUY</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- SEHEMU MPYA: Grid ya Historia ya Trades na Habari za Soko -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    
+                    <!-- Upande wa Kushoto: Historia ya Trades (Inachukua nafasi 2/3 kwenye screen kubwa) -->
+                    <div class="lg:col-span-2 p-6 rounded-lg card-bg border border-gray-800">
+                        <h3 class="text-lg font-semibold text-white mb-4">Historia ya Trades (Recent Activity)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left font-mono text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-800 text-gray-400">
+                                        <th class="pb-3">Muda</th>
+                                        <th class="pb-3">Pair</th>
+                                        <th class="pb-3">Aina</th>
+                                        <th class="pb-3">Kiasi (Lots)</th>
+                                        <th class="pb-3">Matokeo</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800/50">
+                                    <tr>
+                                        <td class="py-3 text-gray-500">Leo, 14:20</td>
+                                        <td class="py-3 font-bold text-white">EUR/USD</td>
+                                        <td class="py-3 text-green-500">BUY</td>
+                                        <td class="py-3">0.50</td>
+                                        <td class="py-3 text-green-400 font-bold">+$75.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 text-gray-500">Leo, 11:05</td>
+                                        <td class="py-3 font-bold text-white">GBP/USD</td>
+                                        <td class="py-3 text-red-500">SELL</td>
+                                        <td class="py-3">1.00</td>
+                                        <td class="py-3 text-red-400 font-bold">-$32.10</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 text-gray-500">Jana, 18:45</td>
+                                        <td class="py-3 font-bold text-white">USD/JPY</td>
+                                        <td class="py-3 text-green-500">BUY</td>
+                                        <td class="py-3">0.20</td>
+                                        <td class="py-3 text-green-400 font-bold">+$114.50</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 text-gray-500">Jana, 09:15</td>
+                                        <td class="py-3 font-bold text-white">XAU/USD</td>
+                                        <td class="py-3 text-green-500">BUY</td>
+                                        <td class="py-3">0.10</td>
+                                        <td class="py-3 text-green-400 font-bold">+$45.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            </main>
 
-            <!-- Footer -->
-            <footer class="border-t border-gray-800 bg-[#161b22] p-4 text-center text-sm text-gray-500">
-                <p>&copy; 2026 Auto Traders FX. Mfumo wa Kiotomatiki.</p>
-            </footer>
-
-        </body>
-        </html>
-    `);
-});
-
-// Kuanzisha seva
-app.listen(PORT, () => {
-    console.log(`Server inafanya kazi kwenye port \${PORT}`);
-});
+                    <!-- Upande wa Kulia: Live Market News (Inachukua nafasi 1/3) -->
+                    <div class="p-6 rounded-lg card-bg border border-gray-800 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-4">Habari za Masoko (Live News)</h3>
+                            <div class="space-y-4">
+                                <div class="border-l-2 border-[#00ff66] pl-3">
+                                    <h4 class="text-sm font-bold text-white hover:text-[#00ff66] cursor-pointer">Fed kuamua kuhusu riba wiki hii...</h4>
