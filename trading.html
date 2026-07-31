@@ -3,310 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenzTrending - Trading Dashboard</title>
+    <title>Trading Platform - GenzTrending</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <script src="https://jsdelivr.net"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --bg-color: #0c1017;
+            --card-bg: #161d26;
+            --primary-green: #00e676;
+            --text-main: #ffffff;
+            --text-muted: #8492a6;
+            --border-color: #242f3d;
+            --danger-red: #ff4a4a;
         }
-        body {
-            background-color: #0b111e;
-            color: #ffffff;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        /* Sehemu ya Juu (Header) */
-        header {
-            width: 100%;
-            max-width: 900px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .logo {
-            font-weight: bold;
-            font-size: 20px;
-        }
-        .logo span { color: #00e676; }
-        .balance-box {
-            text-align: right;
-        }
-        .balance-title {
-            font-size: 12px;
-            color: #94a3b8;
-        }
-        .balance-amount {
-            font-size: 22px;
-            font-weight: bold;
-            color: #00e676;
-        }
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .deposit-btn {
-            background-color: #00e676;
-            color: #0b111e;
-            padding: 8px 16px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
-        }
-
-        /* Muundo Mkuu wa Ukurasa */
-        .main-container {
-            width: 100%;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .market-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 5px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .market-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #cbd5e1;
-        }
-
-        /* Eneo la Chati Mpya Iliyorekebishwa */
-        .chart-wrapper {
-            width: 100%;
-            height: 380px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* Jedwali la Taarifa za Soko (Grid ya Chini) */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .info-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .info-label {
-            font-size: 11px;
-            color: #64748b;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-        }
-        .info-value {
-            font-size: 14px;
-            font-weight: bold;
-            color: #f8fafc;
-        }
-
-        /* Sehemu ya Biashara (Vitufe na Kiasi) */
-        .trading-panel {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .amount-selector {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .amount-btn {
-            background: none;
-            border: none;
-            color: #00e676;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 30px;
-        }
-        .amount-input {
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            width: 80px;
-            outline: none;
-        }
-        .payout-text {
-            font-size: 13px;
-            color: #94a3b8;
-            text-align: center;
-        }
-        .payout-text span {
-            color: #00e676;
-            font-weight: bold;
-        }
-
-        /* Vitufe Kuu vya BUY na SELL */
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .trade-btn {
-            padding: 16px;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            color: #0b111e;
-        }
-        .trade-btn:active {
-            transform: scale(0.98);
-        }
-        .buy-btn {
-            background-color: #00e676;
-        }
-        .sell-btn {
-            background-color: #ff3d00;
-            color: #ffffff;
-        }
-
-        /* Responsive kwa ajili ya Simu */
-        @media (max-width: 600px) {
-            .info-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .chart-wrapper {
-                height: 280px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-size: 14px; padding: 15px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #11171f; border-bottom: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; }
+        .account-badge { background-color: #1e293b; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .btn-action { color: #000; font-weight: 700; padding: 8px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px; }
+        .market-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .asset-price { font-size: 26px; font-weight: 800; font-family: monospace; }
+        .chart-wrapper { background-color: #11171f; border: 1px solid var(--border-color); border-radius: 12px; height: 250px; width: 100%; padding: 10px; margin-bottom: 15px; position: relative; }
+        canvas { width: 100%; height: 100%; display: block; }
+        .price-axis-tag { position: absolute; right: 10px; background-color: var(--primary-green); color: #000; font-weight: 800; font-family: monospace; font-size: 11px; padding: 3px 6px; border-radius: 4px; pointer-events: none; transition: top 0.1s ease; box-shadow: 0 0 10px rgba(0,230,118,0.4); top: 50%; transform: translateY(-50%); }
+        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 15px; }
+        .stat-bubble { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px; text-align: center; font-size: 12px; }
+        .bubble-num { color: #fff; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 700; margin-bottom: 2px; }
+        .bubble-pct { font-weight: 700; font-size: 11px; }
+        .stake-section { background-color: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .amount-control { display: flex; justify-content: space-between; align-items: center; background-color: #0c1017; border: 1px solid var(--border-color); border-radius: 8px; padding: 4px; margin-bottom: 15px; }
+        .amt-btn { background: #1c2633; border: none; color: #ff9100; font-size: 20px; font-weight: 700; width: 38px; height: 36px; border-radius: 6px; cursor: pointer; }
+        .amt-val { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 700; text-align: center; width: 100%; outline: none; }
+        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-trade { border: none; padding: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; font-size: 15px; text-transform: uppercase; }
     </style>
 </head>
 <body>
-
-    <!-- Sehemu ya Juu -->
     <header>
-        <div class="logo">⚡ <span>Genz</span>Trending</div>
-        <div class="balance-box">
-            <div class="balance-title">DEMO BALANCE</div>
-            <div class="balance-amount" id="account-balance">$10,000.00</div>
+        <div class="account-badge">
+            <select id="account-type" onchange="toggleWallet()" style="background:transparent; color:#ffa726; border:none; font-weight:800; outline:none; cursor:pointer;">
+                <option value="demo">Demo (D)</option>
+                <option value="real">Real (R)</option>
+            </select>
+            <span id="wallet-balance">$10,000.00</span>
         </div>
-        <div class="header-buttons">
-            <button class="deposit-btn" onclick="alert('M-PESA Deposit feature coming soon!')">DEPOSIT</button>
+        <div>
+            <button class="btn-action" style="background-color: var(--primary-green);" onclick="deposit()">DEPOSIT</button>
+            <button class="btn-action" style="background-color: #e2e8f0; color:#000;" onclick="withdraw()">WITHDRAW</button>
         </div>
     </header>
 
-    <!-- Muundo Mkuu -->
-    <div class="main-container">
-        
-        <div class="market-header">
-            <div class="market-title">📈 VOLATILITY 10 INDEX (LIVE FEEDS)</div>
-        </div>
-
-        <!-- ENEO LA CHATI MPYA ILIYOREKEBISHWA (TRADINGVIEW IFRAME) -->
-        <div class="chart-wrapper">
-            <iframe 
-                src="https://tradingview.com" 
-                style="width: 100%; height: 100%; border: none;">
-            </iframe>
-        </div>
-
-        <!-- Grid ya Taarifa za Miamala -->
-        <div class="info-grid">
-            <div class="info-card"><div class="info-label">2</div><div class="info-value" style="color:#ff3d00;">10%</div></div>
-            <div class="info-card"><div class="info-label">4</div><div class="info-value" style="color:#00e676;">40%</div></div>
-            <div class="info-card"><div class="info-label">7</div><div class="info-value" style="color:#ff3d00;">10%</div></div>
-            <div class="info-card"><div class="info-label">8</div><div class="info-value" style="color:#00e676;">40%</div></div>
-        </div>
-
-        <!-- Sehemu ya Vitufe vya Biashara -->
-        <div class="trading-panel">
-            
-            <div class="payout-text">Payout Rate: <span>+95%</span></div>
-
-            <div class="amount-selector">
-                <button class="amount-btn" id="minus-btn">−</button>
-                <div>
-                    <span style="color:#64748b; font-size:12px; display:block; text-align:center;">STAKE ($)</span>
-                    <input type="text" class="amount-input" id="stake-amount" value="10" readonly>
-                </div>
-                <button class="amount-btn" id="plus-btn">+</button>
+    <div class="market-box">
+        <div>
+            <span style="font-size: 11px; color: var(--text-muted); display:block;">VOLATILITY 10 (1S) INDEX</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span class="asset-price" id="live-price">Loading...</span>
+                <span id="live-arrow" style="font-size:20px;">▲</span>
             </div>
-
-            <div class="action-buttons">
-                <button class="trade-btn buy-btn" id="buy-action">▲ BUY</button>
-                <button class="trade-btn sell-btn" id="sell-action">▼ SELL</button>
-            </div>
-
         </div>
-
+        <div id="tick-counter" style="font-weight:700; color:var(--primary-green); font-size:13px;">Tick: 0</div>
     </div>
 
-    <!-- UBONGOHALISI (JAVASCRIPT) WA KUENDESHA VILE VITUFE -->
+    <div class="chart-wrapper">
+        <canvas id="proLocalChart"></canvas>
+        <div class="price-axis-tag" id="live-floating-tag">0.00</div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-bubble"><span class="bubble-num" style="background:var(--primary-green)">0</span><div class="bubble-pct" id="pct-0">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">1</span><div class="bubble-pct" id="pct-1">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">2</span><div class="bubble-pct" id="pct-2">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">3</span><div class="bubble-pct" id="pct-3">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">4</span><div class="bubble-pct" id="pct-4">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">5</span><div class="bubble-pct" id="pct-5">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">6</span><div class="bubble-pct" id="pct-6">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">7</span><div class="bubble-pct" id="pct-7">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">8</span><div class="bubble-pct" id="pct-8">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">9</span><div class="bubble-pct" id="pct-9">10%</div></div>
+    </div>
+
+    <div class="stake-section">
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-weight:600;">
+            <span style="color: var(--text-muted);">Payout: <span style="color: var(--primary-green);">+95%</span></span>
+            <span id="pnl-display" style="font-size:13px;">Last Trade: $0.00</span>
+        </div>
+        <div class="amount-control">
+            <button class="amt-btn" onclick="adjust(-1)">−</button>
+            <input type="number" class="amt-val" id="trade-amount" value="10">
+            <button class="amt-btn" onclick="adjust(1)">+</button>
+        </div>
+        <div class="action-btns">
+            <button class="btn-trade" style="background-color: var(--primary-green); color:#000;" onclick="executeLocalTrade('BUY')">▲ BUY</button>
+            <button class="btn-trade" style="background-color: var(--danger-red); color:#fff;" onclick="executeLocalTrade('SELL')">▼ SELL</button>
+        </div>
+    </div>
+
     <script>
-        let currentBalance = 10000.00;
-        let stakeAmount = 10;
+        let wallets = { demo: 10000.00, real: 0.00 }; 
+        let currentWallet = 'demo';
+        let lastDigitCounts = Array(10).fill(0);
+        let totalTicksProcessed = 0;
+        let tickCount = 0;
 
-        const balanceEl = document.getElementById('account-balance');
-        const stakeEl = document.getElementById('stake-amount');
+        function toggleWallet() {
+            currentWallet = document.getElementById('account-type').value;
+            updateBalanceDisplay();
+        }
+        function updateBalanceDisplay() {
+            document.getElementById('wallet-balance').innerText = `$${wallets[currentWallet].toFixed(2)}`;
+        }
+        function adjust(val) {
+            let input = document.getElementById('trade-amount');
+            let current = parseInt(input.value) || 0;
+            if (current + val >= 1) input.value = current + val;
+        }
 
-        // 1. Kitufe cha kuongeza kiwango cha kuweka (Stake)
-        document.getElementById('plus-btn').addEventListener('click', () => {
-            stakeAmount += 5;
-            stakeEl.value = stakeAmount;
-        });
+        const ctx = document.getElementById('proLocalChart').getContext('2d');
+        let chartData = Array(30).fill(null);
+        let chartLabels = Array(30).fill('');
 
-        // 2. Kitufe cha kupunguza kiwango cha kuweka (Stake)
-        document.getElementById('minus-btn').addEventListener('click', () => {
-            if (stakeAmount > 5) {
-                stakeAmount -= 5;
-                stakeEl.value = stakeAmount;
+        const proChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Live Price',
+                    data: chartData,
+                    borderColor: '#00e676',
+                    borderWidth: 2,
+                    pointRadius: 2,
+                    pointBackgroundColor: '#00e676',
+                    fill: false,
+                    tension: 0.2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { display: false }, y: { grid: { color: 'rgba(36, 47, 61, 0.3)' }, ticks: { color: '#8492a6' } } }
             }
         });
 
-        // 3. Amri mteja akibofya BUY au SELL
-        function executeTrade(type) {
-            if (currentBalance < stakeAmount) {
-                alert("Insufficient Demo Balance!");
-                return;
-            }
+        const ws = new WebSocket('wss://://derivws.com');
+        let lastPrice = 0;
 
-            // Kata mtaji wa sasa kwenye salio
-            currentBalance -= stakeAmount;
-            balanceEl.textContent = "$" + currentBalance.toFixed(2);
+        ws.onopen = function() { ws.send(JSON.stringify({ ticks: "1HZ10V", subscribe: 1 })); };
 
-            alert("Trade Placed: " + type + " $" + stakeAmount + ". Processing outcome in 5 seconds...");
-
-            // Igiza matokeo baada ya sekunde 5 (Simulate Trade Outcome)
-            setTimeout(() => {
-                let win = Math.random() > 0.4; // 60% nafasi ya kushinda kwa mfano
-                if (win) {
-                    let profit = stakeAmount * 1.95; // Mtaji + 95% faida
-                    currentBalance += profit;
+        ws.onmessage = function(msg) {
+            const response = JSON.parse(msg.data);
+            if (response.tick) {
+                const price = response.tick.quote;
+                const priceStr = price.toFixed(2);
+                
