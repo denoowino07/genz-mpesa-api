@@ -12,32 +12,34 @@
         .bg-neon-green:hover { background-color: #00cc52; }
         .card-bg { background-color: #0d1117; }
         .badge-bg { background-color: rgba(0, 255, 102, 0.05); border: 1px solid rgba(0, 255, 102, 0.15); }
-        
-        /* HAU KIPENGELE CHA MUHIMU: Kinafanya kurasa zenye neno hidden zificheke mwanzoni */
         .hidden { display: none !important; }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col justify-between">
 
     <!-- NAVBAR -->
-    <header class="p-5">
+    <header class="p-5 border-b border-gray-900 bg-[#0d1117]/80 sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-white tracking-wider cursor-pointer" onclick="window.location.reload()">GENZTRENDING</h1>
+            <h1 class="text-xl font-bold text-white tracking-wider cursor-pointer" onclick="switchView('landing')">GENZTRENDING</h1>
             
-            <nav id="main-nav" class="space-x-6 hidden md:flex">
-                <button onclick="switchView('dashboard')" id="nav-dashboard" class="text-white font-medium">Dashboard</button>
-                <button onclick="switchView('wallet')" id="nav-wallet" class="text-gray-400 font-medium">My Wallet</button>
+            <!-- Hizi zitaonekana tu mtumiaji akiwa ameingia ndani -->
+            <nav id="main-nav" class="space-x-6 hidden">
+                <button onclick="switchView('dashboard')" id="nav-dashboard" class="text-white font-medium text-sm">Dashboard</button>
+                <button onclick="switchView('wallet')" id="nav-wallet" class="text-gray-400 font-medium text-sm">My Wallet</button>
             </nav>
 
             <div class="flex items-center space-x-6" id="auth-nav-buttons">
                 <button onclick="switchView('login')" class="text-gray-300 hover:text-white font-medium text-sm transition">Log in</button>
                 <button onclick="switchView('register')" class="bg-neon-green text-black font-bold px-4 py-2 rounded-full text-sm transition">Get Started</button>
             </div>
+            
+            <!-- Kitufe cha kutoka (Logout) kinachoonekana ukiwa ndani -->
+            <button id="logout-btn" onclick="logout()" class="text-red-400 hover:text-red-300 font-medium text-sm hidden transition">Log Out</button>
         </div>
     </header>
 
     <!-- MAIN CONTENT CONTAINER -->
-    <main class="container mx-auto px-6 flex-grow flex flex-col justify-center">
+    <main class="container mx-auto px-6 flex-grow flex flex-col justify-center my-8">
 
         <!-- VIEW 0: LANDING PAGE -->
         <div id="view-landing" class="view-section text-center max-w-2xl mx-auto py-12">
@@ -54,10 +56,11 @@
             </p>
 
             <div class="flex flex-col items-center gap-4 max-w-xs mx-auto mb-16 w-full">
-                <button onclick="switchView('register')" class="w-full bg-neon-green text-black font-bold py-3.5 rounded-full text-sm transition tracking-wide">
+                <button onclick="switchView('register')" class="w-full bg-neon-green text-black font-bold py-3.5 rounded-full text-sm transition tracking-wide shadow-lg shadow-green-500/10">
                     Get Started – It's Free →
                 </button>
-                <button onclick="switchView('login')" class="w-full bg-gray-900/50 hover:bg-gray-900 border border-gray-800 text-white font-medium py-3.5 rounded-full text-sm transition">
+                <!-- Try Demo sasa hivi inamuingiza mtumiaji moja kwa moja kwenye Demo mode -->
+                <button onclick="startDemo()" class="w-full bg-gray-900/50 hover:bg-gray-900 border border-gray-800 text-white font-medium py-3.5 rounded-full text-sm transition">
                     ▷ Try Demo
                 </button>
             </div>
@@ -70,20 +73,32 @@
             </div>
         </div>
 
-        <!-- VIEW 1: DASHBOARD (Itafichwa mwanzoni, inafunguka baada ya kuingia) -->
+        <!-- VIEW 1: DASHBOARD TERMINAL -->
         <div id="view-dashboard" class="view-section hidden">
-            <div class="mb-8 p-6 rounded-lg card-bg border border-[#00ff66] flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-8 p-6 rounded-lg card-bg border border-[#00ff66]/30 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
                     <h2 class="text-xl font-semibold text-white">FX Markets Are Live</h2>
-                    <p class="text-gray-400">Welcome inside your trading terminal.</p>
+                    <p class="text-gray-400" id="welcome-message">Welcome inside your real trading terminal.</p>
                 </div>
-                <div class="bg-green-900/30 text-[#00ff66] px-4 py-2 rounded border border-[#00ff66]/30 font-mono text-sm">● Bot Status: ACTIVE</div>
+                <div class="bg-green-900/30 text-[#00ff66] px-4 py-2 rounded border border-[#00ff66]/30 font-mono text-sm animate-pulse">● Bot Status: ACTIVE</div>
             </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm text-gray-400">Account Balance</h3><p class="text-3xl font-bold text-white font-mono">$12,450.80</p></div>
-                <div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm text-gray-400">Active Trades</h3><p class="text-3xl font-bold text-[#00ff66] font-mono">3 Running</p></div>
-                <div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm text-gray-400">Bot Win Rate</h3><p class="text-3xl font-bold text-white font-mono">78.4%</p></div>
+                <div class="p-6 rounded-lg card-bg border border-gray-800">
+                    <h3 class="text-sm text-gray-400" id="balance-title">Real Account Balance</h3>
+                    <p class="text-3xl font-bold text-white font-mono mt-2" id="account-balance">$12,450.80</p>
+                </div>
+                <div class="p-6 rounded-lg card-bg border border-gray-800">
+                    <h3 class="text-sm text-gray-400">Active Trades</h3>
+                    <p class="text-3xl font-bold text-[#00ff66] font-mono mt-2">3 Running</p>
+                </div>
+                <div class="p-6 rounded-lg card-bg border border-gray-800">
+                    <h3 class="text-sm text-gray-400">Bot Win Rate</h3>
+                    <p class="text-3xl font-bold text-white font-mono mt-2">78.4%</p>
+                </div>
             </div>
+
+            <!-- TradingView Chart Widget -->
             <div class="mb-8 p-4 rounded-lg card-bg border border-gray-800">
                 <h3 class="text-lg font-semibold text-white mb-4">Live Advanced Forex Chart</h3>
                 <div style="height: 450px; width:100%">
@@ -99,56 +114,36 @@
         <!-- VIEW 2: WALLET -->
         <div id="view-wallet" class="view-section hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-1 p-6 rounded-lg card-bg border border-[#00ff66]"><h3 class="text-gray-400 text-sm">Crypto Wallet</h3><p class="text-3xl font-bold text-white font-mono">$5,240.15</p></div>
+                <div class="lg:col-span-1 p-6 rounded-lg card-bg border border-[#00ff66]/20">
+                    <h3 class="text-gray-400 text-sm">Main Wallet Balance</h3>
+                    <p class="text-3xl font-bold text-white font-mono mt-2">$5,240.15</p>
+                </div>
                 <div class="lg:col-span-2 p-6 rounded-lg card-bg border border-gray-800">
                     <h3 class="text-xl font-bold text-white mb-6">Deposit Funds Via M-Pesa</h3>
                     <div class="p-4 bg-[#06090e] rounded-lg border border-gray-800">
-                        <input type="text" placeholder="Phone Number (e.g. 2557XXXXXXXX)" class="w-full bg-[#161b22] text-white p-2 rounded mb-3 border border-gray-800">
-                        <input type="number" placeholder="Amount" class="w-full bg-[#161b22] text-white p-2 rounded mb-4 border border-gray-800">
-                        <button onclick="alert('Processing M-Pesa Payment... Check phone')" class="w-full bg-neon-green text-black font-bold py-2 rounded">Pay with M-Pesa</button>
+                        <label class="block text-xs text-gray-400 mb-1">M-Pesa Phone Number</label>
+                        <input type="text" placeholder="e.g. 2557XXXXXXXX" class="w-full bg-[#161b22] text-white p-2.5 rounded mb-4 border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+                        <label class="block text-xs text-gray-400 mb-1">Amount ($)</label>
+                        <input type="number" placeholder="Amount" class="w-full bg-[#161b22] text-white p-2.5 rounded mb-4 border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+                        <button onclick="alert('Processing M-Pesa Payment... Check phone')" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm">Pay with M-Pesa</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- VIEW 3: LOGIN FORM -->
-        <div id="view-login" class="view-section hidden max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-[#00ff66]">
+        <div id="view-login" class="view-section hidden max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-[#00ff66]/30">
             <h3 class="text-2xl font-bold text-white text-center mb-6">Sign In</h3>
-            <input type="email" placeholder="Email" class="w-full bg-[#06090e] text-white p-3 rounded mb-4 border border-gray-800">
-            <input type="password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded mb-4 border border-gray-800">
-            <button onclick="loginSuccess()" class="w-full bg-neon-green text-black font-bold py-3 rounded">Access Account</button>
+            <div class="space-y-4">
+                <input type="email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+                <input type="password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+                <button onclick="loginSuccess('Real Account')" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Access Account</button>
+            </div>
+            <p class="text-xs text-center text-gray-500 mt-4">Don't have an account? <span onclick="switchView('register')" class="text-[#00ff66] cursor-pointer hover:underline">Create one</span></p>
         </div>
 
         <!-- VIEW 4: REGISTER FORM -->
         <div id="view-register" class="view-section hidden max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-gray-800">
-            <h3 class="text-2xl font-bold text-white text-center mb-6">Create Account</h3>
-            <input type="text" placeholder="Full Name" class="w-full bg-[#06090e] text-white p-3 rounded mb-4 border border-gray-800">
-            <input type="email" placeholder="Email" class="w-full bg-[#06090e] text-white p-3 rounded mb-4 border border-gray-800">
-            <input type="password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded mb-4 border border-gray-800">
-            <button onclick="loginSuccess()" class="w-full bg-neon-green text-black font-bold py-3 rounded">Register & Open Dashboard</button>
-        </div>
-
-    </main>
-
-    <footer class="p-6 text-center text-xs text-gray-600">
-        <p>&copy; 2026 GenZTrending FX. All rights reserved.</p>
-    </footer>
-
-    <script>
-        function switchView(viewName) {
-            var sections = document.getElementsByClassName('view-section');
-            for (var i = 0; i < sections.length; i++) { sections[i].classList.add('hidden'); }
-            document.getElementById('view-' + viewName).classList.remove('hidden');
-
-            var mainNav = document.getElementById('main-nav');
-            var authBtns = document.getElementById('auth-nav-buttons');
-            
-            // Kama mtumiaji yupo kwenye login au register, ficha menu kuu
-            if(viewName === 'login' || viewName === 'register' || viewName === 'landing') {
-                mainNav.classList.add('hidden');
-                mainNav.classList.remove('md:flex');
-                authBtns.classList.remove('hidden');
-            }
-
-            if (!mainNav.classList.contains('hidden')) {
-                document.getElementById('nav-dashboard').className = viewName === 'dashboard' ? 'text-white font-medium' : 'text-gray-400 font-medium';
+            <h3 class="text-2xl font-bold text-white text-center mb-6">Create Free Account</h3>
+            <div class="space-y-4">
+                <input type="text" placeholder="Full Name" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
