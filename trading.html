@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Platform - GenzTrending</title>
-    <link href="https://googleapis.com" rel="stylesheet">
-    <!-- Tunavuta Library halisi inayotengeneza Chati za Kawaida za kitaalamu -->
-    <script src="https://unpkg.com"></script>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #0c1017;
@@ -29,10 +29,13 @@
         .asset-price { font-size: 26px; font-weight: 800; font-family: monospace; }
 
         /* BOX LA CHATI YA KAWAIDA YA KITAALAMU */
-        .chart-wrapper { background-color: #11171f; border: 1px solid var(--border-color); border-radius: 12px; height: 230px; width: 100%; padding: 5px; margin-bottom: 15px; overflow: hidden; }
-        #professionalChart { width: 100%; height: 100%; }
+        .chart-wrapper { background-color: #11171f; border: 1px solid var(--border-color); border-radius: 12px; height: 250px; width: 100%; padding: 10px; margin-bottom: 15px; position: relative; }
+        canvas { width: 100%; height: 100%; display: block; }
+        
+        /* Floating Price Tag on Right Axis */
+        .price-axis-tag { position: absolute; right: 10px; background-color: var(--primary-green); color: #000; font-weight: 800; font-family: monospace; font-size: 11px; padding: 3px 6px; border-radius: 4px; pointer-events: none; transition: top 0.1s ease; box-shadow: 0 0 10px rgba(0,230,118,0.4); }
 
-        /* Vijiduara vya namba 0-9 kama majukwaa halisi */
+        /* Vijiduara vya namba 0-9 */
         .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 15px; }
         .stat-bubble { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px; text-align: center; font-size: 12px; }
         .bubble-num { background-color: #2196f3; color: #fff; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 700; margin-bottom: 2px; }
@@ -76,10 +79,11 @@
 
     <!-- CHATI YA KAWAIDA YA KITAALAMU YA MISTARI NA GRIDI YA NYUMA -->
     <div class="chart-wrapper">
-        <div id="professionalChart"></div>
+        <canvas id="proLocalChart"></canvas>
+        <div class="price-axis-tag" id="live-floating-tag">9379.00</div>
     </div>
 
-    <!-- Vijiduara vya takwimu (0-9) kama vipo kwenye picha uliyotuma mwanzo -->
+    <!-- Vijiduara vya takwimu (0-9) -->
     <div class="stats-grid">
         <div class="stat-bubble"><span class="bubble-num" style="background:var(--primary-green)">0</span><div class="bubble-pct">12%</div></div>
         <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">1</span><div class="bubble-pct">10%</div></div>
@@ -110,51 +114,52 @@
     </div>
 
     <script>
-        let wallets = { demo: 10000.00, real: 0.00 };
+        // Wallets setup kwa ajili ya usahihi
+        let wallets = { demo: 10000.00, real: 0.00 }; 
         function toggleWallet() {
             const type = document.getElementById('account-type').value;
             document.getElementById('wallet-balance').innerText = '$' + wallets[type].toFixed(2);
         }
 
-        // SETUP YA CHATI HALISI YA TRADINGVIEW LIGHTWEIGHT
-        const chartElement = document.getElementById('professionalChart');
-        const chart = LightweightCharts.createChart(chartElement, {
-            layout: { backgroundColor: '#11171f', textColor: '#8492a6', fontSize: 10 },
-            grid: { vertLines: { color: '#1c2633' }, horzLines: { color: '#1c2633' } },
-            crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-            rightPriceScale: { borderColor: '#242f3d' },
-            timeScale: { visible: false }
-        });
+        // INJINI KUU YA CHATI YA NDANI (HTML5 CANVAS GRID ENGINE)
+        const canvas = document.getElementById('proLocalChart');
+        const ctx = canvas.getContext('2d');
+        let priceHistory = Array(40).fill(9379.00); // Pointi 40 za chati ya mistari
 
-        const lineSeries = chart.addAreaSeries({
-            topColor: 'rgba(0, 230, 118, 0.3)',
-            bottomColor: 'rgba(0, 230, 118, 0.0)',
-            lineColor: '#00e676',
-            lineWidth: 2,
-            crosshairMarkerVisible: true
-        });
-
-        // Kutengeneza pointi za mwanzo za soko
-        let timeStamp = Math.floor(Date.now() / 1000);
-        let chartPoints = [];
-        let startingPrice = 9379.00;
-        for (let i = 0; i < 50; i++) {
-            chartPoints.push({ time: timeStamp + i, value: startingPrice + (Math.random() - 0.5) * 10 });
+        function resizeChartCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            drawProfessionalDashboard();
         }
-        lineSeries.setData(chartPoints);
+        window.addEventListener('resize', resizeChartCanvas);
 
-        // INJINI YA LIVE PRICE KUKIMBIA KWA KASI YA SEKUNDE (TICKS)
-        let price = startingPrice;
-        let runningTime = timeStamp + 50;
-        setInterval(() => {
-            let drift = (Math.random() - 0.5) * 4;
-            let old = price; price += drift;
-
-            document.getElementById('live-price').innerText = price.toFixed(2);
-            document.getElementById('live-arrow').innerText = price > old ? "▲" : "▼";
-            document.getElementById('live-arrow').style.color = price > old ? "var(--primary-green)" : "var(--danger-red)";
-            document.getElementById('live-price').style.color = price > old ? "var(--primary-green)" : "var(--danger-red)";
-            document.getElementById('tick-counter').innerText = "Tick: " + Math.floor(Math.random() * 10);
+        function drawProfessionalDashboard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Sasisha chati ya kitaalamu kwa sekunde hiyo hiyo
-            runningTime++;
+            let minPrice = Math.min(...priceHistory) - 1.5;
+            let maxPrice = Math.max(...priceHistory) + 1.5;
+            let range = maxPrice - minPrice;
+
+            // 1. CHORA MISTARI YA NYUMA YA KAWAIDA (GRID LINES)
+            ctx.strokeStyle = '#1c2633';
+            ctx.lineWidth = 1;
+            
+            // Gridi za wima
+            let gridSpacingX = canvas.width / 6;
+            for(let i=0; i<6; i++) {
+                ctx.beginPath();
+                ctx.moveTo(gridSpacingX * i, 0);
+                ctx.lineTo(gridSpacingX * i, canvas.height);
+                ctx.stroke();
+            }
+            // Gridi za usawa
+            let gridSpacingY = canvas.height / 4;
+            for(let i=0; i<4; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, gridSpacingY * i);
+                ctx.lineTo(canvas.width, gridSpacingY * i);
+                ctx.stroke();
+            }
+
+            // 2. CHORA MWANGAZA WA CHINI YA MSTARI (GRADIENT FILL GLOW)
+            ctx.beginPath();
