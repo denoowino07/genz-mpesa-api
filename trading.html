@@ -4,33 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Platform - GenzTrending.com</title>
-    <link href="https://googleapis.com" rel="stylesheet">
-    <script src="https://jsdelivr.net"></script>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2 family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #0c1017; --card-bg: #161d26; --primary-green: #00e676; --text-main: #ffffff; --text-muted: #8492a6; --border-color: #242f3d; --accent-blue: #2196f3; --danger-red: #ff4a4a; }
+        :root {
+            --bg-color: #0c1017;
+            --card-bg: #161d26;
+            --primary-green: #00e676;
+            --text-main: #ffffff;
+            --text-muted: #8492a6;
+            --border-color: #242f3d;
+            --accent-blue: #2196f3;
+            --danger-red: #ff4a4a;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); font-size: 14px; padding-bottom: 70px; }
+
         header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #11171f; border-bottom: 1px solid var(--border-color); }
-        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header-left { display: flex; align-items: center; gap: 10px; }
         .account-badge { background-color: #1e293b; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; border: 1px solid var(--border-color); }
-        .account-badge span { color: #ffa726; font-weight: 800; background: rgba(255,167,38,0.1); padding: 2px 6px; border-radius: 4px; }
-        .btn-deposit { background-color: var(--primary-green); color: #000; font-weight: 700; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 12px; cursor: pointer; }
+        .btn-action { color: #000; font-weight: 700; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-size: 12px; border: none; cursor: pointer; }
+        
         .trade-tabs { display: flex; gap: 8px; padding: 12px 15px; overflow-x: auto; }
         .tab-btn { background-color: #1c2633; color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
         .market-info-box { padding: 0 15px 10px 15px; }
-        .asset-tag { background: #161d26; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; display: inline-flex; flex-direction: column; min-width: 1400px; max-width: 180px;}
-        .asset-title { font-size: 11px; color: var(--text-muted); }
-        .asset-price { font-size: 18px; font-weight: 800; margin-top: 4px; }
-        .chart-section { position: relative; padding: 0 15px; }
-        .chart-wrapper { height: 220px; width: 100%; position: relative; }
-        .stake-section { background-color: #161d26; padding: 15px; border-radius: 16px 16px 0 0; margin-top: 20px; }
-        .amount-control { display: flex; justify-content: space-between; align-items: center; background-color: #0c1017; border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; margin-bottom: 12px; }
-        .amt-btn { background: #1c2633; border: none; color: #ff9100; font-size: 20px; font-weight: 700; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; }
-        .amt-val { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 700; text-align: center; width: 80px; }
-        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-buy { background-color: var(--primary-green); color: #000; border: none; padding: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; }
-        .btn-sell { background-color: var(--danger-red); color: #fff; border: none; padding: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; }
-        .pnl-text { font-weight: 700; font-size: 16px; text-align: right; }
+        .asset-tag { background: #161d26; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .price-container { display: flex; align-items: center; gap: 10px; }
+        .asset-price { font-size: 28px; font-weight: 800; font-family: monospace; }
+        .trend-arrow { font-size: 24px; font-weight: bold; transition: 0.2s; }
+        
+        .stake-section { background-color: #161d26; padding: 20px; border-radius: 16px 16px 0 0; margin-top: 40px; position: fixed; bottom: 0; left: 0; width: 100%; border-top: 1px solid var(--border-color); }
+        .amount-control { display: flex; justify-content: space-between; align-items: center; background-color: #0c1017; border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; margin-bottom: 15px; }
+        .amt-btn { background: #1c2633; border: none; color: #ff9100; font-size: 20px; font-weight: 700; width: 40px; height: 40px; border-radius: 6px; cursor: pointer; }
+        .amt-val { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 700; text-align: center; width: 100%; outline: none; }
+        
+        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-trade { border: none; padding: 18px; font-weight: 700; border-radius: 8px; cursor: pointer; font-size: 16px; transition: 0.1s; }
+        .btn-trade:active { transform: scale(0.98); }
+        
+        .pnl-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -38,13 +53,14 @@
     <header>
         <div class="header-left">
             <div class="account-badge">
-                <select id="account-type" onchange="loadUserData()" style="background:transparent; color:#ffa726; border:none; font-weight:800; outline:none; cursor:pointer;">
-                    <option value="demo" style="background:#161d26;">Demo (D)</option>
-                    <option value="real" style="background:#161d26;">Real (R)</option>
+                <select id="account-type" onchange="updateBalanceDisplay()" style="background:transparent; color:#ffa726; border:none; font-weight:800; outline:none; cursor:pointer; font-size:14px;">
+                    <option value="demo" style="background:#161d26; color:#fff;">Demo (D)</option>
+                    <option value="real" style="background:#161d26; color:#fff;">Real (R)</option>
                 </select>
                 <span id="wallet-balance">$10,000.00</span>
             </div>
-            <button class="btn-deposit" onclick="triggerMpesa()">DEPOSIT</button>
+            <button class="btn-action" style="background-color: var(--primary-green);" onclick="triggerDeposit()">DEPOSIT</button>
+            <button class="btn-action" style="background-color: #e2e8f0; color: #000;" onclick="triggerWithdraw()">WITHDRAW</button>
         </div>
     </header>
 
@@ -54,41 +70,72 @@
         <button class="tab-btn">Over/Under</button>
     </div>
 
+    <!-- Volatility Index Box chenye mishale ya kasi halisi -->
     <div class="market-info-box">
         <div class="asset-tag">
-            <span class="asset-title">VOL 10 (1S) ▾</span>
-            <span class="asset-price" id="main-asset-price">9379.0</span>
+            <div>
+                <span style="font-size: 12px; color: var(--text-muted); display: block;">VOLATILITY 10 (1S) INDEX</span>
+                <div class="price-container">
+                    <span class="asset-price" id="live-price">9379.00</span>
+                    <span class="trend-arrow" id="live-arrow">▲</span>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 11px; color: var(--text-muted);">Ticks Analysis</span>
+                <div style="font-size: 14px; font-weight: 700; color: var(--primary-green);" id="tick-counter">Tick: 5</div>
+            </div>
         </div>
     </div>
 
-    <div class="chart-section">
-        <div class="chart-wrapper"><canvas id="liveLineChart"></canvas></div>
-    </div>
-
+    <!-- Sehemu ya Chini ya Kuendesha Biashara -->
     <div class="stake-section">
+        <div class="pnl-row">
+            <span style="color: var(--text-muted);">Payout: <span style="color: var(--primary-green);">+95%</span></span>
+            <span id="pnl-display" style="color: #fff;">Last Trade: $0.00</span>
+        </div>
+
         <div class="amount-control">
             <button class="amt-btn" onclick="adjustAmount(-1)">−</button>
-            <input type="text" class="amt-val" id="trade-amount" value="10">
+            <input type="number" class="amt-val" id="trade-amount" value="10">
             <button class="amt-btn" onclick="adjustAmount(1)">+</button>
         </div>
 
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
-            <span style="color:var(--text-muted);">Payout: +95%</span>
-            <span class="pnl-text" id="pnl-display" style="color:#fff;">Last Trade: $0.00</span>
-        </div>
-
         <div class="action-btns">
-            <button class="btn-buy" onclick="placeLiveTrade('BUY')">▲ BUY (Higher)</button>
-            <button class="btn-sell" onclick="placeLiveTrade('SELL')">▼ SELL (Lower)</button>
+            <button class="btn-trade" style="background-color: var(--primary-green); color: #000;" onclick="executeLiveTrade('BUY')">▲ BUY (Higher)</button>
+            <button class="btn-trade" style="background-color: var(--danger-red); color: #fff;" onclick="executeLiveTrade('SELL')">▼ SELL (Lower)</button>
         </div>
     </div>
 
     <script>
         const userId = localStorage.getItem('tradeUserId');
-        if(!userId) { window.location.href = '/join.html'; }
 
-        // Kupakia salio halisi kutoka kwenye Database
-        function loadUserData() {
+        // Mfumo wa Ticks na Namba Zinazokimbia kwa Kasi (Mishale ya Green na Red)
+        let currentPrice = 9379.00;
+        setInterval(() => {
+            let change = (Math.random() - 0.5) * 6; // Inacheza kasi juu na chini
+            let oldPrice = currentPrice;
+            currentPrice += change;
+
+            const priceElement = document.getElementById('live-price');
+            const arrowElement = document.getElementById('live-arrow');
+
+            priceElement.innerText = currentPrice.toFixed(2);
+
+            if(currentPrice > oldPrice) {
+                priceElement.style.color = "var(--primary-green)";
+                arrowElement.innerText = "▲";
+                arrowElement.style.color = "var(--primary-green)";
+            } else {
+                priceElement.style.color = "var(--danger-red)";
+                arrowElement.innerText = "▼";
+                arrowElement.style.color = "var(--danger-red)";
+            }
+            
+            document.getElementById('tick-counter').innerText = "Tick: " + Math.floor(Math.random() * 10);
+        }, 300); // Inabadilika haraka sana kila baada ya milisekunde 300
+
+        // Kupakia na kutenganisha Salio la Wateja
+        function updateBalanceDisplay() {
             fetch(`/api/user/${userId}`)
             .then(res => res.json())
             .then(data => {
@@ -97,76 +144,38 @@
                 document.getElementById('wallet-balance').innerText = '$' + bal.toFixed(2);
             });
         }
-        window.addEventListener('DOMContentLoaded', loadUserData);
+        window.addEventListener('DOMContentLoaded', updateBalanceDisplay);
 
-        // MKATABA WA BIASHARA HALISI (WIN/LOSS ENGINE)
-        function placeLiveTrade(direction) {
+        // Kazi ya Kununua na Kuuza (Buy/Sell Win au Loss Logic)
+        function executeLiveTrade(direction) {
             const accountType = document.getElementById('account-type').value;
             const amount = parseFloat(document.getElementById('trade-amount').value);
             
-            document.getElementById('pnl-display').innerText = "Trading active (1s)...";
+            document.getElementById('pnl-display').innerText = "Analyzing Tick...";
             document.getElementById('pnl-display').style.color = "#ffb700";
 
-            setTimeout(() => {
-                fetch('/api/trade', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId, accountType, amount, direction })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(data.error) { alert(data.error); return; }
-                    
-                    const pnlText = document.getElementById('pnl-display');
-                    if(data.result === 'WIN') {
-                        pnlText.innerText = `WIN: +$${data.pnl.toFixed(2)}`;
-                        pnlText.style.color = var(--primary-green);
-                    } else {
-                        pnlText.innerText = `LOSS: -$${amount.toFixed(2)}`;
-                        pnlText.style.color = var(--danger-red);
-                    }
-                    document.getElementById('wallet-balance').innerText = '$' + data.newBalance.toFixed(2);
-                });
-            }, 1000);
-        }
-
-        // MFUMO WA LIPA NA M-PESA POPUP
-        function triggerMpesa() {
-            const phone = prompt("Enter your Safaricom M-Pesa Number (e.g. 0712345678):");
-            const amount = prompt("Enter Deposit Amount in USD ($):", "10");
-            if(!phone || !amount) return;
-
-            fetch('/api/deposit', {
+            fetch('/api/trade', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, phone, amountUSD: amount })
+                body: JSON.stringify({ userId, accountType, amount, direction })
             })
             .then(res => res.json())
             .then(data => {
-                alert(data.message);
-                setTimeout(loadUserData, 6000); // Pakia upya salio baada ya sekunde 6
+                if(data.error) { alert(data.error); return; }
+                
+                const pnlText = document.getElementById('pnl-display');
+                if(data.result === 'WIN') {
+                    pnlText.innerText = `WIN: +$${data.pnl.toFixed(2)}`;
+                    pnlText.style.color = "var(--primary-green)";
+                } else {
+                    pnlText.innerText = `LOSS: -$${amount.toFixed(2)}`;
+                    pnlText.style.color = "var(--danger-red)";
+                }
+                document.getElementById('wallet-balance').innerText = '$' + data.newBalance.toFixed(2);
             });
         }
 
-        function adjustAmount(val) {
-            let current = parseFloat(document.getElementById('trade-amount').value);
-            if(!isNaN(current) && (current + val) > 0) { document.getElementById('trade-amount').value = current + val; }
-        }
-
-        // LINE CHART ENGINE (Kama ilivyokuwa mwanzo kwenye picha)
-        const ctx = document.getElementById('liveLineChart').getContext('2d');
-        let chartData =;
-        const liveChart = new Chart(ctx, {
-            type: 'line',
-            data: { labels: Array.from({length: 10}, (_, i) => i), datasets: [{ data: chartData, borderColor: '#ffffff', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.3 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { position: 'right', grid: { color: '#161d26' } } } }
-        });
-        setInterval(() => {
-            let change = (Math.random() - 0.5) * 4;
-            let lastVal = chartData[chartData.length - 1] + change;
-            document.getElementById('main-asset-price').innerText = Math.floor(lastVal) + '. ' + Math.floor(Math.random() * 10);
-            chartData.push(lastVal); chartData.shift(); liveChart.update();
-        }, 1000);
-    </script>
-</body>
-</html>
+        // Kitufe cha Kuweka Pesa (M-Pesa Deposit)
+        function triggerDeposit() {
+            const phone = prompt("Enter Safaricom phone number for M-Pesa STK push:");
+            const amount = prompt("Enter Deposit amount in USD ($):", "10");
