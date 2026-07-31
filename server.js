@@ -13,7 +13,7 @@ let topTraders = [
     { id: 3, name: "Genz Alpha Pips", winRate: "85%", profit: "+410%" }
 ];
 
-// 1. MAIN WEBSITE HOME PAGE (English Frontend HTML with Free Demo Mode)
+// 1. MAIN WEBSITE HOME PAGE (English Frontend HTML with Registration Form Built-In)
 app.get('/', (req, res) => {
     res.send(`
         <!DOCTYPE html>
@@ -53,10 +53,10 @@ app.get('/', (req, res) => {
                     <input type="text" id="regName" placeholder="Full Name">
                     <input type="email" id="regEmail" placeholder="Email Address">
                     <input type="password" id="regPass" placeholder="Password">
-                    <button class="btn btn-reg" onclick="sajiliMteja()">Create Free Practice Account</button>
+                    <button class="btn btn-reg" onclick="sajiliMteja()">Create Free Practice Account / Sign Up</button>
                 </div>
 
-                <!-- USER DASHBOARD / WALLET (With Free Demo Access Activated) -->
+                <!-- USER DASHBOARD / WALLET -->
                 <div class="card" id="walletCard" style="display:none;">
                     <h3>Your Dashboard <span class="demo-badge">DEMO MODE ACTIVE</span></h3>
                     <p>Welcome, <span id="mtejaJina" style="color:#46B525; font-weight:bold;"></span></p>
@@ -68,6 +68,7 @@ app.get('/', (req, res) => {
                     <h4>Want to go live? Deposit via M-PESA</h4>
                     <input type="text" id="phone" placeholder="M-Pesa Number (07...)">
                     <button class="btn btn-deposit" onclick="wekaHela()">Deposit via STK Push</button>
+                    <button class="btn" style="background:#007bff; margin-top:10px;" onclick="window.location.href='/angalia-qr'">Show M-Pesa QR Code</button>
                 </div>
 
                 <!-- COPY TRADING SYSTEM -->
@@ -100,18 +101,17 @@ app.get('/', (req, res) => {
                     document.getElementById('regCard').style.display = 'none';
                     document.getElementById('walletCard').style.display = 'block';
                     document.getElementById('mtejaJina').innerText = name;
-                    alert('Success! Your Free Practice Account is now active. You have been credited with KSh 10,000 virtual learning balance. You can now copy traders for free!');
+                    alert('Success! Welcome ' + name + ' to Genz Trending.com. Your practice account has been activated with KSh 10,000!');
                 }
 
                 function copyTrader(name) {
-                    // SEHEMU HII SASA INAKUBALI COPYING BILA KUZUIA MTEJA!
-                    alert("Learning Session Started! You are now automatically copying " + name + " using your free Demo Balance. Watch how your virtual account balance shifts as they close market pips!");
+                    alert("Learning Session Started! You are now automatically copying " + name + " using your free Demo Balance.");
                 }
 
                 function wekaHela() {
                     const phone = document.getElementById('phone').value;
                     if(!phone) return alert('Please enter your Safaricom mobile number!');
-                    alert('STK Push request sent to ' + phone + '. Enter your PIN to transition your account from Demo to Live Trading.');
+                    alert('STK Push request sent to ' + phone + '. Enter your PIN to complete investment.');
                 }
             </script>
         </body>
@@ -120,6 +120,24 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/traders', (req, res) => { res.json(topTraders); });
+
+// 2. M-PESA QR Code Generator Page
+app.get('/angalia-qr', async (req, res) => {
+    try {
+        const mpesaQRString = `MPESA|C2B|373203|1|ORDER12345|Genz Trending.com`;
+        const pichaYaQR = await QRCode.toDataURL(mpesaQRString, { errorCorrectionLevel: 'H', margin: 1 });
+        res.send(`
+            <body style="text-align:center; padding-top:50px; font-family:Arial; background-color:#111; color:#fff;">
+                <div style="background:#222; display:inline-block; padding:30px; border-radius:15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid #46B525;">
+                    <h2 style="color: #46B525;">M-PESA QR Code Is Ready!</h2>
+                    <img src="${pichaYaQR}" style="border:4px solid #46B525; padding:10px; width:250px; height:250px; border-radius:10px; background:white;" />
+                    <p>Scan using M-PESA App to pay KES 1 to Genz Trending.com</p>
+                    <button style="padding:10px 20px; cursor:pointer; background:#46B525; color:white; border:none; border-radius:5px; font-weight:bold;" onclick="window.location.href='/'">Return To Platform</button>
+                </div>
+            </body>
+        `);
+    } catch (error) { res.status(500).send(error.message); }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
