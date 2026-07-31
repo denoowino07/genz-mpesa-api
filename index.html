@@ -19,9 +19,9 @@
     <!-- NAVBAR -->
     <header class="p-5 border-b border-gray-900 bg-[#06090e] sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-white tracking-wider cursor-pointer" onclick="window.location.reload()">GENZTRENDING</h1>
+            <h1 class="text-xl font-bold text-white tracking-wider cursor-pointer" onclick="switchView('landing')">GENZTRENDING</h1>
             
-            <!-- Main navigation inside the platform -->
+            <!-- Hizi zitaonekana tu mtumiaji akiwa ameingia ndani ya mfumo -->
             <nav id="main-nav" class="space-x-6" style="display: none;">
                 <button onclick="switchView('dashboard')" id="nav-dashboard" class="text-white font-medium text-sm">Dashboard</button>
                 <button onclick="switchView('wallet')" id="nav-wallet" class="text-gray-400 font-medium text-sm">My Wallet</button>
@@ -40,7 +40,7 @@
     <!-- MAIN CONTENT CONTAINER -->
     <main class="container mx-auto px-6 flex-grow flex flex-col justify-center my-8">
 
-        <!-- VIEW 0: LANDING PAGE -->
+        <!-- VIEW 0: LANDING PAGE (Ukurasa wako ulioupenda sasa umerudi vizuri) -->
         <div id="view-landing" class="view-section text-center max-w-2xl mx-auto py-12" style="display: block;">
             <div class="inline-flex items-center gap-2 badge-bg text-[#00ff66] px-4 py-1.5 rounded-full text-xs font-medium mb-8">
                 ✨ Over 1 million traders and counting
@@ -78,7 +78,7 @@
                     <h2 class="text-xl font-semibold text-white">FX Markets Are Live</h2>
                     <p class="text-gray-400" id="welcome-message">Welcome inside your real trading terminal.</p>
                 </div>
-                <div class="bg-green-900/30 text-[#00ff66] px-4 py-2 rounded border border-[#00ff66]/30 font-mono text-sm">● Bot Status: ACTIVE</div>
+                <div class="bg-green-900/30 text-[#00ff66] px-4 py-2 rounded border border-[#00ff66]/30 font-mono text-sm animate-pulse">● Bot Status: ACTIVE</div>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -132,15 +132,16 @@
         <!-- VIEW 3: LOGIN FORM -->
         <div id="view-login" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-[#00ff66]/30" style="display: none;">
             <h3 class="text-2xl font-bold text-white text-center mb-6">Sign In</h3>
-            <form onsubmit="handleAuth(event, '/auth/login')" class="space-y-4">
-                <input type="email" id="login-email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
-                <input type="password" id="login-password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
-                <button type="submit" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Access Account</button>
-            </form>
+            <div class="space-y-4">
+                <input type="email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+                <input type="password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+                <button onclick="loginSuccess('Real Account')" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Access Account</button>
+            </div>
             <p class="text-sm text-center text-gray-500 mt-4">Don't have an account? <span onclick="switchView('register')" class="text-[#00ff66] cursor-pointer hover:underline font-bold">Create one</span></p>
         </div>
 
         <!-- VIEW 4: REGISTER FORM -->
         <div id="view-register" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-gray-800" style="display: none;">
             <h3 class="text-2xl font-bold text-white text-center mb-6">Create Free Account</h3>
-            <form onsubmit="handleAuth(event, '/auth/register')" class="space-y-4">
+            <div class="space-y-4">
+                <input type="text" placeholder="Full Name" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
