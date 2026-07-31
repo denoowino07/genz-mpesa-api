@@ -36,6 +36,11 @@
         .asset-price { font-size: 28px; font-weight: 800; font-family: monospace; }
         .trend-arrow { font-size: 24px; font-weight: bold; transition: 0.1s; }
         
+        /* CHATI KAA HAPA KATIKATI */
+        .chart-section { padding: 0 15px; margin: 15px 0; width: 100%; }
+        .chart-container { background-color: #11171f; border: 1px solid var(--border-color); border-radius: 12px; height: 180px; width: 100%; padding: 10px; position: relative; }
+        canvas { width: 100%; height: 100%; display: block; }
+
         .stake-section { background-color: #161d26; padding: 20px; border-radius: 16px 16px 0 0; margin-top: 40px; position: fixed; bottom: 0; left: 0; width: 100%; border-top: 1px solid var(--border-color); }
         .amount-control { display: flex; justify-content: space-between; align-items: center; background-color: #0c1017; border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; margin-bottom: 15px; }
         .amt-btn { background: #1c2633; border: none; color: #ff9100; font-size: 20px; font-weight: 700; width: 40px; height: 40px; border-radius: 6px; cursor: pointer; }
@@ -87,6 +92,13 @@
         </div>
     </div>
 
+    <!-- SEHEMU YA CHATI KATIKATI -->
+    <div class="chart-section">
+        <div class="chart-container">
+            <canvas id="customFastChart"></canvas>
+        </div>
+    </div>
+
     <!-- Sehemu ya Kuendesha Order -->
     <div class="stake-section">
         <div class="pnl-row">
@@ -108,14 +120,54 @@
 
     <script>
         const userId = localStorage.getItem('tradeUserId');
-        
-        // Maghala ya salio ya ndani ya kivinjari ili kuondoa kuchelewa (Lagging)
         let localBalances = { demo: 10000.00, real: 0.00 };
 
-        // 1. INJINI YA NAMBA KUKIMBIA KWA KASI SANA (Kila milisekunde 200)
+        // 1. SETUP YA CHATI JEPESI YA HTML5 CANVAS
+        const canvas = document.getElementById('customFastChart');
+        const ctx = canvas.getContext('2d');
+        let priceHistory = Array(30).fill(9379.00); // Inatunza pointi 30 za nyuma
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawChart() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            let minPrice = Math.min(...priceHistory) - 1;
+            let maxPrice = Math.max(...priceHistory) + 1;
+            let priceRange = maxPrice - minPrice;
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.lineJoin = 'round';
+
+            for (let i = 0; i < priceHistory.length; i++) {
+                let x = (canvas.width / (priceHistory.length - 1)) * i;
+                let y = canvas.height - ((priceHistory[i] - minPrice) / priceRange) * canvas.height;
+                
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Chora nukta ya mwisho ya live price display
+            let lastX = canvas.width;
+            let lastY = canvas.height - ((priceHistory[priceHistory.length - 1] - minPrice) / priceRange) * canvas.height;
+            ctx.beginPath();
+            ctx.fillStyle = '#00e676';
+            ctx.arc(lastX - 2, lastY, 4, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        // 2. INJINI YA NAMBA KUKIMBIA KWA KASI SANA (Kila milisekunde 250)
         let currentPrice = 9379.00;
         setInterval(() => {
-            let change = (Math.random() - 0.5) * 4; 
+            let change = (Math.random() - 0.5) * 5; 
             let oldPrice = currentPrice;
             currentPrice += change;
 
@@ -137,51 +189,3 @@
                 }
             }
             if(tickElement) {
-                tickElement.innerText = "Tick: " + Math.floor(Math.random() * 10);
-            }
-        }, 200); 
-
-        // 2. KUBADILISHA SALIO PAPO HAPO (REAL VS DEMO)
-        function toggleAccountType() {
-            const type = document.getElementById('account-type').value;
-            document.getElementById('wallet-balance').innerText = '$' + localBalances[type].toFixed(2);
-        }
-
-        // Pakia data kutoka seva pindi ukurasa unapoisha kufunguka
-        function loadBackendData() {
-            if(!userId) return;
-            fetch(`/api/user/${userId}`)
-            .then(res => res.json())
-            .then(data => {
-                localBalances.demo = data.demoBalance;
-                localBalances.real = data.realBalance;
-                toggleAccountType();
-            })
-            .catch(() => {
-                toggleAccountType(); // Tumia data za ndani ikiwa mtandao unasumbua
-            });
-        }
-        window.addEventListener('DOMContentLoaded', loadBackendData);
-
-        // 3. KAZI YA TRADING (BUY / SELL WIN au LOSS LOGIC)
-        function executeLiveTrade(direction) {
-            const accountType = document.getElementById('account-type').value;
-            const amount = parseFloat(document.getElementById('trade-amount').value);
-            
-            if(isNaN(amount) || amount <= 0) { alert("Please enter a valid amount!"); return; }
-            if(amount > localBalances[accountType]) { alert("Insufficient funds!"); return; }
-
-            const pnlText = document.getElementById('pnl-display');
-            pnlText.innerText = "Trading active (1s)...";
-            pnlText.style.color = "#ffb700";
-
-            // Tuma ombi la Trade kwenye seva
-            fetch('/api/trade', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, accountType, amount, direction })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.error) { alert(data.error); return; }
-                
