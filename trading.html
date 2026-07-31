@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Weka maktaba ya Chart.js ili kuchora chati -->
+    <script src="https://jsdelivr.net"></script>
     <style>
         :root {
             --bg-color: #0c1017;
@@ -33,7 +35,7 @@
         canvas { width: 100%; height: 100%; display: block; }
         
         /* Floating Price Tag on Right Axis */
-        .price-axis-tag { position: absolute; right: 10px; background-color: var(--primary-green); color: #000; font-weight: 800; font-family: monospace; font-size: 11px; padding: 3px 6px; border-radius: 4px; pointer-events: none; transition: top 0.1s ease; box-shadow: 0 0 10px rgba(0,230,118,0.4); }
+        .price-axis-tag { position: absolute; right: 10px; background-color: var(--primary-green); color: #000; font-weight: 800; font-family: monospace; font-size: 11px; padding: 3px 6px; border-radius: 4px; pointer-events: none; transition: top 0.1s ease; box-shadow: 0 0 10px rgba(0,230,118,0.4); top: 50%; transform: translateY(-50%); }
 
         /* Vijiduara vya namba 0-9 */
         .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 15px; }
@@ -70,31 +72,31 @@
         <div>
             <span style="font-size: 11px; color: var(--text-muted); display:block;">VOLATILITY 10 (1S) INDEX</span>
             <div style="display:flex; align-items:center; gap:8px;">
-                <span class="asset-price" id="live-price">9379.00</span>
+                <span class="asset-price" id="live-price">Loading...</span>
                 <span id="live-arrow" style="font-size:20px;">▲</span>
             </div>
         </div>
-        <div id="tick-counter" style="font-weight:700; color:var(--primary-green); font-size:13px;">Tick: 5</div>
+        <div id="tick-counter" style="font-weight:700; color:var(--primary-green); font-size:13px;">Tick: 0</div>
     </div>
 
     <!-- BOX LA CHATI NA FLOATING PRICE TAG -->
     <div class="chart-wrapper">
         <canvas id="proLocalChart"></canvas>
-        <div class="price-axis-tag" id="live-floating-tag">9379.00</div>
+        <div class="price-axis-tag" id="live-floating-tag">0.00</div>
     </div>
 
     <!-- Vijiduara vya takwimu (0-9) -->
     <div class="stats-grid">
-        <div class="stat-bubble"><span class="bubble-num" style="background:var(--primary-green)">0</span><div class="bubble-pct" id="pct-0">12%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:var(--primary-green)">0</span><div class="bubble-pct" id="pct-0">10%</div></div>
         <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">1</span><div class="bubble-pct" id="pct-1">10%</div></div>
-        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">2</span><div class="bubble-pct" id="pct-2">9%</div></div>
-        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">3</span><div class="bubble-pct" id="pct-3">11%</div></div>
-        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">4</span><div class="bubble-pct" id="pct-4">8%</div></div>
-        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">5</span><div class="bubble-pct" id="pct-5">13%</div></div>
-        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">6</span><div class="bubble-pct" id="pct-10">10%</div></div>
-        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">7</span><div class="bubble-pct" id="pct-7">7%</div></div>
-        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">8</span><div class="bubble-pct" id="pct-8">11%</div></div>
-        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">9</span><div class="bubble-pct" id="pct-9">9%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">2</span><div class="bubble-pct" id="pct-2">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">3</span><div class="bubble-pct" id="pct-3">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">4</span><div class="bubble-pct" id="pct-4">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">5</span><div class="bubble-pct" id="pct-5">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">6</span><div class="bubble-pct" id="pct-6">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">7</span><div class="bubble-pct" id="pct-7">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">8</span><div class="bubble-pct" id="pct-8">10%</div></div>
+        <div class="stat-bubble"><span class="bubble-num" style="background:#242f3d">9</span><div class="bubble-pct" id="pct-9">10%</div></div>
     </div>
 
     <div class="stake-section">
@@ -114,47 +116,54 @@
     </div>
 
     <script>
-        // Mfumo kamili wa salio la ndani (Real = $0.00, Demo = $10,000.00)
+        // Mfumo wa salio la ndani
         let wallets = { demo: 10000.00, real: 0.00 }; 
-        
+        let currentWallet = 'demo';
+        let lastDigitCounts = Array(10).fill(0);
+        let totalTicksProcessed = 0;
+        let tickCount = 0;
+
         function toggleWallet() {
-            const type = document.getElementById('account-type').value;
-            document.getElementById('wallet-balance').innerText = '$' + wallets[type].toFixed(2);
+            currentWallet = document.getElementById('account-type').value;
+            updateBalanceDisplay();
         }
 
-        // INJINI KUU YA CHATI YA NDANI (HTML5 CANVAS GRID ENGINE)
-        const canvas = document.getElementById('proLocalChart');
-        const ctx = canvas.getContext('2d');
-        let priceHistory = Array(40).fill(9379.00); 
+        function updateBalanceDisplay() {
+            document.getElementById('wallet-balance').innerText = `$${wallets[currentWallet].toFixed(2)}`;
+        }
 
-        function resizeChartCanvas() {
-            if(canvas && canvas.parentElement) {
-                canvas.width = canvas.parentElement.clientWidth;
-                canvas.height = canvas.parentElement.clientHeight;
-                drawProfessionalDashboard();
+        function adjust(val) {
+            let input = document.getElementById('trade-amount');
+            let current = parseInt(input.value) || 0;
+            if (current + val >= 1) {
+                input.value = current + val;
             }
         }
-        window.addEventListener('resize', resizeChartCanvas);
 
-        function drawProfessionalDashboard() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            let minPrice = Math.min(...priceHistory) - 1.5;
-            let maxPrice = Math.max(...priceHistory) + 1.5;
-            let range = maxPrice - minPrice;
+        // --- SEHEMU YA CHATI NA WEBSOCKET (DERIV DATA) ---
+        const ctx = document.getElementById('proLocalChart').getContext('2d');
+        let chartData = Array(30).fill(null); // Tutatunza ticks 30 za mwisho
+        let chartLabels = Array(30).fill('');
 
-            // 1. CHORA MISTARI YA NYUMA YA KAWAIDA (GRID LINES)
-            ctx.strokeStyle = '#1c2633';
-            ctx.lineWidth = 1;
-            
-            let gridSpacingX = canvas.width / 6;
-            for(let i=0; i<6; i++) {
-                ctx.beginPath(); ctx.moveTo(gridSpacingX * i, 0); ctx.lineTo(gridSpacingX * i, canvas.height); ctx.stroke();
-            }
-            let gridSpacingY = canvas.height / 4;
-            for(let i=0; i<4; i++) {
-                ctx.beginPath(); ctx.moveTo(0, gridSpacingY * i); ctx.lineTo(canvas.width, gridSpacingY * i); ctx.stroke();
-            }
-
-            // 2. CHORA MWANGAZA WA CHINI YA MSTARI (GRADIENT FILL GLOW)
-            ctx.beginPath();
+        const proChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Live Price',
+                    data: chartData,
+                    borderColor: '#00e676',
+                    borderWidth: 2,
+                    pointRadius: 2,
+                    pointBackgroundColor: '#00e676',
+                    fill: false,
+                    tension: 0.2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: {
