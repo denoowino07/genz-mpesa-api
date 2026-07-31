@@ -69,13 +69,13 @@
         .account-selector:focus { border-color: var(--primary-color); }
 
         /* Chart Widget Height */
-        .chart-box { height: 450px; background: #030811; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+        .chart-box { height: 450px; background: #030811; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); position: relative; }
 
         /* Panel details */
         .control-panel { display: flex; flex-direction: column; gap: 20px; }
         .stat-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; }
         .trade-inputs { display: flex; flex-direction: column; gap: 10px; }
-        .trade-inputs label { font-size: 12px; color: var(--text-muted); margin-bottom: -5px; }
+        .trade-inputs label { font-size: 12px; color: var(--text-muted); margin-bottom: -5px; text-align: left; }
         .trade-inputs input, .trade-inputs select { background: #030811; border: 1px solid var(--border-color); padding: 12px; color: #fff; border-radius: 8px; font-size: 16px; }
         .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
         .btn-buy { background-color: var(--primary-color); color: #000; border: none; padding: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; }
@@ -150,10 +150,9 @@
             <div class="trading-card">
                 <h3 style="margin-bottom: 15px;" id="chart-title">BTC/USD Demo Trading Environment</h3>
                 <div class="chart-box">
-                    <div class="tradingview-widget-container" style="height:100%;width:100%;">
-                        <div id="tradingview_chart" style="height:100%;width:100%;"></div>
-                    </div>
+                    <div id="tradingview_chart" style="height:100%;width:100%;"></div>
                 </div>
             </div>
 
             <div class="control-panel trading-card">
+                <h3>Sakinisha Order</h3>
