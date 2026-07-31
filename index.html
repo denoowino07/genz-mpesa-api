@@ -48,7 +48,16 @@
         .feature-item { font-size: 14px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px; }
         .feature-item span { color: var(--primary-color); }
 
-        /* 2. TRADING MAIN DASHBOARD */
+        /* 2. AUTH SCREEN (LOGIN / SIGNUP) */
+        .auth-container { max-width: 400px; margin: 60px auto; padding: 30px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; text-align: center; }
+        .auth-container h2 { margin-bottom: 20px; font-weight: 800; }
+        .auth-form { display: flex; flex-direction: column; gap: 15px; }
+        .auth-form input { background: #030811; border: 1px solid var(--border-color); padding: 14px; color: #fff; border-radius: 8px; font-size: 15px; }
+        .auth-form input:focus { border-color: var(--primary-color); outline: none; }
+        .auth-toggle { margin-top: 15px; font-size: 14px; color: var(--text-muted); }
+        .auth-toggle span { color: var(--primary-color); cursor: pointer; text-decoration: underline; }
+
+        /* 3. TRADING MAIN DASHBOARD */
         #trading-screen { padding: 20px 5%; max-width: 1400px; margin: 0 auto; }
         .trading-container { display: grid; grid-template-columns: 2.5fr 1fr; gap: 20px; margin-top: 20px; }
         @media (max-width: 990px) { .trading-container { grid-template-columns: 1fr; } h1 { font-size: 38px; } }
@@ -80,8 +89,9 @@
         <div class="logo" onclick="changeScreen('home-screen')">Genz<span>Trending.com</span></div>
         <div class="nav-links">
             <a onclick="changeScreen('home-screen')">Home</a>
+            <a onclick="openAuth('login')">Log In</a>
         </div>
-        <a class="btn-nav" onclick="enterDirectTrading()">Get Started</a>
+        <a class="btn-nav" onclick="openAuth('signup')">Sign Up</a>
     </nav>
 
     <!-- 1. LANDING PAGE SCREEN -->
@@ -92,8 +102,8 @@
             <p class="hero-desc">The best Trusted Binary Automated trading platform with fast withdrawals and fast response customer service</p>
             
             <div class="cta-buttons">
-                <button class="btn-main" onclick="enterDirectTrading()">Get Started — It's Free →</button>
-                <button class="btn-demo" onclick="enterDirectTrading()">▷ Try Demo</button>
+                <button class="btn-main" onclick="openAuth('signup')">Get Started — It's Free →</button>
+                <button class="btn-demo" onclick="enterDirectDemo()">▷ Try Demo</button>
             </div>
 
             <div class="features-grid">
@@ -105,9 +115,23 @@
         </section>
     </div>
 
-    <!-- 2. TRADING MAIN DASHBOARD (Inafunguka Mara Moja Mtu Akiclick Kitufe) -->
+    <!-- 2. AUTHENTICATION SCREEN (LOGIN / SIGN UP) -->
+    <div id="auth-screen" class="screen">
+        <div class="auth-container">
+            <h2 id="auth-title">Unda Akaunti</h2>
+            <form class="auth-form" onsubmit="handleAuth(event)">
+                <input type="email" id="auth-email" placeholder="Barua Pepe (Email)" required>
+                <input type="password" id="auth-password" placeholder="Nywila (Password)" required>
+                <button type="submit" class="btn-main" style="width: 100%; border-radius: 8px;" id="auth-btn">Jisajili Sasa</button>
+            </form>
+            <div class="auth-toggle" id="auth-toggle-text">
+                Tayari una akaunti? <span onclick="openAuth('login')">Ingia hapa</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. TRADING MAIN DASHBOARD -->
     <div id="trading-screen" class="screen">
-        <!-- Account Status Header -->
         <div class="account-bar">
             <div>
                 <label style="font-size: 11px; color: var(--text-muted); display:block;">Aina ya Akaunti</label>
@@ -123,40 +147,13 @@
         </div>
 
         <div class="trading-container">
-            <!-- Sehemu ya Chati Halisi ya TradingView -->
             <div class="trading-card">
                 <h3 style="margin-bottom: 15px;" id="chart-title">BTC/USD Demo Trading Environment</h3>
                 <div class="chart-box">
                     <div class="tradingview-widget-container" style="height:100%;width:100%;">
                         <div id="tradingview_chart" style="height:100%;width:100%;"></div>
-                        <script type="text/javascript" src="https://tradingview.com"></script>
-                        <script type="text/javascript">
-                        function loadChart(symbol) {
-                            new TradingView.widget({
-                                "autosize": true,
-                                "symbol": symbol,
-                                "interval": "1",
-                                "timezone": "Etc/UTC",
-                                "theme": "dark",
-                                "style": "1",
-                                "locale": "en",
-                                "enable_publishing": false,
-                                "hide_side_toolbar": false,
-                                "allow_symbol_change": true,
-                                "container_id": "tradingview_chart"
-                            });
-                        }
-                        window.addEventListener('DOMContentLoaded', () => { loadChart("BINANCE:BTCUSDT"); });
-                        </script>
                     </div>
                 </div>
             </div>
 
             <div class="control-panel trading-card">
-                <h3>Sakinisha Order</h3>
-                <hr style="border-color: var(--border-color); margin: 10px 0;">
-                
-                <div class="trade-inputs">
-                    <label>Chagua Asset</label>
-                    <select id="asset-selector" onchange="loadChart(this.value)">
-                        <option value="BINANCE:BTCUSDT">Bitcoin (BTC/USDT)</option>
