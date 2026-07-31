@@ -3,30 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Now - GenzTrending.com</title>
+    <title>Join - GenzTrending.com</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         body { background-color: #050b14; color: #fff; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .auth-container { max-width: 400px; width: 90%; padding: 30px; background-color: #0b1528; border: 1px solid #1e293b; border-radius: 16px; text-align: center; }
         h2 { margin-bottom: 20px; font-weight: 800; }
         .auth-form { display: flex; flex-direction: column; gap: 15px; }
-        .auth-form input { background: #030811; border: 1px solid #1e293b; padding: 14px; color: #fff; border-radius: 8px; font-size: 15px; width: 100%; }
-        .btn-main { background-color: #00ff87; color: #000; border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none; display: block; }
+        .auth-form input { background: #030811; border: 1px solid #1e293b; padding: 14px; color: #fff; border-radius: 8px; font-size: 15px; width: 100%; outline: none; }
+        .btn-main { background-color: #00ff87; color: #000; border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; }
         .auth-toggle { margin-top: 15px; font-size: 14px; color: #8fa0b5; }
-        .auth-toggle a { color: #00ff87; text-decoration: none; font-weight: 700; }
+        .auth-toggle span { color: #00ff87; cursor: pointer; font-weight: 700; text-decoration: underline; }
     </style>
 </head>
 <body>
     <div class="auth-container">
-        <h2>Create Account</h2>
-        <form class="auth-form" onsubmit="event.preventDefault(); window.location.href='/trading.html';">
-            <input type="email" placeholder="Email Address" required>
-            <input type="password" placeholder="Password" required>
-            <button type="submit" class="btn-main">Sign Up & Start Trading</button>
+        <h2 id="form-title">Create Account</h2>
+        <form class="auth-form" onsubmit="handleAuth(event)">
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit" class="btn-main" id="submit-btn">Sign Up & Start Trading</button>
         </form>
-        <div class="auth-toggle">
-            Already have an account? <a href="/join.html">Log in here</a>
+        <div class="auth-toggle" id="toggle-text">
+            Already have an account? <span onclick="toggleForm('login')">Log in here</span>
         </div>
     </div>
+
+    <script>
+        let mode = 'signup';
+        function toggleForm(m) {
+            mode = m;
+            if(mode === 'login') {
+                document.getElementById('form-title').innerText = 'Log In';
+                document.getElementById('submit-btn').innerText = 'Log In';
+                document.getElementById('toggle-text').innerHTML = 'Don\'t have an account? <span onclick="toggleForm(\'signup\')">Sign up here</span>';
+            } else {
+                document.getElementById('form-title').innerText = 'Create Account';
+                document.getElementById('submit-btn').innerText = 'Sign Up & Start Trading';
+                document.getElementById('toggle-text').innerHTML = 'Already have an account? <span onclick="toggleForm(\'login\')">Log in here</span>';
+            }
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, action: mode })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) alert(data.error);
+                else {
+                    localStorage.setItem('tradeUserId', data.userId); // Hifadhi ID ya mteja kwenye kivinjari
+                    window.location.href = '/trading.html';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
