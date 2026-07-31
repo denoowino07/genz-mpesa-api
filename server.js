@@ -3,7 +3,24 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-    res.send('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>GenZTrending - FX Dashboard</title><script src="https://tailwindcss.com"></script><style>body{background-color:#0d1117;color:#c9d1d9;}.neon-text{color:#00ff66;text-shadow:0 0 10px rgba(0,255,102,0.5);}.card-bg{background-color:#161b22;}</style></head><body class="font-sans antialiased min-h-screen flex flex-col justify-between"><header class="border-b border-gray-800 bg-[#161b22] p-4"><div class="container mx-auto flex justify-between items-center"><h1 class="text-2xl font-bold neon-text tracking-wider">GENZTRENDING</h1><nav class="space-x-6 hidden md:flex"><a href="#" class="text-white">Dashboard</a><a href="#" class="text-gray-400">FX Markets</a><a href="#" class="text-gray-400">My Wallet</a></nav><div class="space-x-3"><button class="text-gray-300 font-medium text-sm">Sign In</button><button class="bg-[#00ff66] text-black font-bold px-4 py-2 rounded text-sm">Create Account</button></div></div></header><main class="container mx-auto p-6 flex-grow"><div class="mb-8 p-6 rounded-lg card-bg flex flex-col md:flex-row justify-between items-center"><div><h2 class="text-xl font-semibold mb-2 text-white">FX Markets Are Live</h2><p class="text-gray-400">Your automated algorithm systems are analyzing current market trends.</p></div><div class="mt-4 md:mt-0 bg-green-900/30 text-[#00ff66] px-4 py-2 rounded border border-[#00ff66]/30 font-mono text-sm">● Bot Status: ACTIVE</div></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"><div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Account Balance</h3><p class="text-3xl font-bold mt-2 text-white font-mono">$12,450.80</p></div><div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Active Trades</h3><p class="text-3xl font-bold mt-2 neon-text font-mono">3 Running</p></div><div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Bot Win Rate</h3><p class="text-3xl font-bold mt-2 text-white font-mono">78.4%</p></div></div><div class="mb-8 p-4 rounded-lg card-bg border border-gray-800"><h3 class="text-lg font-semibold text-white mb-4">Live Advanced Forex Chart</h3><div class="w-full" style="height:450px;"><div class="tradingview-widget-container" style="height:100%;width:100%"><div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div><script type="text/javascript" src="https://tradingview.com"></script><script type="text/javascript">new TradingView.widget({"width":"100%","height":"100%","symbol":"FX:EURUSD","interval":"15","timezone":"Etc/UTC","theme":"dark","style":"1","locale":"en","toolbar_bg":"#161b22","enable_publishing":false,"hide_side_toolbar":false,"allow_symbol_change":true,"container_id":"tradingview_chart"});</script></div></div></div></main><footer class="border-t border-gray-800 bg-[#161b22] p-4 text-center text-sm text-gray-500"><p>&copy; 2026 GenZTrending FX. All rights reserved.</p></footer></body></html>');
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>GenZTrending FX</title>
+            <script src="https://tailwindcss.com"></script>
+        </head>
+        <body class="bg-[#0d1117] text-white flex items-center justify-center min-h-screen font-sans">
+            <div class="text-center p-8 rounded-lg border border-[#00ff66] bg-[#161b22] shadow-[0_0_15px_rgba(0,255,102,0.2)]">
+                <h1 class="text-4xl font-bold tracking-wider text-[#00ff66] mb-4">GENZTRENDING</h1>
+                <p class="text-gray-400 text-lg mb-6">Our cyber-green FX platform is under a quick optimization upgrade.</p>
+                <div class="inline-block bg-green-950 text-[#00ff66] px-4 py-2 rounded text-sm font-mono border border-green-800 animate-pulse">
+                    SYSTEM STATUS: ACTIVE & DEPLOYING
+                </div>
+            </div>
+        </body>
+        </html>
+    `);
 });
 
 app.listen(PORT, () => {
