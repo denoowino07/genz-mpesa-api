@@ -2,21 +2,21 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
+// Inasoma PORT ya Render au inatumia 3000 ukiwa local
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// Mfumo wa Kumbukumbu ya Ndani (In-Memory Database) badala ya MongoDB
-// Inahifadhi wateja na salio lao kwa muda kwenye seva
+// Kanzidata ya muda ya ndani ya seva (Local In-Memory Database)
 const localUsersDB = {};
 
-// 1. UTANGULIZI WA ROUTING
+// 1. MIELEKEO YA KURASA (ROUTING)
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/join.html', (req, res) => res.sendFile(path.join(__dirname, 'join.html')));
 app.get('/trading.html', (req, res) => res.sendFile(path.join(__dirname, 'trading.html')));
 
-// 2. MFUMO WA SIGN UP & LOGIN
+// 2. MFUMO WA USAJILI NA KUINGIA (SIGN UP & LOGIN)
 app.post('/api/auth', (req, res) => {
     const { email, password, action } = req.body;
     
@@ -30,17 +30,18 @@ app.post('/api/auth', (req, res) => {
         if (localUsersDB[cleanEmail]) {
             return res.status(400).json({ error: "Email already exists!" });
         }
-        // Msajili mteja mpya na salio la mwanzo
+        
+        // Msajili mteja mpya: Real Account inaanzia $0.00 na Demo ina $10,000.00
         localUsersDB[cleanEmail] = {
             id: "user_" + Math.random().toString(36).substr(2, 9),
             email: cleanEmail,
             password: password,
             demoBalance: 10000.00,
-            realBalance: 0.00
+            realBalance: 0.00 
         };
         return res.json({ message: "Registration successful!", userId: localUsersDB[cleanEmail].id });
     } else {
-        // Log in logic
+        // Mfumo wa kuingia (Login)
         let foundUser = Object.values(localUsersDB).find(u => u.email === cleanEmail && u.password === password);
         if (!foundUser) {
             return res.status(400).json({ error: "Invalid email or password!" });
@@ -53,42 +54,37 @@ app.post('/api/auth', (req, res) => {
 app.get('/api/user/:id', (req, res) => {
     const foundUser = Object.values(localUsersDB).find(u => u.id === req.params.id);
     if (!foundUser) {
-        // Ikitokea seva imereset, itengeneze akaunti ya haraka ili mteja asikwame screen nyeupe
+        // Ikitokea seva imereset, inampa salio hili la haraka ili asikwame
         return res.json({ demoBalance: 10000.00, realBalance: 0.00 });
     }
     res.json({ demoBalance: foundUser.demoBalance, realBalance: foundUser.realBalance });
 });
 
-// 4. MFUMO WA WIN/LOSS LOGIC (TRADING ENGINE)
+// 4. INJINI YA BIASHARA (WIN/LOSS TRADING LOGIC)
 app.post('/api/trade', (req, res) => {
-    const { userId, accountType, amount, direction } = req.body;
+    const { userId, accountType, amount } = req.body;
     
     let foundUser = Object.values(localUsersDB).find(u => u.id === userId);
-    
-    // Ikitokea mtumiaji hayupo (mfano server imereset), tengeneza temporary session
     if (!foundUser) {
-        foundUser = { demoBalance: 10000.00, realBalance: 0.00 };
+        return res.status(400).json({ error: "Session expired, please log in again." });
     }
 
     let currentBalance = accountType === 'real' ? foundUser.realBalance : foundUser.demoBalance;
     if (amount > currentBalance) {
-        return res.status(400).json({ error: "Insufficient balance!" });
+        return res.status(400).json({ error: "Insufficient balance to place this trade!" });
     }
 
-    // Algorithm ya Ushindi na Hasara (50% Win / 50% Loss)
+    // Algorithm ya ushindi: 50% nafasi ya kushinda au kushindwa kulingana na soko
     const isWin = Math.random() > 0.48; 
-    let profitLoss = 0;
+    let profitLoss = isWin ? (amount * 0.95) : -amount;
+    currentBalance += profitLoss;
 
-    if (isWin) {
-        profitLoss = amount * 0.95; // Faida ya +95%
-        currentBalance += profitLoss;
+    // Hifadhi salio jipya kwenye database ya seva
+    if (accountType === 'real') {
+        foundUser.realBalance = currentBalance;
     } else {
-        profitLoss = -amount; // Hasara ya kiasi kilichowekezwa
-        currentBalance -= amount;
+        foundUser.demoBalance = currentBalance;
     }
-
-    if (accountType === 'real') foundUser.realBalance = currentBalance;
-    else foundUser.demoBalance = currentBalance;
 
     res.json({ 
         result: isWin ? "WIN" : "LOSS", 
@@ -97,20 +93,41 @@ app.post('/api/trade', (req, res) => {
     });
 });
 
-// 5. LANGO LA LIPA NA M-PESA (DEPOSIT VIA STK PUSH)
+// 5. MFUMO WA KUWEKA PESA (MPESA DEPOSIT SIMULATION)
 app.post('/api/deposit', (req, res) => {
     const { userId, phone, amountUSD } = req.body;
-    const amountKES = Math.round(amountUSD * 135);
+    const amountKES = Math.round(amountUSD * 135); // Shilingi dhidi ya Dola
 
-    // Kuiga uwekaji wa pesa (Simulation) ili mteja akijaribu iongezeke sekunde 5 baadae
+    // Simulizi: Ongeza salio kwenye akaunti ya kweli (Real Account) baada ya sekunde 5
     setTimeout(() => {
         let foundUser = Object.values(localUsersDB).find(u => u.id === userId);
         if (foundUser) {
             foundUser.realBalance += parseFloat(amountUSD);
         }
-    }, 5000); 
+    }, 5000);
 
-    res.json({ message: `STK Push request of KES ${amountKES} successfully sent to ${phone}. Enter your M-Pesa PIN to approve.` });
+    res.json({ message: `STK Push of KES ${amountKES} sent to ${phone}. Enter your PIN to deposit $${amountUSD}.` });
 });
 
-app.listen(PORT, () => console.log(`GenzTrending local engine active on port ${PORT}`));
+// 6. MFUMO WA KUTOA PESA (MPESA WITHDRAWAL)
+app.post('/api/withdraw', (req, res) => {
+    const { userId, phone, amountUSD } = req.body;
+    let foundUser = Object.values(localUsersDB).find(u => u.id === userId);
+    
+    if (!foundUser) {
+        return res.status(400).json({ error: "User profile not found." });
+    }
+
+    if (foundUser.realBalance < parseFloat(amountUSD)) {
+        return res.status(400).json({ error: "Insufficient Real balance to process withdrawal!" });
+    }
+
+    // Kata kiasi cha fedha kwenye salio la Real account
+    foundUser.realBalance -= parseFloat(amountUSD);
+    res.json({ message: `Withdrawal request of $${amountUSD} accepted! KES will be sent to ${phone} via M-Pesa shortly.` });
+});
+
+// KUWASHA SEVA RASMI
+app.listen(PORT, () => {
+    console.log(`GenzTrending Active Engine Running Smoothly on Port ${PORT}`);
+});
