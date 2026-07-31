@@ -1,7 +1,7 @@
 {
-  "name": "auto-traders",
+  "name": "genztrending",
   "version": "1.0.0",
-  "description": "Auto Traders Web Application",
+  "description": "GenZTrending FX Platform",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
