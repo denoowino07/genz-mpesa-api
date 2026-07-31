@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kujiunga - GenzTrending.com</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        body { background-color: #050b14; color: #fff; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .auth-container { max-width: 400px; width: 90%; padding: 30px; background-color: #0b1528; border: 1px solid #1e293b; border-radius: 16px; text-align: center; }
+        h2 { margin-bottom: 20px; font-weight: 800; }
+        .auth-form { display: flex; flex-direction: column; gap: 15px; }
+        .auth-form input { background: #030811; border: 1px solid #1e293b; padding: 14px; color: #fff; border-radius: 8px; font-size: 15px; width: 100%; }
+        .btn-main { background-color: #00ff87; color: #000; border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none; display: block; }
+        .auth-toggle { margin-top: 15px; font-size: 14px; color: #8fa0b5; }
+        .auth-toggle a { color: #00ff87; text-decoration: none; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Unda Akaunti Mpya</h2>
+        <form class="auth-form" onsubmit="event.preventDefault(); window.location.href='/trading.html';">
+            <input type="email" placeholder="Barua Pepe (Email)" required>
+            <input type="password" placeholder="Nywila (Password)" required>
+            <button type="submit" class="btn-main">Jisajili na Uingie Moja kwa Moja</button>
+        </form>
+        <div class="auth-toggle">
+            Tayari una akaunti? <a href="/join.html">Ingia hapa</a>
+        </div>
+    </div>
+</body>
+</html>
