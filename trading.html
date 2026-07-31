@@ -4,163 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Platform - GenzTrending.com</title>
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com" rel="stylesheet">
     <script src="https://jsdelivr.net"></script>
     <style>
-        :root {
-            --bg-color: #0c1017;
-            --card-bg: #161d26;
-            --primary-green: #00e676;
-            --text-main: #ffffff;
-            --text-muted: #8492a6;
-            --border-color: #242f3d;
-            --accent-blue: #2196f3;
-            --danger-red: #ff4a4a;
-        }
-
+        :root { --bg-color: #0c1017; --card-bg: #161d26; --primary-green: #00e676; --text-main: #ffffff; --text-muted: #8492a6; --border-color: #242f3d; --accent-blue: #2196f3; --danger-red: #ff4a4a; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); font-size: 14px; padding-bottom: 70px; }
-
-        /* Top Header */
         header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #11171f; border-bottom: 1px solid var(--border-color); }
         .header-left { display: flex; align-items: center; gap: 15px; }
-        .menu-icon { font-size: 20px; cursor: pointer; }
         .account-badge { background-color: #1e293b; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; border: 1px solid var(--border-color); }
         .account-badge span { color: #ffa726; font-weight: 800; background: rgba(255,167,38,0.1); padding: 2px 6px; border-radius: 4px; }
-        .btn-deposit { background-color: var(--primary-green); color: #000; font-weight: 700; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 12px; }
-        .header-right { display: flex; align-items: center; gap: 15px; font-size: 18px; color: var(--text-muted); }
-
-        /* Trade Categories Tabs */
-        .trade-tabs { display: flex; gap: 8px; padding: 12px 15px; background-color: #0c1017; overflow-x: auto; }
-        .tab-btn { background-color: #1c2633; color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-        .tab-btn.active { background-color: #2b394a; color: var(--text-main); border-color: var(--accent-blue); }
-
-        /* Market Indicator Box */
+        .btn-deposit { background-color: var(--primary-green); color: #000; font-weight: 700; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 12px; cursor: pointer; }
+        .trade-tabs { display: flex; gap: 8px; padding: 12px 15px; overflow-x: auto; }
+        .tab-btn { background-color: #1c2633; color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .market-info-box { padding: 0 15px 10px 15px; }
-        .asset-tag { background: #161d26; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; display: inline-flex; flex-direction: column; min-width: 140px; }
-        .asset-title { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+        .asset-tag { background: #161d26; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; display: inline-flex; flex-direction: column; min-width: 1400px; max-width: 180px;}
+        .asset-title { font-size: 11px; color: var(--text-muted); }
         .asset-price { font-size: 18px; font-weight: 800; margin-top: 4px; }
-
-        /* Chart Area */
-        .chart-section { position: relative; padding: 0 15px; background-color: #0c1017; margin-bottom: 15px; }
-        .chart-wrapper { background-color: #0c1017; height: 220px; width: 100%; position: relative; }
-        .live-dot-price { position: absolute; right: 20px; top: 30%; background: rgba(255,255,255,0.1); border: 1px dashed #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 13px; font-weight: 700; }
-
-        /* Number Stats Grid (0-9) */
-        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 0 15px; margin-bottom: 20px; }
-        @media (min-width: 600px) { .stats-grid { grid-template-columns: repeat(10, 1fr); } }
-        .stat-circle { background-color: #161d26; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; text-align: center; }
-        .stat-num { background-color: #2196f3; color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 700; font-size: 12px; margin-bottom: 4px; }
-        .stat-circle:nth-child(1) .stat-num { background-color: #00e676; }
-        .stat-pct { font-size: 11px; font-weight: 700; color: var(--text-main); }
-        .stat-arrow { font-size: 9px; color: var(--primary-green); display: block; margin-top: 20px; }
-
-        /* Mode Selectors (Auto/Manual) */
-        .mode-toggle { display: grid; grid-template-columns: 1fr 1fr; background-color: #11171f; padding: 4px; border-radius: 6px; margin: 0 15px 15px 15px; border: 1px solid var(--border-color); }
-        .mode-btn { border: none; background: transparent; color: var(--text-muted); padding: 10px; font-weight: 700; border-radius: 4px; cursor: pointer; font-size: 13px; text-align: center; }
-        .mode-btn.active { background-color: #00e676; color: #000; }
-
-        /* Stake Input Section */
-        .stake-section { background-color: #161d26; border-top: 1px solid var(--border-color); padding: 15px; border-radius: 16px 16px 0 0; }
+        .chart-section { position: relative; padding: 0 15px; }
+        .chart-wrapper { height: 220px; width: 100%; position: relative; }
+        .stake-section { background-color: #161d26; padding: 15px; border-radius: 16px 16px 0 0; margin-top: 20px; }
         .amount-control { display: flex; justify-content: space-between; align-items: center; background-color: #0c1017; border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; margin-bottom: 12px; }
         .amt-btn { background: #1c2633; border: none; color: #ff9100; font-size: 20px; font-weight: 700; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; }
-        .amt-input-wrapper { text-align: center; flex: 1; }
-        .amt-label { font-size: 11px; color: #ff9100; font-weight: 600; display: block; }
-        .amt-val { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 700; text-align: center; width: 80px; outline: none; }
-        
-        /* Fast Amount Quick Pills */
-        .quick-amounts { display: flex; justify-content: space-between; gap: 5px; margin-bottom: 15px; }
-        .quick-pill { background-color: #0c1017; border: 1px solid var(--border-color); color: var(--text-muted); flex: 1; padding: 8px 0; text-align: center; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; }
-        .quick-pill.active { background-color: rgba(0,230,118,0.2); border-color: var(--primary-green); color: var(--primary-green); }
-
-        /* Profit Loss Tag */
-        .summary-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; padding: 0 5px; }
-        .last-stats { font-size: 11px; color: var(--text-muted); font-weight: 600; }
-        .pnl-text { color: var(--danger-red); font-weight: 700; font-size: 14px; }
-
-        /* Fixed Bottom Nav Bar */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #11171f; border-top: 1px solid var(--border-color); display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 8px 0; text-align: center; }
-        .nav-item { color: var(--text-muted); text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-weight: 600; }
-        .nav-item.active { color: #ff4081; }
-        .nav-icon { font-size: 18px; }
-        .center-action { background: #ff4081; color: #fff; width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 20px; box-shadow: 0 0 10px rgba(255,64,129,0.4); margin-top: -12px; }
+        .amt-val { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 700; text-align: center; width: 80px; }
+        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-buy { background-color: var(--primary-green); color: #000; border: none; padding: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; }
+        .btn-sell { background-color: var(--danger-red); color: #fff; border: none; padding: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; }
+        .pnl-text { font-weight: 700; font-size: 16px; text-align: right; }
     </style>
 </head>
 <body>
 
-    <!-- Header top layout -->
     <header>
         <div class="header-left">
-            <span class="menu-icon">☰</span>
             <div class="account-badge">
-                <span>D</span> $10,000.00
+                <select id="account-type" onchange="loadUserData()" style="background:transparent; color:#ffa726; border:none; font-weight:800; outline:none; cursor:pointer;">
+                    <option value="demo" style="background:#161d26;">Demo (D)</option>
+                    <option value="real" style="background:#161d26;">Real (R)</option>
+                </select>
+                <span id="wallet-balance">$10,000.00</span>
             </div>
-            <a href="#" class="btn-deposit">DEPOSIT</a>
-        </div>
-        <div class="header-right">
-            <span>🔔</span>
-            <span>👤</span>
+            <button class="btn-deposit" onclick="triggerMpesa()">DEPOSIT</button>
         </div>
     </header>
 
-    <!-- Top Categories Option tabs -->
     <div class="trade-tabs">
         <button class="tab-btn">Matches/Differs</button>
-        <button class="tab-btn active">Even/Odd</button>
+        <button class="tab-btn" style="background:#2b394a; color:#fff;">Even/Odd</button>
         <button class="tab-btn">Over/Under</button>
     </div>
 
-    <!-- Volatility Index tag display box -->
     <div class="market-info-box">
         <div class="asset-tag">
             <span class="asset-title">VOL 10 (1S) ▾</span>
-            <span class="asset-price" id="main-asset-price">9379. 0</span>
+            <span class="asset-price" id="main-asset-price">9379.0</span>
         </div>
     </div>
 
-    <!-- Live running Line Chart Section -->
     <div class="chart-section">
-        <div class="chart-wrapper">
-            <canvas id="liveLineChart"></canvas>
-        </div>
-        <div class="live-dot-price" id="dot-price-label">9379.60</div>
+        <div class="chart-wrapper"><canvas id="liveLineChart"></canvas></div>
     </div>
 
-    <!-- Statistics Grid (0-9 bubbles with percentage stats) -->
-    <div class="stats-grid">
-        <div class="stat-circle">
-            <span class="stat-num">0</span>
-            <div class="stat-pct">13%</div>
-            <span class="stat-arrow">▼</span>
+    <div class="stake-section">
+        <div class="amount-control">
+            <button class="amt-btn" onclick="adjustAmount(-1)">−</button>
+            <input type="text" class="amt-val" id="trade-amount" value="10">
+            <button class="amt-btn" onclick="adjustAmount(1)">+</button>
         </div>
-        <div class="stat-circle">
-            <span class="stat-num" style="background:#242f3d">1</span>
-            <div class="stat-pct">8%</div>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+            <span style="color:var(--text-muted);">Payout: +95%</span>
+            <span class="pnl-text" id="pnl-display" style="color:#fff;">Last Trade: $0.00</span>
         </div>
-        <div class="stat-circle">
-            <span class="stat-num" style="background:#242f3d">2</span>
-            <div class="stat-pct">12%</div>
+
+        <div class="action-btns">
+            <button class="btn-buy" onclick="placeLiveTrade('BUY')">▲ BUY (Higher)</button>
+            <button class="btn-sell" onclick="placeLiveTrade('SELL')">▼ SELL (Lower)</button>
         </div>
-        <div class="stat-circle">
-            <span class="stat-num" style="background:#242f3d">3</span>
-            <div class="stat-pct">10%</div>
-        </div>
-        <div class="stat-circle">
-            <span class="stat-num" style="background:#242f3d">4</span>
-            <div class="stat-pct">10%</div>
-        </div>
-        <div class="stat-circle">
-            <span class="stat-num" style="background:#242f3d">5</span>
-            <div class="stat-pct">11%</div>
-        </div>
-        <div class="stat-circle">
-            <span class="stat-num" style="background:#242f3d">6</span>
-            <div class="stat-pct">11%</div>
-        </div>
-        <div class="stat-circle">
-            <span class="stat-num" style="background:#242f3d">7</span>
-            <div class="stat-pct">9%</div>
-        </div>
-        <div class="stat-circle">
+    </div>
+
+    <script>
+        const userId = localStorage.getItem('tradeUserId');
+        if(!userId) { window.location.href = '/join.html'; }
+
+        // Kupakia salio halisi kutoka kwenye Database
+        function loadUserData() {
+            fetch(`/api/user/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                const type = document.getElementById('account-type').value;
+                const bal = type === 'real' ? data.realBalance : data.demoBalance;
+                document.getElementById('wallet-balance').innerText = '$' + bal.toFixed(2);
+            });
+        }
+        window.addEventListener('DOMContentLoaded', loadUserData);
+
+        // MKATABA WA BIASHARA HALISI (WIN/LOSS ENGINE)
+        function placeLiveTrade(direction) {
+            const accountType = document.getElementById('account-type').value;
+            const amount = parseFloat(document.getElementById('trade-amount').value);
+            
+            document.getElementById('pnl-display').innerText = "Trading active (1s)...";
+            document.getElementById('pnl-display').style.color = "#ffb700";
+
+            setTimeout(() => {
+                fetch('/api/trade', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, accountType, amount, direction })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.error) { alert(data.error); return; }
+                    
+                    const pnlText = document.getElementById('pnl-display');
+                    if(data.result === 'WIN') {
+                        pnlText.innerText = `WIN: +$${data.pnl.toFixed(2)}`;
+                        pnlText.style.color = var(--primary-green);
+                    } else {
+                        pnlText.innerText = `LOSS: -$${amount.toFixed(2)}`;
+                        pnlText.style.color = var(--danger-red);
+                    }
+                    document.getElementById('wallet-balance').innerText = '$' + data.newBalance.toFixed(2);
+                });
+            }, 1000);
+        }
+
+        // MFUMO WA LIPA NA M-PESA POPUP
+        function triggerMpesa() {
+            const phone = prompt("Enter your Safaricom M-Pesa Number (e.g. 0712345678):");
+            const amount = prompt("Enter Deposit Amount in USD ($):", "10");
+            if(!phone || !amount) return;
+
+            fetch('/api/deposit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, phone, amountUSD: amount })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                setTimeout(loadUserData, 6000); // Pakia upya salio baada ya sekunde 6
+            });
+        }
+
+        function adjustAmount(val) {
+            let current = parseFloat(document.getElementById('trade-amount').value);
+            if(!isNaN(current) && (current + val) > 0) { document.getElementById('trade-amount').value = current + val; }
+        }
+
+        // LINE CHART ENGINE (Kama ilivyokuwa mwanzo kwenye picha)
+        const ctx = document.getElementById('liveLineChart').getContext('2d');
+        let chartData =;
+        const liveChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: Array.from({length: 10}, (_, i) => i), datasets: [{ data: chartData, borderColor: '#ffffff', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.3 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { position: 'right', grid: { color: '#161d26' } } } }
+        });
+        setInterval(() => {
+            let change = (Math.random() - 0.5) * 4;
+            let lastVal = chartData[chartData.length - 1] + change;
+            document.getElementById('main-asset-price').innerText = Math.floor(lastVal) + '. ' + Math.floor(Math.random() * 10);
+            chartData.push(lastVal); chartData.shift(); liveChart.update();
+        }, 1000);
+    </script>
+</body>
+</html>
