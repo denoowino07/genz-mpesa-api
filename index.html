@@ -19,29 +19,29 @@
     <!-- NAVBAR -->
     <header class="p-5 border-b border-gray-900 bg-[#06090e] sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-white tracking-wider cursor-pointer" onclick="switchView('landing')">GENZTRENDING</h1>
+            <h1 class="text-xl font-bold text-white tracking-wider cursor-pointer" onclick="window.location.reload()">GENZTRENDING</h1>
             
-            <!-- Hizi zitaonekana tu mtumiaji akiwa ameingia ndani ya mfumo -->
-            <nav id="main-nav" class="space-x-6" style="display: none;">
+            <!-- Main navigation inside the platform (Hidden by default) -->
+            <nav id="main-nav" class="space-x-6 hidden">
                 <button onclick="switchView('dashboard')" id="nav-dashboard" class="text-white font-medium text-sm">Dashboard</button>
                 <button onclick="switchView('wallet')" id="nav-wallet" class="text-gray-400 font-medium text-sm">My Wallet</button>
             </nav>
 
             <!-- Authentication top buttons -->
-            <div class="flex items-center space-x-6" id="auth-nav-buttons" style="display: flex;">
+            <div class="flex items-center space-x-6" id="auth-nav-buttons">
                 <button onclick="switchView('login')" class="text-gray-300 hover:text-white font-medium text-sm transition">Log in</button>
                 <button onclick="switchView('register')" class="bg-neon-green text-black font-bold px-4 py-2 rounded-full text-sm transition">Get Started</button>
             </div>
             
-            <button id="logout-btn" onclick="logout()" class="text-red-400 hover:text-red-300 font-medium text-sm transition" style="display: none;">Log Out</button>
+            <button id="logout-btn" onclick="logout()" class="text-red-400 hover:text-red-300 font-medium text-sm transition hidden">Log Out</button>
         </div>
     </header>
 
     <!-- MAIN CONTENT CONTAINER -->
     <main class="container mx-auto px-6 flex-grow flex flex-col justify-center my-8">
 
-        <!-- VIEW 0: LANDING PAGE (Ukurasa wako ulioupenda sasa umerudi vizuri) -->
-        <div id="view-landing" class="view-section text-center max-w-2xl mx-auto py-12" style="display: block;">
+        <!-- VIEW 0: LANDING PAGE -->
+        <div id="view-landing" class="view-section text-center max-w-2xl mx-auto py-12">
             <div class="inline-flex items-center gap-2 badge-bg text-[#00ff66] px-4 py-1.5 rounded-full text-xs font-medium mb-8">
                 ✨ Over 1 million traders and counting
             </div>
@@ -72,7 +72,7 @@
         </div>
 
         <!-- VIEW 1: DASHBOARD TERMINAL -->
-        <div id="view-dashboard" class="view-section max-w-5xl mx-auto w-full" style="display: none;">
+        <div id="view-dashboard" class="view-section max-w-5xl mx-auto w-full hidden">
             <div class="mb-8 p-6 rounded-lg card-bg border border-[#00ff66]/30 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
                     <h2 class="text-xl font-semibold text-white">FX Markets Are Live</h2>
@@ -110,7 +110,7 @@
         </div>
 
         <!-- VIEW 2: WALLET -->
-        <div id="view-wallet" class="view-section max-w-5xl mx-auto w-full" style="display: none;">
+        <div id="view-wallet" class="view-section max-w-5xl mx-auto w-full hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-1 p-6 rounded-lg card-bg border border-[#00ff66]/20">
                     <h3 class="text-gray-400 text-sm">Main Wallet Balance</h3>
@@ -130,7 +130,7 @@
         </div>
 
         <!-- VIEW 3: LOGIN FORM -->
-        <div id="view-login" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-[#00ff66]/30" style="display: none;">
+        <div id="view-login" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-[#00ff66]/30 hidden">
             <h3 class="text-2xl font-bold text-white text-center mb-6">Sign In</h3>
             <div class="space-y-4">
                 <input type="email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
@@ -141,7 +141,8 @@
         </div>
 
         <!-- VIEW 4: REGISTER FORM -->
-        <div id="view-register" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-gray-800" style="display: none;">
+        <div id="view-register" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-gray-800 hidden">
             <h3 class="text-2xl font-bold text-white text-center mb-6">Create Free Account</h3>
             <div class="space-y-4">
                 <input type="text" placeholder="Full Name" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
+                <input type="email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]">
