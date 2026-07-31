@@ -1,140 +1,344 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sw">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenZTrending - Trading Made Easy</title>
-    <script src="https://tailwindcss.com"></script>
+    <title>AutoTraders - Trading Made Easy</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { background-color: #06090e; color: #c9d1d9; }
-        .neon-green { color: #00ff66; }
-        .bg-neon-green { background-color: #00ff66; }
-        .bg-neon-green:hover { background-color: #00cc52; }
-        .card-bg { background-color: #0d1117; }
-        .badge-bg { background-color: rgba(0, 255, 102, 0.05); border: 1px solid rgba(0, 255, 102, 0.15); }
+        :root {
+            --bg-color: #050b14;
+            --card-bg: #0b1528;
+            --primary-color: #00ff87;
+            --text-main: #ffffff;
+            --text-muted: #8fa0b5;
+            --border-color: #1e293b;
+            --red-color: #ff4a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Navigation Bar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .logo span {
+            color: var(--primary-color);
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-right: 25px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .btn-nav {
+            background-color: var(--primary-color);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* LANDING PAGE (HOME) SCREEN */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 80px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            background: rgba(0, 255, 135, 0.1);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 255, 135, 0.2);
+        }
+
+        h1 {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        h1 span {
+            color: var(--primary-color);
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 60px;
+        }
+
+        .btn-main {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 16px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-main:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 135, 0.4);
+        }
+
+        .btn-demo {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-demo:hover {
+            border-color: var(--text-main);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .feature-item {
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .feature-item span {
+            color: var(--primary-color);
+        }
+
+        /* TRADING INTERFACE SCREEN (HIDDEN BY DEFAULT) */
+        #trading-screen {
+            display: none;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .trading-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .trading-container {
+                grid-template-columns: 1fr;
+            }
+            h1 { font-size: 38px; }
+        }
+
+        .trading-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .demo-banner {
+            background: linear-gradient(90deg, rgba(0,255,135,0.1), transparent);
+            border-left: 4px solid var(--primary-color);
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-box {
+            height: 350px;
+            background: #030811;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Rahisi ya Live Price Simulation */
+        .live-price-display {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .trade-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .trade-inputs input {
+            background: #030811;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .action-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-buy {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-sell {
+            background-color: var(--red-color);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+        }
     </style>
 </head>
-<body class="font-sans antialiased min-h-screen flex flex-col justify-between">
+<body>
 
-    <!-- NAVBAR -->
-    <header class="p-5 border-b border-gray-900 bg-[#06090e] sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-white tracking-wider cursor-pointer" onclick="window.location.reload()">GENZTRENDING</h1>
+    <!-- Header Navigation -->
+    <nav>
+        <div class="logo">Auto<span>Traders</span></div>
+        <div class="nav-links">
+            <a href="#" onclick="showHome()">Home</a>
+            <a href="#" class="login-link">Log In</a>
+        </div>
+        <a href="#" class="btn-nav" onclick="startTrading()">Get Started</a>
+    </nav>
+
+    <!-- 1. LANDING PAGE SCREEN -->
+    <div id="home-screen">
+        <section class="hero-section">
+            <div class="badge">✨ Over 1 million traders and counting</div>
+            <h1>Trading Made Easy, <br><span>Trade Smart</span></h1>
+            <p class="hero-desc">The best Trusted Binary Automated trading platform with fast withdrawals and fast response customer service</p>
             
-            <nav id="main-nav" class="space-x-6 hidden">
-                <button onclick="switchView('dashboard')" id="nav-dashboard" class="text-white font-medium text-sm">Dashboard</button>
-                <button onclick="switchView('wallet')" id="nav-wallet" class="text-gray-400 font-medium text-sm">My Wallet</button>
-            </nav>
+            <div class="cta-buttons">
+                <button class="btn-main" onclick="startTrading()">Get Started — It's Free →</button>
+                <button class="btn-demo" onclick="startTrading()">▷ Try Demo</button>
+            </div>
 
-            <div class="flex items-center space-x-6" id="auth-nav-buttons">
-                <button onclick="switchView('login')" class="text-gray-300 hover:text-white font-medium text-sm transition">Log in</button>
-                <button onclick="switchView('register')" class="bg-neon-green text-black font-bold px-4 py-2 rounded-full text-sm transition">Get Started</button>
+            <div class="features-grid">
+                <div class="feature-item"><span>⚡</span> &lt;1s execution</div>
+                <div class="feature-item"><span>%</span> Up to 95% payout</div>
+                <div class="feature-item"><span>🛡️</span> Bank-level security</div>
+                <div class="feature-item"><span>💰</span> Zero fees</div>
             </div>
-            
-            <button id="logout-btn" onclick="logout()" class="text-red-400 hover:text-red-300 font-medium text-sm transition hidden">Log Out</button>
-        </div>
-    </header>
+        </section>
+    </div>
 
-    <!-- MAIN CONTENT -->
-    <main class="container mx-auto px-6 flex-grow flex flex-col justify-center my-8">
-
-        <!-- VIEW 0: LANDING PAGE -->
-        <div id="view-landing" class="view-section text-center max-w-2xl mx-auto py-12" style="display: block;">
-            <div class="inline-flex items-center gap-2 badge-bg text-[#00ff66] px-4 py-1.5 rounded-full text-xs font-medium mb-8">
-                ✨ Over 1 million traders and counting
+    <!-- 2. TRADING DEMO SCREEN (Inafunguka papo hapo mtu akibofya kujiunga) -->
+    <div id="trading-screen">
+        <div class="demo-banner">
+            <div>
+                <strong style="color: var(--primary-color);">DEMO ACCOUNT ACTIVE</strong>
+                <p style="font-size: 12px; color: var(--text-muted);">Unatumia pesa za mfano kujifunza</p>
             </div>
-            <h2 class="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight leading-tight">
-                Trading Made Easy, <br><span class="neon-green">Trade Smart</span>
-            </h2>
-            <p class="text-gray-400 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-                The best Trusted Binary Automated trading platform with fast withdrawals and fast response customer service
-            </p>
-            <div class="flex flex-col items-center gap-4 max-w-xs mx-auto mb-16 w-full">
-                <button onclick="switchView('register')" class="w-full bg-neon-green text-black font-bold py-3.5 rounded-full text-sm transition tracking-wide shadow-lg shadow-green-500/10">
-                    Get Started – It's Free →
-                </button>
-                <button onclick="startDemo()" class="w-full bg-gray-900/50 hover:bg-gray-900 border border-gray-800 text-white font-medium py-3.5 rounded-full text-sm transition">
-                    ▷ Try Demo
-                </button>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-gray-400 border-t border-gray-900 pt-8">
-                <div class="flex items-center justify-center gap-1.5">⚡ &lt;1s execution</div>
-                <div class="flex items-center justify-center gap-1.5">📈 Up to 95% payout</div>
-                <div class="flex items-center justify-center gap-1.5">🛡️ Bank-level security</div>
-                <div class="flex items-center justify-center gap-1.5">💎 Zero fees</div>
-            </div>
+            <button onclick="showHome()" style="background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 5px 10px; border-radius: 4px; cursor: pointer;">Rudi Home</button>
         </div>
 
-        <!-- VIEW 1: DASHBOARD -->
-        <div id="view-dashboard" class="view-section max-w-5xl mx-auto w-full" style="display: none;">
-            <div class="mb-8 p-6 rounded-lg card-bg border border-[#00ff66]/30 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div>
-                    <h2 class="text-xl font-semibold text-white">FX Markets Are Live</h2>
-                    <p class="text-gray-400" id="welcome-message">Welcome inside your real trading terminal.</p>
-                </div>
-                <div class="bg-green-900/30 text-[#00ff66] px-4 py-2 rounded border border-[#00ff66]/30 font-mono text-sm animate-pulse">● Bot Status: ACTIVE</div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="p-6 rounded-lg card-bg border border-gray-800">
-                    <h3 class="text-sm text-gray-400" id="balance-title">Real Account Balance</h3>
-                    <p class="text-3xl font-bold text-white font-mono mt-2" id="account-balance">$12,450.80</p>
-                </div>
-                <div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm text-gray-400">Active Trades</h3><p class="text-3xl font-bold text-[#00ff66] font-mono mt-2">3 Running</p></div>
-                <div class="p-6 rounded-lg card-bg border border-gray-800"><h3 class="text-sm text-gray-400">Bot Win Rate</h3><p class="text-3xl font-bold text-white font-mono mt-2">78.4%</p></div>
-            </div>
-            <div class="mb-8 p-4 rounded-lg card-bg border border-gray-800">
-                <h3 class="text-lg font-semibold text-white mb-4">Live Advanced Forex Chart</h3>
-                <div style="height: 450px; width:100%">
-                    <div id="tradingview_chart" style="height:100%; width:100%"></div>
-                    <script type="text/javascript" src="https://tradingview.com"></script>
-                    <script type="text/javascript">
-                    new TradingView.widget({"width": "100%", "height": "100%", "symbol": "FX:EURUSD", "interval": "15", "theme": "dark", "style": "1", "locale": "en", "container_id": "tradingview_chart"});
-                    </script>
+        <div class="trading-container">
+            <!-- Sehemu ya Chati -->
+            <div class="trading-card">
+                <h3 style="margin-bottom: 15px;">BTC/USD Live Chart</h3>
+                <div class="chart-box">
+                    <!-- Namba inayobadilika kuiga soko halisi -->
+                    <div class="live-price-display" id="live-price">$94,250.40</div>
                 </div>
             </div>
-        </div>
 
-        <!-- VIEW 2: WALLET -->
-        <div id="view-wallet" class="view-section max-w-5xl mx-auto w-full" style="display: none;">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-1 p-6 rounded-lg card-bg border border-[#00ff66]/20"><h3 class="text-gray-400 text-sm">Main Wallet Balance</h3><p class="text-3xl font-bold text-white font-mono mt-2">$5,240.15</p></div>
-                <div class="lg:col-span-2 p-6 rounded-lg card-bg border border-gray-800">
-                    <h3 class="text-xl font-bold text-white mb-6">Deposit Funds Via M-Pesa</h3>
-                    <div class="p-4 bg-[#06090e] rounded-lg border border-gray-800">
-                        <input type="text" placeholder="Phone Number" class="w-full bg-[#161b22] text-white p-2.5 rounded mb-4 border border-gray-800">
-                        <input type="number" placeholder="Amount" class="w-full bg-[#161b22] text-white p-2.5 rounded mb-4 border border-gray-800">
-                        <button class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm">Pay with M-Pesa</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW 3: LOGIN FORM -->
-        <div id="view-login" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-[#00ff66]/30" style="display: none;">
-            <h3 class="text-2xl font-bold text-white text-center mb-6">Sign In</h3>
-            <form onsubmit="submitForm(event, '/auth/login', 'Real Account')" class="space-y-4">
-                <input type="email" id="login-email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
-                <input type="password" id="login-password" placeholder="Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
-                <button type="submit" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Access Account</button>
-            </form>
-        </div>
-
-        <!-- VIEW 4: REGISTER FORM (JOIN) -->
-        <div id="view-register" class="view-section max-w-md mx-auto w-full p-6 rounded-lg card-bg border border-gray-800" style="display: none;">
-            <h3 class="text-2xl font-bold text-white text-center mb-6">Create Free Account</h3>
-            <form onsubmit="submitForm(event, '/auth/register', 'Real Account')" class="space-y-4">
-                <input type="text" id="reg-name" placeholder="Full Name" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
-                <input type="email" id="reg-email" placeholder="Email Address" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
-                <input type="password" id="reg-password" placeholder="Choose Password" class="w-full bg-[#06090e] text-white p-3 rounded border border-gray-800 focus:outline-none focus:border-[#00ff66]" required>
-                <button type="submit" class="w-full bg-neon-green text-black font-bold py-3 rounded-full text-sm transition">Register & Open Terminal</button>
-            </form>
-        </div>
-
-    </main>
-
-    <footer class="p-6 text-center text-xs text-gray-600 border-t border-gray-950 bg-[#0d1117]">
-        <p>&copy; 2026 GenZTrending FX. All rights reserved.</p>
-    </footer>
-
-    <script>
-        function switchView(viewName) {
+            <!-- Sehemu ya Udhibiti / Biashara -->
+            <div class="control-panel trading-card">
