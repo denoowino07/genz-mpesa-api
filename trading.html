@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -130,37 +130,37 @@
         <header>
             <div class="logo">GENZ TRADING</div>
             <div class="balance-card">
-                <span style="color: #909294; font-size: 14px;">Salio Lako:</span>
+                <span style="color: #909294; font-size: 14px;">Your Balance:</span>
                 <div style="font-size: 20px; font-weight: bold; color: #f0b90b;">$1,450.00</div>
             </div>
         </header>
 
         <div class="main-grid">
-            <!-- Sehemu ya Grafu na Bei -->
+            <!-- Chart & Price Section -->
             <div class="chart-section">
                 <div>
                     <div class="market-title">Volatility 10 (1S) Index</div>
-                    <div id="price-container" class="live-price">Inapakia bei...</div>
+                    <div id="price-container" class="live-price">Loading price...</div>
                 </div>
                 <div class="dummy-chart">
-                    <p>Soko Liko Wazi Mubashara</p>
+                    <p>Market is Live</p>
                 </div>
             </div>
 
-            <!-- Sehemu ya Kununua/Kuuza na Pesa -->
+            <!-- Order & Finance Section -->
             <div class="trading-section">
-                <h3>Weka Oder</h3>
+                <h3>Place Order</h3>
                 <div class="input-group">
-                    <label>Kiasi cha Kutrade ($)</label>
+                    <label>Amount to Trade ($)</label>
                     <input type="number" value="10" min="1">
                 </div>
 
-                <button class="btn btn-buy">BUY (Panda)</button>
-                <button class="btn btn-sell">SELL (Shuka)</button>
+                <button class="btn btn-buy">BUY (Call)</button>
+                <button class="btn btn-sell">SELL (Put)</button>
 
                 <hr style="border-color: #2b3139; margin: 10px 0;">
 
-                <h3>Miamala</h3>
+                <h3>Transactions</h3>
                 <div class="finance-buttons">
                     <button class="btn btn-deposit" onclick="openDeposit()">DEPOSIT</button>
                     <button class="btn btn-withdraw" onclick="openWithdraw()">WITHDRAW</button>
@@ -169,13 +169,13 @@
         </div>
     </div>
 
-    <!-- Mfumo wa JavaScript wa Kuvuta Bei kutoka Deriv -->
+    <!-- Deriv WebSocket Live Price Script -->
     <script>
         const priceContainer = document.getElementById('price-container');
-        let msimboYaZamani = 0;
+        let lastPrice = 0;
 
         function connectMarket() {
-            // Tunatumia ID ya majaribio 1089 kuvuta soko la kweli
+            // REPLACE '1089' WITH YOUR ACTUAL DERIV APP ID TO ENABLE LIVE PRICE PRODUCTION
             const ws = new WebSocket('wss://://derivws.com');
 
             ws.onopen = function() {
@@ -185,38 +185,35 @@
             ws.onmessage = function(event) {
                 const data = JSON.parse(event.data);
                 if (data.tick) {
-                    const beiHalisi = data.tick.quote;
-                    priceContainer.innerText = beiHalisi;
+                    const currentPrice = data.tick.quote;
+                    priceContainer.innerText = currentPrice;
                     
-                    // Badilisha rangi ya bei kulingana na mabadiliko
-                    if (beiHalisi > msimboYaZamani) {
-                        priceContainer.style.color = '#0ecb81'; // Kijani ikipanda
+                    if (currentPrice > lastPrice) {
+                        priceContainer.style.color = '#0ecb81'; // Green on tick up
                     } else {
-                        priceContainer.style.color = '#f6465d'; // Nyekundu ikishuka
+                        priceContainer.style.color = '#f6465d'; // Red on tick down
                     }
-                    msimboYaZamani = beiHalisi;
+                    lastPrice = currentPrice;
                 }
             };
 
             ws.onerror = function(err) {
-                console.log('Tatizo la mtandao wa soko:', err);
+                console.log('Market WebSocket Error:', err);
             };
 
             ws.onclose = function() {
-                // Ikishatata inajikata na kujiunga tena yenyewe
-                setTimeout(connectMarket, 5000);
+                setTimeout(connectMarket, 5000); // Auto reconnect
             };
         }
 
         function openDeposit() {
-            alert("Kuweka pesa, tuma kwa namba ya wakala au wasiliana nasi moja kwa moja kupitia Live Chat hapo chini kulia!");
+            alert("To deposit funds, please contact support via the Live Chat widget at the bottom right corner.");
         }
 
         function openWithdraw() {
-            alert("Kutoa pesa, fungua mazungumzo kwenye Live Chat hapo chini na utume namba yako pamoja na kiasi unachotaka kutoa.");
+            alert("To withdraw your earnings, open a live chat session and provide your account details and amount.");
         }
 
-        // Washa soko punde tu ukurasa unapofunguka
         connectMarket();
     </script>
 
@@ -224,9 +221,9 @@
     <script type="text/javascript">
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
     (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script");
     s1.async=true;
-    s1.src='https://embed.tawk.to/6a705f86055f021d4ace2422/1jv3fa9s4';
+    s1.src='https://tawk.to';
     s1.charset='UTF-8';
     s1.setAttribute('crossorigin','*');
     s0.parentNode.insertBefore(s1,s0);
