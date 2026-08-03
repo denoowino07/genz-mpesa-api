@@ -57,20 +57,15 @@
     </div>
 
     <script>
-        // =========================================================
-        // PALE ULIPOOMBA MSAADA WA KUJAZA:
-        // Futa maneno yaliyopo ndani ya alama "" hapa chini na uweke hiyo tokeni yako ya Deriv
-        // =========================================================
-        const DERIV_TOKEN_YAKO = "WEKA_TOKEN_YAKO_HAPA";
+        // Hapa nimekuwekea ile tokeni yako tayari kabisa!
+        const DERIV_TOKEN_YAKO = "188dd1a91d72c1400dae14838aaa84f0afa10008f3a813b9b1f7bfa1dc1f1e69";
         
-        // Unganisha na Deriv API
         const socket = new WebSocket('wss://://derivws.com');
         const statusElement = document.getElementById("connection-status");
         const priceElement = document.getElementById("loading-price-id");
 
         socket.onopen = function(evt) {
             statusElement.innerText = "Inathibitisha Akaunti...";
-            // Inatuma tokeni yako ili kuruhusu soko kusoma
             socket.send(JSON.stringify({ authorize: DERIV_TOKEN_YAKO }));
         };
 
@@ -78,10 +73,9 @@
         socket.onmessage = function(msg) {
             const data = JSON.parse(msg.data);
             
-            // Akaunti ikishakubalika, inaomba soko la Volatility 10 mara moja
             if (data.msg_type === 'authorize') {
                 if (data.error) {
-                    statusElement.innerText = "Tokeni Sio Sahihi!";
+                    statusElement.innerText = "Tokeni Sio Sahihi au Imezimwa!";
                     statusElement.style.color = "#ff4a5a";
                 } else {
                     statusElement.innerText = "Akaunti Imethibitishwa! Soko Liko Wazi";
@@ -90,15 +84,14 @@
                 }
             }
             
-            // Bei inapoanza kuingia
             if (data.msg_type === 'tick' && data.tick) {
                 const beiYaSasa = data.tick.quote;
                 priceElement.innerText = "$" + parseFloat(beiYaSasa).toFixed(2);
                 
                 if (beiYaSasa > beiYaZamani) {
-                    priceElement.style.color = "#00ff00"; // Bei ikipanda (Kijani)
+                    priceElement.style.color = "#00ff00"; 
                 } else if (beiYaSasa < beiYaZamani) {
-                    priceElement.style.color = "#ff4a5a"; // Bei ikishuka (Nyekundu)
+                    priceElement.style.color = "#ff4a5a"; 
                 }
                 beiYaZamani = beiYaSasa;
             }
