@@ -8,7 +8,7 @@
         body {
             background-color: #0b0e14;
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -17,100 +17,46 @@
         }
         h1 { color: #00bfff; margin-bottom: 5px; }
         .market-title { color: #8a919e; font-size: 1.1rem; margin-bottom: 20px; }
-        .trading-box {
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
             background-color: #151a24;
             border: 2px solid #222b3c;
             border-radius: 12px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
+            overflow: hidden;
             box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
-        }
-        .price-display {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ff4a5a;
-            margin: 20px 0;
-            letter-spacing: 1px;
-            transition: color 0.2s ease;
-        }
-        .status-badge {
-            background-color: #222b3c;
-            color: #ffaa00;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            display: inline-block;
         }
     </style>
 </head>
 <body>
 
     <h1>GENZ TRADING</h1>
-    <div class="market-title">Volatility 10 (1S) Index Live Market</div>
+    <div class="market-title">Volatility 10 (1S) Index Real-Time Chart</div>
 
-    <div class="trading-box">
-        <div class="status-badge" id="connection-status">Connecting to market...</div>
-        <div class="price-display" id="loading-price-id">Loading price...</div>
-        <p style="color: #8a919e; font-size: 0.9rem;">Price updates every second</p>
+    <!-- TradingView Chart Widget Section -->
+    <div class="chart-container">
+        <div id="tradingview_chart"></div>
     </div>
 
-    <script>
-        const DERIV_TOKEN = "188dd1a91d72c1400dae14838aaa84f0afa10008f3a813b9b1f7bfa1dc1f1e69";
-        
-        // Using standard app_id 1089 for live data feeds
-        const socket = new WebSocket('wss://://derivws.com');
-        const statusElement = document.getElementById("connection-status");
-        const priceElement = document.getElementById("loading-price-id");
-
-        socket.onopen = function(evt) {
-            statusElement.innerText = "Authenticating Account...";
-            socket.send(JSON.stringify({ authorize: DERIV_TOKEN }));
-        };
-
-        let lastPrice = 0;
-        socket.onmessage = function(msg) {
-            const data = JSON.parse(msg.data);
-            
-            // If token authorization fails or needs backup, we request public ticks directly
-            if (data.msg_type === 'authorize') {
-                if (data.error) {
-                    console.log("Token Auth Error, switching to public stream...");
-                    statusElement.innerText = "Live Market Active (Public)";
-                    statusElement.style.color = "#00ff00";
-                    socket.send(JSON.stringify({ ticks: "1HZ10V" }));
-                } else {
-                    statusElement.innerText = "Account Connected! Market Live";
-                    statusElement.style.color = "#00ff00";
-                    socket.send(JSON.stringify({ ticks: "1HZ10V" }));
-                }
-            }
-            
-            if (data.msg_type === 'tick' && data.tick) {
-                const currentPrice = data.tick.quote;
-                priceElement.innerText = "$" + parseFloat(currentPrice).toFixed(2);
-                
-                if (currentPrice > lastPrice) {
-                    priceElement.style.color = "#00ff00"; // Green for UP
-                } else if (currentPrice < lastPrice) {
-                    priceElement.style.color = "#ff4a5a"; // Red for DOWN
-                }
-                lastPrice = currentPrice;
-            }
-        };
-
-        socket.onerror = function(err) {
-            statusElement.innerText = "Connection Error!";
-            statusElement.style.color = "#ff4a5a";
-            // Fallback: Request public data if authorization blocked the socket
-            socket.send(JSON.stringify({ ticks: "1HZ10V" }));
-        };
-
-        socket.onclose = function() {
-            statusElement.innerText = "Connection Closed.";
-            statusElement.style.color = "#ff4a5a";
-        };
+    <!-- Load TradingView Library -->
+    <script type="text/javascript" src="https://tradingview.com"></script>
+    <script type="text/javascript">
+        new TradingView.widget({
+            "width": "100%",
+            "height": "100%",
+            "symbol": "DERIV:1HZ10V", // This is Volatility 10 (1S) Index from Deriv
+            "interval": "1",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "container_id": "tradingview_chart"
+        });
     </script>
 
 </body>
