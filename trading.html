@@ -7,16 +7,15 @@
     <style>
         body { background-color: #0b0e14; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         
-        /* BAR YA JUU YENYE KUBADILISHA AKAUNTI */
         .header-bar { width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222b3c; }
         .logo { color: #00bfff; font-weight: bold; font-size: 1.2rem; }
         
         .account-switcher { display: flex; background-color: #151a24; border-radius: 6px; padding: 3px; border: 1px solid #222b3c; }
         .acc-tab { padding: 5px 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; border-radius: 4px; color: #8a919e; }
-        .acc-tab.active-demo { background-color: #ffaa00; color: #0b0e14; }
+        .acc-tab.active-demo { background-color: #ff4a5a; color: #ffffff; }
         .acc-tab.active-real { background-color: #00ff00; color: #0b0e14; }
         
-        .balance-display { font-weight: bold; font-size: 0.9rem; margin-left: 5px; background-color: #151a24; padding: 5px 8px; border-radius: 6px; border: 1px solid #222b3c; }
+        .balance-display { font-weight: bold; font-size: 0.9rem; margin-left: 5px; background-color: #151a24; padding: 5px 8px; border-radius: 6px; border: 1px solid #222b3c; color: #ffaa00; }
 
         .market-modes { display: flex; justify-content: space-around; width: 100%; max-width: 480px; margin: 15px 0; gap: 5px; }
         .mode-tab { background-color: #151a24; padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; border: 1px solid #222b3c; color: #8a919e; }
@@ -24,8 +23,8 @@
 
         .trading-box { background-color: #151a24; border: 1px solid #222b3c; border-radius: 12px; padding: 15px; width: 95%; max-width: 480px; box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5); }
         
-        /* SANDUKU LA CHATI */
-        .chart-box { background-color: #0b0e14; border-radius: 8px; padding: 5px; text-align: center; margin-bottom: 15px; height: 240px; overflow: hidden; border: 1px solid #222b3c; }
+        /* FIX: BOX LA CHATI MPYA YA TRADINGVIEW */
+        .chart-box { background-color: #0b0e14; border-radius: 8px; margin-bottom: 15px; height: 260px; overflow: hidden; border: 1px solid #222b3c; }
         iframe { width: 100%; height: 100%; border: none; }
 
         .execution-modes { display: flex; width: 100%; gap: 10px; margin-bottom: 15px; }
@@ -39,7 +38,6 @@
 </head>
 <body>
 
-    <!-- BAR YA JUU YENYE SEHEMU YA KUBADILISHA AKAUNTI -->
     <div class="header-bar">
         <div class="logo">GenzTrading.com</div>
         
@@ -55,7 +53,7 @@
     <div class="market-modes">
         <div class="mode-tab" id="tab-differs" onclick="switchMarketMode('differs')">Matches/Differs</div>
         <div class="mode-tab active" id="tab-even" onclick="switchMarketMode('even')">Even/Odd</div>
-        <div class="market-modes-sub" style="display:none"></div>
+        <div class="mode-tab" id="tab-under" onclick="switchMarketMode('under')">Over/Under</div>
     </div>
 
     <div class="trading-box">
@@ -64,9 +62,9 @@
             <span style="color: #00ff00;">Market Connected</span>
         </div>
 
-        <!-- SEHEMU YA CHATI INAYOTEMBEA LIVE -->
+        <!-- FIXED: CHATI MPYA YA TRADINGVIEW AMBAYO HAIIBI LOG IN YA DERIV -->
         <div class="chart-box">
-            <iframe src="https://deriv.com" allow="autoplay"></iframe>
+            <iframe src="https://tradingview.com"></iframe>
         </div>
 
         <div class="execution-modes">
@@ -85,7 +83,6 @@
     <script>
         let currentAccount = 'demo';
         
-        // LOGIC YA KUBADILISHA AKAUNTI (DEMO NA REAL)
         function switchAccount(type) {
             currentAccount = type;
             const demoTab = document.getElementById('tab-demo');
@@ -101,9 +98,8 @@
                 balanceTxt.style.color = "#ffaa00";
             } else {
                 realTab.classList.add('active-real');
-                balanceTxt.innerText = "$ 0.00"; // Akaunti halisi inaanzia sifuri hadi mteja aweke pesa
+                balanceTxt.innerText = "$ 0.00";
                 balanceTxt.style.color = "#00ff00";
-                alert("Real Account Activated! Please link your Deriv MT5 token to sync funds.");
             }
         }
 
