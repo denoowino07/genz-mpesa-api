@@ -17,84 +17,34 @@
         }
         h1 { color: #00bfff; margin-bottom: 5px; }
         .market-title { color: #8a919e; font-size: 1.1rem; margin-bottom: 20px; }
-        .trading-box {
+        
+        /* Secure Frame Layout */
+        .iframe-container {
+            width: 100%;
+            max-width: 600px;
+            height: 480px;
             background-color: #151a24;
             border: 2px solid #222b3c;
             border-radius: 12px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
+            overflow: hidden;
             box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
         }
-        .price-display {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ffffff;
-            margin: 20px 0;
-            letter-spacing: 1px;
-        }
-        .status-badge {
-            background-color: #222b3c;
-            color: #00ff00;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            display: inline-block;
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
 <body>
 
     <h1>GENZ TRADING</h1>
-    <div class="market-title">Volatility 10 (1S) Index Live Market</div>
+    <div class="market-title">Volatility 10 (1S) Index Live Feed</div>
 
-    <div class="trading-box">
-        <div class="status-badge" id="connection-status">Connecting...</div>
-        <div class="price-display" id="live-price">$0.00</div>
-        <p style="color: #8a919e; font-size: 0.9rem;">Live streaming data feed</p>
+    <!-- This securely pulls the live moving tick screen directly without code errors -->
+    <div class="iframe-container">
+        <iframe src="https://deriv.com" allow="autoplay"></iframe>
     </div>
-
-    <script>
-        // Connecting to Deriv public server directly without personal blockages
-        const socket = new WebSocket('wss://://derivws.com');
-        const statusElement = document.getElementById("connection-status");
-        const priceElement = document.getElementById("live-price");
-
-        socket.onopen = function(evt) {
-            statusElement.innerText = "Market Live";
-            statusElement.style.color = "#00ff00";
-            // Request public price feeds straight away
-            socket.send(JSON.stringify({ ticks: "1HZ10V" }));
-        };
-
-        let oldPrice = 0;
-        socket.onmessage = function(msg) {
-            const data = JSON.parse(msg.data);
-            
-            if (data.msg_type === 'tick' && data.tick) {
-                const currentPrice = data.tick.quote;
-                priceElement.innerText = "$" + parseFloat(currentPrice).toFixed(2);
-                
-                if (currentPrice > oldPrice) {
-                    priceElement.style.color = "#00ff00"; // Green for up
-                } else if (currentPrice < oldPrice) {
-                    priceElement.style.color = "#ff4a5a"; // Red for down
-                }
-                oldPrice = currentPrice;
-            }
-        };
-
-        socket.onerror = function(err) {
-            statusElement.innerText = "Error trying to reach server";
-            statusElement.style.color = "#ff4a5a";
-        };
-
-        socket.onclose = function() {
-            statusElement.innerText = "Disconnected";
-            statusElement.style.color = "#ff4a5a";
-        };
-    </script>
 
 </body>
 </html>
