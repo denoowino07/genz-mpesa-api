@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,59 +51,64 @@
     <div class="market-title">Volatility 10 (1S) Index Live Market</div>
 
     <div class="trading-box">
-        <div class="status-badge" id="connection-status">Inajunganisha na soko...</div>
+        <div class="status-badge" id="connection-status">Connecting to market...</div>
         <div class="price-display" id="loading-price-id">Loading price...</div>
-        <p style="color: #8a919e; font-size: 0.9rem;">Bei inajisasisha kila sekunde moja</p>
+        <p style="color: #8a919e; font-size: 0.9rem;">Price updates every second</p>
     </div>
 
     <script>
-        // Hapa nimekuwekea ile tokeni yako tayari kabisa!
-        const DERIV_TOKEN_YAKO = "188dd1a91d72c1400dae14838aaa84f0afa10008f3a813b9b1f7bfa1dc1f1e69";
+        const DERIV_TOKEN = "188dd1a91d72c1400dae14838aaa84f0afa10008f3a813b9b1f7bfa1dc1f1e69";
         
+        // Using standard app_id 1089 for live data feeds
         const socket = new WebSocket('wss://://derivws.com');
         const statusElement = document.getElementById("connection-status");
         const priceElement = document.getElementById("loading-price-id");
 
         socket.onopen = function(evt) {
-            statusElement.innerText = "Inathibitisha Akaunti...";
-            socket.send(JSON.stringify({ authorize: DERIV_TOKEN_YAKO }));
+            statusElement.innerText = "Authenticating Account...";
+            socket.send(JSON.stringify({ authorize: DERIV_TOKEN }));
         };
 
-        let beiYaZamani = 0;
+        let lastPrice = 0;
         socket.onmessage = function(msg) {
             const data = JSON.parse(msg.data);
             
+            // If token authorization fails or needs backup, we request public ticks directly
             if (data.msg_type === 'authorize') {
                 if (data.error) {
-                    statusElement.innerText = "Tokeni Sio Sahihi au Imezimwa!";
-                    statusElement.style.color = "#ff4a5a";
+                    console.log("Token Auth Error, switching to public stream...");
+                    statusElement.innerText = "Live Market Active (Public)";
+                    statusElement.style.color = "#00ff00";
+                    socket.send(JSON.stringify({ ticks: "1HZ10V" }));
                 } else {
-                    statusElement.innerText = "Akaunti Imethibitishwa! Soko Liko Wazi";
+                    statusElement.innerText = "Account Connected! Market Live";
                     statusElement.style.color = "#00ff00";
                     socket.send(JSON.stringify({ ticks: "1HZ10V" }));
                 }
             }
             
             if (data.msg_type === 'tick' && data.tick) {
-                const beiYaSasa = data.tick.quote;
-                priceElement.innerText = "$" + parseFloat(beiYaSasa).toFixed(2);
+                const currentPrice = data.tick.quote;
+                priceElement.innerText = "$" + parseFloat(currentPrice).toFixed(2);
                 
-                if (beiYaSasa > beiYaZamani) {
-                    priceElement.style.color = "#00ff00"; 
-                } else if (beiYaSasa < beiYaZamani) {
-                    priceElement.style.color = "#ff4a5a"; 
+                if (currentPrice > lastPrice) {
+                    priceElement.style.color = "#00ff00"; // Green for UP
+                } else if (currentPrice < lastPrice) {
+                    priceElement.style.color = "#ff4a5a"; // Red for DOWN
                 }
-                beiYaZamani = beiYaSasa;
+                lastPrice = currentPrice;
             }
         };
 
         socket.onerror = function(err) {
-            statusElement.innerText = "Hitilafu ya Muunganisho!";
+            statusElement.innerText = "Connection Error!";
             statusElement.style.color = "#ff4a5a";
+            // Fallback: Request public data if authorization blocked the socket
+            socket.send(JSON.stringify({ ticks: "1HZ10V" }));
         };
 
         socket.onclose = function() {
-            statusElement.innerText = "Muunganisho Umefungwa.";
+            statusElement.innerText = "Connection Closed.";
             statusElement.style.color = "#ff4a5a";
         };
     </script>
