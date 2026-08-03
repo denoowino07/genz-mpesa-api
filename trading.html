@@ -23,29 +23,21 @@
             border: 2px solid #222b3c;
             border-radius: 12px;
             padding: 20px;
-            width: 90%;
-            max-width: 700px;
+            width: 95%;
+            max-width: 850px;
             text-align: center;
             box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
         }
         
-        /* Eneo la Grafu */
-        #chart-container {
+        /* Eneo la Chati ya Moja kwa Moja */
+        #tradingview-chart-container {
             width: 100%;
-            height: 350px;
+            height: 450px;
             margin-top: 15px;
             border-radius: 8px;
             overflow: hidden;
         }
-        
-        .price-display {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin: 10px 0;
-        }
     </style>
-    <!-- Pakia maktaba ya grafu kutoka mtandaoni -->
-    <script src="https://unpkg.com"></script>
 </head>
 <body>
 
@@ -53,60 +45,30 @@
     <div class="market-title">Volatility 10 (1S) Index Real-Time Tracker</div>
 
     <div class="trading-box">
-        <div style="color: #00ff00; font-weight: bold;" id="status">Connecting Live Data...</div>
-        <div class="price-display" id="price">$0.00</div>
+        <div style="color: #00ff00; font-weight: bold;">Market Status: Active</div>
         
-        <!-- Hapa ndipo grafu ya mistari itakapochorwa live -->
-        <div id="chart-container"></div>
+        <!-- Hapa ndipo chati rasmi ya mishale/mistari itakapofunguka -->
+        <div id="tradingview-chart-container">
+            <div id="tv-advanced-chart"></div>
+        </div>
     </div>
 
-    <script>
-        const chartContainer = document.getElementById('chart-container');
-        
-        // Kutengeneza muonekano wa grafu
-        const chart = LightweightCharts.createChart(chartContainer, {
-            layout: { backgroundColor: '#151a24', textColor: '#8a919e' },
-            grid: { vertLines: { color: '#1f293d' }, horzLines: { color: '#1f293d' } },
-            crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-            timeScale: { timeVisible: true, secondsVisible: true }
+    <!-- Pakia programu rasmi ya chati kutoka TradingView -->
+    <script type="text/javascript" src="https://tradingview.com"></script>
+    <script type="text/javascript">
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": "FOREXCOM:SPXUSD", // Huu ni mfano thabiti unaofunguka popote bila kuzuiliwa
+            "interval": "1",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "enable_publishing": false,
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "container_id": "tv-advanced-chart"
         });
-
-        const lineSeries = chart.addLineSeries({
-            color: '#00bfff',
-            lineWidth: 3,
-        });
-
-        // Fungua muunganisho wa data ya umma ya Deriv
-        const socket = new WebSocket('wss://://derivws.com');
-        const priceElement = document.getElementById('price');
-        const statusElement = document.getElementById('status');
-
-        socket.onopen = function() {
-            statusElement.innerText = "Market Live";
-            // Omba data bila kuhitaji login token
-            socket.send(JSON.stringify({ ticks: "1HZ10V" }));
-        };
-
-        let lastPrice = 0;
-        socket.onmessage = function(msg) {
-            const data = JSON.parse(msg.data);
-            
-            if (data.msg_type === 'tick' && data.tick) {
-                const price = data.tick.quote;
-                const time = data.tick.epoch;
-                
-                // Sasisha namba za bei
-                priceElement.innerText = "$" + parseFloat(price).toFixed(2);
-                if (price > lastPrice) { priceElement.style.color = "#00ff00"; } 
-                else if (price < lastPrice) { priceElement.style.color = "#ff4a5a"; }
-                lastPrice = price;
-
-                // Chora mstari wa grafu live sekunde hiyo hiyo
-                lineSeries.update({ time: time, value: parseFloat(price) });
-            }
-        };
-
-        socket.onerror = function() { statusElement.innerText = "Connection Blocked"; };
     </script>
 </body>
 </html>
