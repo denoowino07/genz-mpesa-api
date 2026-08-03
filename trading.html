@@ -27,10 +27,10 @@
         .chart-box { background-color: #0b0e14; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; border: 1px solid #222b3c; }
         .price-badge { font-size: 2.2rem; font-weight: bold; margin: 5px 0; color: #ffffff; }
         
-        /* MPANGILIO WA DIGITS NA PERCENTAGES KAMA PICHA YAKO */
+        /* DIGITS NA PERCENTAGES CHINI YA CHATI */
         .ticker-container { display: flex; justify-content: center; gap: 4px; margin-top: 15px; overflow-x: auto; }
         .tick-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .tick-circle { width: 28px; height: 28px; border-radius: 50%; background-color: #222b3c; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; }
+        .tick-circle { width: 28px; height: 28px; border-radius: 50%; background-color: #222b3c; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; transition: all 0.2s; }
         .percentage-lbl { font-size: 0.7rem; color: #8a919e; font-weight: bold; }
         
         #chart-canvas { width: 100%; height: 180px; background-color: #0b0e14; margin-top: 10px; }
@@ -43,7 +43,7 @@
         .stake-input { background: none; border: none; color: #ffffff; font-size: 1.5rem; width: 80px; text-align: center; font-weight: bold; }
         .math-btn { background-color: #222b3c; color: #ffffff; border: none; width: 35px; height: 35px; border-radius: 6px; font-size: 1.2rem; cursor: pointer; }
 
-        /* MODAL / SEHEMU YA POPUP YA M-PESA */
+        /* BOX LA MPESA POPUP */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background-color: #151a24; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #222b3c; }
         .form-group { text-align: left; margin-bottom: 15px; }
@@ -83,7 +83,6 @@
             <div class="price-badge" id="live-price">9379.60</div>
             <canvas id="chart-canvas"></canvas>
             
-            <!-- VIDOTI VYA NAMBA NA ASILIMIA (%) KAMA PICHA YA SIMU YAKO -->
             <div class="ticker-container" id="ticker-box">
                 <div class="tick-wrapper"><div class="tick-circle">0</div><div class="percentage-lbl">12%</div></div>
                 <div class="tick-wrapper"><div class="tick-circle">1</div><div class="percentage-lbl">8%</div></div>
@@ -110,7 +109,7 @@
         </div>
     </div>
 
-    <!-- SEHEMU YA POPUP YA M-PESA (DEPOSIT GATEWAY) -->
+    <!-- POPUP YA MALIPO YA MPESA -->
     <div class="modal" id="mpesa-modal">
         <div class="modal-content">
             <img src="https://wikimedia.org" style="height: 35px; margin-bottom: 15px;">
@@ -124,7 +123,7 @@
                     <label>Amount (Ksh)</label>
                     <input type="number" id="amount" placeholder="Min 100 Ksh" min="100" required>
                 </div>
-                <button type="submit" class="top-deposit-btn" style="width:100%; padding:12px; font-size:1rem;">Send M-Pesa STK Push</button>
+                <button type="submit" class="top-deposit-btn" style="width:100%; padding:12px; font-size:1rem; margin-top: 10px;">Send M-Pesa STK Push</button>
             </form>
             <div id="pay-status" style="margin-top:10px; font-weight:bold; font-size:0.9rem;"></div>
             <button class="close-btn" onclick="closeMpesaBox()">Cancel / Close</button>
@@ -144,3 +143,7 @@
             if(type === 'demo') {
                 demoTab.classList.add('active-demo'); balanceTxt.innerText = "$ 10,000.00"; balanceTxt.style.color = "#ffaa00";
             } else {
+                realTab.classList.add('active-real'); balanceTxt.innerText = "$ 0.00"; balanceTxt.style.color = "#00ff00";
+            }
+        }
+
