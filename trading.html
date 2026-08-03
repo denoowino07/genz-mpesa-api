@@ -3,299 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenzTrending - Live Platform</title>
-    <!-- Pakia maktaba ya chati ya TradingView -->
+    <title>Trading Platform - GenzTrending</title>
+    <!-- Pakia maktaba ya TradingView Lightweight Charts kutoka CDN -->
     <script src="https://unpkg.com"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #10121a;
+            background-color: #131722;
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 15px;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
         }
-        .app-container {
-            max-width: 480px;
+        .container {
+            max-width: 1000px;
             margin: 0 auto;
-            background: #161922;
-            border-radius: 16px;
+        }
+        .header-status {
+            display: flex;
+            justify-content: space-between;
+            background: #1c2030;
             padding: 15px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
-        /* Sehemu ya Juu / Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-radius: 8px;
             margin-bottom: 15px;
         }
-        .balance-box {
-            background: #1f2431;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            color: #2196f3;
-        }
-        .btn-deposit {
-            background: #00c853;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        /* Maelezo ya Soko na Bei */
-        .market-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .market-name { font-size: 14px; color: #90a4ae; font-weight: 600; }
-        .live-price { font-size: 22px; font-weight: bold; }
-        
-        /* Eneo la Chati */
-        #chart {
+        #chart-container {
             width: 100%;
-            height: 250px;
-            background: #10121a;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-        /* Takwimu za Digits (0-9) */
-        .digit-stats {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
-            background: #1f2431;
-            padding: 8px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .digit-box { font-size: 11px; }
-        .digit-num {
-            background: #2a3142;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 4px auto;
-            font-weight: bold;
-        }
-        .digit-pct { color: #90a4ae; font-size: 10px; }
-
-        /* Vifungo vya Njia (Auto/Manual) */
-        .mode-switch {
-            display: flex;
-            background: #10121a;
-            padding: 4px;
+            height: 450px;
+            background-color: #131722;
+            border: 1px solid #2a2e39;
             border-radius: 8px;
-            margin-bottom: 15px;
         }
-        .mode-btn {
+        .trade-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .btn {
             flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            color: #90a4ae;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .mode-btn.active {
-            background: #00c853;
-            color: white;
-        }
-
-        /* Sehemu ya Kuweka Dau (Stake) */
-        .stake-section {
-            background: #1f2431;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .stake-input-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .stake-btn {
-            background: #2a3142;
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 6px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .stake-input {
-            width: 60px;
-            background: transparent;
-            border: none;
-            color: white;
+            padding: 15px;
             font-size: 18px;
             font-weight: bold;
-            text-align: center;
-        }
-
-        /* Vifungo vya Kununulia (Trade Actions) */
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .trade-btn {
-            flex: 1;
-            padding: 14px;
             border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 5px;
             cursor: pointer;
+            color: white;
         }
-        .btn-even { background: #00e676; color: #10121a; }
-        .btn-odd { background: #ff3d00; }
-        
-        .up { color: #00e676; }
-        .down { color: #ff3d00; }
+        .btn-buy { background-color: #00c853; }
+        .btn-sell { background-color: #ff3d00; }
+        #price-display {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .up-trend { color: #00c853; }
+        .down-trend { color: #ff3d00; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <!-- Header -->
-    <div class="header">
-        <div class="balance-box">$ 1,396,865.30</div>
-        <button class="btn-deposit">DEPOSIT</button>
+<div class="container">
+    <div class="header-status">
+        <div>VOLATILITY 10 (1S) INDEX</div>
+        <div id="price-display">Inapakia bei...</div>
     </div>
 
-    <!-- Soko -->
-    <div class="market-info">
-        <div class="market-name">VOLATILITY 10 (1S) INDEX</div>
-        <div id="price-live" class="live-price">9379.60</div>
-    </div>
+    <!-- Hapa ndipo chati itakapochorwa kiotomatiki -->
+    <div id="chart-container"></div>
 
-    <!-- Chati Mubashara -->
-    <div id="chart"></div>
-
-    <!-- Takwimu za Namba za Mwisho (Digit Stats) -->
-    <div class="digit-stats" id="stats-panel">
-        <!-- Zitajazwa na JavaScript kiotomatiki -->
-    </div>
-
-    <!-- Njia za Biashara -->
-    <div class="mode-switch">
-        <button class="mode-btn" id="btn-auto" onclick="switchMode('auto')">AUTO</button>
-        <button class="mode-btn active" id="btn-manual" onclick="switchMode('manual')">MANUAL</button>
-    </div>
-
-    <!-- Sehemu ya Dau -->
-    <div class="stake-section">
-        <span>Stake</span>
-        <div class="stake-input-container">
-            <button class="stake-btn" onclick="adjustStake(-1)">-</button>
-            <input type="text" class="stake-input" id="stake-amount" value="10" readonly>
-            <button class="stake-btn" onclick="adjustStake(1)">+</button>
-        </div>
-    </div>
-
-    <!-- Vifungo vya Mchezo (Even / Odd) -->
-    <div class="action-buttons">
-        <button class="trade-btn btn-even" onclick="executeTrade('Even')">EVEN (Pacha)</button>
-        <button class="trade-btn btn-odd" onclick="executeTrade('Odd')">ODD (Witiri)</button>
+    <div class="trade-buttons">
+        <button class="btn btn-buy">▲ BUY (Higher)</button>
+        <button class="btn btn-sell">▼ SELL (Lower)</button>
     </div>
 </div>
 
 <script>
-    // 1. Sanidi Chati ya Mstari (Line Chart) kama ya picha yako
-    const chartContainer = document.getElementById('chart');
-    const chart = LightweightCharts.createChart(chartContainer, {
-        layout: { background: { type: 'solid', color: '#10121a' }, textColor: '#90a4ae' },
-        grid: { vertLines: { visible: false }, horzLines: { color: 'rgba(42, 46, 57, 0.2)' } },
-        rightPriceScale: { borderColor: 'rgba(197, 203, 206, 0.1)' },
-        timeScale: { borderColor: 'rgba(197, 203, 206, 0.1)', timeVisible: true, secondsVisible: true },
-        crosshair: { mode: LightweightCharts.CrosshairMode.Unique }
+    // 1. Sanidi Muonekano wa Chati ya TradingView
+    const container = document.getElementById('chart-container');
+    const chart = LightweightCharts.createChart(container, {
+        layout: {
+            background: { type: 'solid', color: '#131722' },
+            textColor: '#d1d4dc',
+        },
+        grid: {
+            vertLines: { color: 'rgba(42, 46, 57, 0.5)' },
+            horzLines: { color: 'rgba(42, 46, 57, 0.5)' },
+        },
+        crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+        rightPriceScale: { borderColor: 'rgba(197, 203, 206, 0.8)' },
+        timeScale: { borderColor: 'rgba(197, 203, 206, 0.8)', timeVisible: true, secondsVisible: true },
     });
 
+    // 2. Tengeneza mstari wa chati (Area Series kwa muonekano mzuri wa mtindo wa kivuli)
     const areaSeries = chart.addAreaSeries({
-        topColor: 'rgba(33, 150, 243, 0.4)',
-        bottomColor: 'rgba(33, 150, 243, 0.0)',
-        lineColor: '#2196f3',
-        lineWidth: 3,
+        topColor: 'rgba(33, 150, 243, 0.56)',
+        bottomColor: 'rgba(33, 150, 243, 0.04)',
+        lineColor: 'rgba(33, 150, 243, 1)',
+        lineWidth: 2,
     });
 
-    // 2. Mfumo wa Takwimu za Namba za Mwisho (Digit Stats 0-9)
-    let digitCounts = Array(10).fill(0);
-    let totalTicks = 0;
-
-    function initStatsPanel() {
-        const panel = document.getElementById('stats-panel');
-        panel.innerHTML = '';
-        for (let i = 0; i < 10; i++) {
-            const pct = totalTicks > 0 ? ((digitCounts[i] / totalTicks) * 100).toFixed(0) : 0;
-            panel.innerHTML += `
-                <div class="digit-box">
-                    <div class="digit-num">${i}</div>
-                    <div class="digit-pct">${pct}%</div>
-                </div>`;
-        }
+    // Weka data za mwanzo kama mfano ili chati isianze tupu
+    let lastPrice = 9379.00;
+    let initialTime = Math.floor(Date.now() / 1000) - 60;
+    let dataMock = [];
+    for (let i = 0; i < 60; i++) {
+        lastPrice += (Math.random() - 0.5) * 2;
+        dataMock.push({ time: initialTime + i, value: lastPrice });
     }
-    initStatsPanel();
+    areaSeries.setData(dataMock);
 
-    function updateDigitStats(lastDigit) {
-        totalTicks++;
-        digitCounts[lastDigit]++;
-        
-        // Weka ukomo wa kumbukumbu ili takwimu zibadilike kulingana na soko la sasa (Mfano Ticks 100 zilizopita)
-        if (totalTicks > 100) {
-            digitCounts = digitCounts.map(c => Math.round(c * 0.95)); // Punguza kidogo taratibu
-        }
-
-        const panel = document.getElementById('stats-panel');
-        const boxes = panel.children;
-        for (let i = 0; i < 10; i++) {
-            const pct = ((digitCounts[i] / Array.from(digitCounts).reduce((a,b)=>a+b, 0)) * 100).toFixed(0);
-            boxes[i].querySelector('.digit-pct').innerText = `${pct}%`;
-        }
-    }
-
-    // 3. Unganisha na Data Halisi ya Deriv kwa kutumia WebSocket
+    // 3. Unganisha na Live WebSocket API ya Deriv/Binary ili kupata ticks halisi za sekunde 1
+    // UKUMBUSHO: Badilisha 'app_id=1089' na App ID yako rasmi ya Deriv ukipenda kulive nayo
     const ws = new WebSocket('wss://://derivws.com');
-    const priceLive = document.getElementById('price-live');
-    let lastPrice = 0;
 
     ws.onopen = function() {
-        ws.send(JSON.stringify({ ticks: "1HZ10V", subscribe: 1 }));
+        // Tuma ombi la kuanza kusikiliza bei ya Volatility 10 (1s) Index mara moja
+        const request = JSON.stringify({
+            ticks: "1HZ10V", // Hii ndio kodi ya Volatility 10 (1s) Index
+            subscribe: 1
+        });
+        ws.send(request);
     };
+
+    const priceDisplay = document.getElementById('price-display');
 
     ws.onmessage = function(msg) {
         const data = JSON.parse(msg.data);
+        
         if (data.tick) {
-            const price = parseFloat(data.tick.quote);
-            const time = parseInt(data.tick.epoch);
-            
-            // Pata namba ya mwisho kabisa (Last Digit)
-            const priceString = data.tick.quote;
-            const lastDigit = parseInt(priceString.charAt(priceString.length - 1));
+            const tick = data.tick;
+            const currentPrice = parseFloat(tick.quote);
+            const currentTime = parseInt(tick.epoch);
 
-            // Rangi ya mabadiliko ya bei (Kijani au Nyekundu)
-            if (price >= lastPrice) {
-                priceLive.className = 'live-price up';
-                priceLive.innerText = price.toFixed(2);
+            // Sasisha namba ya bei kwenye kioo
+            if (currentPrice >= lastPrice) {
+                priceDisplay.className = 'up-trend';
+                priceDisplay.innerHTML = `${currentPrice.toFixed(2)} ▲`;
             } else {
-                priceLive.className = 'live-price down';
-                priceLive.innerText = price.toFixed(2);
+                priceDisplay.className = 'down-trend';
+                priceDisplay.innerHTML = `${currentPrice.toFixed(2)} ▼`;
             }
 
-            // Sasisha Chati na Takwimu
-            areaSeries.update({ time: time, value: price });
-            updateDigitStats(lastDigit);
+            // Sukuma data mpya kwenye chati mubashara kila baada ya sekunde 1
+            areaSeries.update({
+                time: currentTime,
+                value: currentPrice
+            });
+
+            lastPrice = currentPrice;
+        }
+    };
+
+    ws.onerror = function(err) {
+        console.error("Shida ya mawasiliano na seva ya chati: ", err);
+    };
+
+    // Fanya chati ijinyooshe kiotomatiki pindi kioo kikibadilika ukubwa
+    window.addEventListener('resize', () => {
+        chart.resize(container.clientWidth, 450);
+    });
+</script>
+</body>
+</html>
