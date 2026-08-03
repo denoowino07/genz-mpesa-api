@@ -18,33 +18,95 @@
         h1 { color: #00bfff; margin-bottom: 5px; }
         .market-title { color: #8a919e; font-size: 1.1rem; margin-bottom: 20px; }
         
-        /* Mipangilio ya Sanduku la Grafu */
-        .iframe-container {
-            width: 100%;
-            max-width: 800px;
-            height: 550px;
+        .trading-box {
             background-color: #151a24;
             border: 2px solid #222b3c;
             border-radius: 12px;
-            overflow: hidden;
+            padding: 20px;
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
             box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
         }
-        iframe {
+        
+        /* Eneo la Grafu */
+        #chart-container {
             width: 100%;
-            height: 100%;
-            border: none;
+            height: 350px;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .price-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
         }
     </style>
+    <!-- Pakia maktaba ya grafu kutoka mtandaoni -->
+    <script src="https://unpkg.com"></script>
 </head>
 <body>
 
     <h1>GENZ TRADING</h1>
-    <div class="market-title">Volatility 10 (1S) Index Live Chart</div>
+    <div class="market-title">Volatility 10 (1S) Index Real-Time Tracker</div>
 
-    <!-- Hapa ndipo link mpya ya SmartTrader ilipo -->
-    <div class="iframe-container">
-        <iframe src="https://deriv.com" allow="autoplay"></iframe>
+    <div class="trading-box">
+        <div style="color: #00ff00; font-weight: bold;" id="status">Connecting Live Data...</div>
+        <div class="price-display" id="price">$0.00</div>
+        
+        <!-- Hapa ndipo grafu ya mistari itakapochorwa live -->
+        <div id="chart-container"></div>
     </div>
 
+    <script>
+        const chartContainer = document.getElementById('chart-container');
+        
+        // Kutengeneza muonekano wa grafu
+        const chart = LightweightCharts.createChart(chartContainer, {
+            layout: { backgroundColor: '#151a24', textColor: '#8a919e' },
+            grid: { vertLines: { color: '#1f293d' }, horzLines: { color: '#1f293d' } },
+            crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+            timeScale: { timeVisible: true, secondsVisible: true }
+        });
+
+        const lineSeries = chart.addLineSeries({
+            color: '#00bfff',
+            lineWidth: 3,
+        });
+
+        // Fungua muunganisho wa data ya umma ya Deriv
+        const socket = new WebSocket('wss://://derivws.com');
+        const priceElement = document.getElementById('price');
+        const statusElement = document.getElementById('status');
+
+        socket.onopen = function() {
+            statusElement.innerText = "Market Live";
+            // Omba data bila kuhitaji login token
+            socket.send(JSON.stringify({ ticks: "1HZ10V" }));
+        };
+
+        let lastPrice = 0;
+        socket.onmessage = function(msg) {
+            const data = JSON.parse(msg.data);
+            
+            if (data.msg_type === 'tick' && data.tick) {
+                const price = data.tick.quote;
+                const time = data.tick.epoch;
+                
+                // Sasisha namba za bei
+                priceElement.innerText = "$" + parseFloat(price).toFixed(2);
+                if (price > lastPrice) { priceElement.style.color = "#00ff00"; } 
+                else if (price < lastPrice) { priceElement.style.color = "#ff4a5a"; }
+                lastPrice = price;
+
+                // Chora mstari wa grafu live sekunde hiyo hiyo
+                lineSeries.update({ time: time, value: parseFloat(price) });
+            }
+        };
+
+        socket.onerror = function() { statusElement.innerText = "Connection Blocked"; };
+    </script>
 </body>
 </html>
