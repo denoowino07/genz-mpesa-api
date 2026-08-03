@@ -24,26 +24,38 @@
 
         .trading-box { background-color: #151a24; border: 1px solid #222b3c; border-radius: 12px; padding: 15px; width: 95%; max-width: 480px; box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5); }
         
+        /* CHATI YA NDANI INDEPENDENT */
         .chart-box { background-color: #0b0e14; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; border: 1px solid #222b3c; }
         .price-badge { font-size: 2.2rem; font-weight: bold; margin: 5px 0; color: #ffffff; }
         
-        /* DIGITS NA PERCENTAGES CHINI YA CHATI */
         .ticker-container { display: flex; justify-content: center; gap: 4px; margin-top: 15px; overflow-x: auto; }
         .tick-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .tick-circle { width: 28px; height: 28px; border-radius: 50%; background-color: #222b3c; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; transition: all 0.2s; }
+        .tick-circle { width: 28px; height: 28px; border-radius: 50%; background-color: #222b3c; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; }
         .percentage-lbl { font-size: 0.7rem; color: #8a919e; font-weight: bold; }
         
-        #chart-canvas { width: 100%; height: 180px; background-color: #0b0e14; margin-top: 10px; }
+        #chart-canvas { width: 100%; height: 150px; background-color: #0b0e14; margin-top: 10px; }
 
         .execution-modes { display: flex; width: 100%; gap: 10px; margin-bottom: 15px; }
         .exec-btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; background-color: #222b3c; color: #ffffff; }
-        .exec-btn.active { background-color: #00ff00; color: #0b0e14; }
+        .exec-btn.active { background-color: #2d3748; color: #00ff00; border: 1px solid #00ff00; }
 
-        .stake-box { display: flex; align-items: center; justify-content: center; gap: 15px; background-color: #0b0e14; padding: 10px; border-radius: 8px; border: 1px solid #222b3c; margin-bottom: 15px; }
+        /* SEHEMU YA DAU NA VIFUNGO VYA QUICK STAKE */
+        .stake-box { display: flex; align-items: center; justify-content: center; gap: 15px; background-color: #0b0e14; padding: 10px; border-radius: 8px; border: 1px solid #222b3c; }
         .stake-input { background: none; border: none; color: #ffffff; font-size: 1.5rem; width: 80px; text-align: center; font-weight: bold; }
         .math-btn { background-color: #222b3c; color: #ffffff; border: none; width: 35px; height: 35px; border-radius: 6px; font-size: 1.2rem; cursor: pointer; }
+        
+        .quick-stakes { display: flex; justify-content: space-between; gap: 4px; margin: 10px 0 20px 0; }
+        .q-btn { flex: 1; background-color: #1a2333; border: 1px solid #222b3c; color: #8a919e; padding: 8px 0; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+        .q-btn.selected { background-color: #00bfff; color: white; border-color: #00bfff; }
 
-        /* BOX LA MPESA POPUP */
+        /* VIFUNGO VIKUBWA VYA KUFANYA BIASHARA (EVEN / ODD TRADING BUTTONS) */
+        .trade-actions { display: flex; gap: 15px; margin-top: 15px; }
+        .trade-btn { flex: 1; padding: 16px; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: transform 0.1s; }
+        .trade-btn:active { transform: scale(0.97); }
+        .btn-even { background-color: #00ff00; color: #0b0e14; }
+        .btn-odd { background-color: #ff4a5a; color: white; }
+
+        /* POPUP YA MPESA */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background-color: #151a24; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #222b3c; }
         .form-group { text-align: left; margin-bottom: 15px; }
@@ -84,15 +96,15 @@
             <canvas id="chart-canvas"></canvas>
             
             <div class="ticker-container" id="ticker-box">
-                <div class="tick-wrapper"><div class="tick-circle">0</div><div class="percentage-lbl">12%</div></div>
-                <div class="tick-wrapper"><div class="tick-circle">1</div><div class="percentage-lbl">8%</div></div>
-                <div class="tick-wrapper"><div class="tick-circle">2</div><div class="percentage-lbl">10%</div></div>
-                <div class="tick-wrapper"><div class="tick-circle">3</div><div class="percentage-lbl">11%</div></div>
-                <div class="tick-wrapper"><div class="tick-circle">4</div><div class="percentage-lbl">9%</div></div>
-                <div class="tick-wrapper"><div class="tick-circle">5</div><div class="percentage-lbl">13%</div></div>
-                <div class="tick-wrapper"><div class="tick-circle">6</div><div class="percentage-lbl">7%</div></div>
-                <div class="tick-wrapper"><div class="tick-circle">7</div><div class="percentage-lbl">11%</div></div>
-                <div class="tick-wrapper"><div class="tick-circle">8</div><div class="percentage-lbl">9%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-0">0</div><div class="percentage-lbl" id="pc-0">12%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-1">1</div><div class="percentage-lbl" id="pc-1">8%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-2">2</div><div class="percentage-lbl" id="pc-2">10%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-3">3</div><div class="percentage-lbl" id="pc-3">11%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-4">4</div><div class="percentage-lbl" id="pc-4">9%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-5">5</div><div class="percentage-lbl" id="pc-5">13%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-6">6</div><div class="percentage-lbl" id="pc-6">7%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-7">7</div><div class="percentage-lbl" id="pc-7">11%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-8">8</div><div class="percentage-lbl" id="pc-8">9%</div></div>
             </div>
         </div>
 
@@ -101,49 +113,24 @@
             <button class="exec-btn active" id="btn-manual" onclick="switchExecMode('manual')">MANUAL</button>
         </div>
 
+        <!-- Sehemu ya Dau -->
         <div class="stake-box">
             <button class="math-btn" onclick="adjustStake(-1)">-</button>
             <span style="color: #8a919e; font-size: 1.2rem;">$</span>
             <input type="number" class="stake-input" id="stake-value" value="10" readonly>
             <button class="math-btn" onclick="adjustStake(1)">+</button>
         </div>
-    </div>
 
-    <!-- POPUP YA MALIPO YA MPESA -->
-    <div class="modal" id="mpesa-modal">
-        <div class="modal-content">
-            <img src="https://wikimedia.org" style="height: 35px; margin-bottom: 15px;">
-            <h2>M-Pesa Secure Deposit</h2>
-            <form onsubmit="runPayment(event)">
-                <div class="form-group">
-                    <label>M-Pesa Phone Number</label>
-                    <input type="tel" id="phone" value="2547" required>
-                </div>
-                <div class="form-group">
-                    <label>Amount (Ksh)</label>
-                    <input type="number" id="amount" placeholder="Min 100 Ksh" min="100" required>
-                </div>
-                <button type="submit" class="top-deposit-btn" style="width:100%; padding:12px; font-size:1rem; margin-top: 10px;">Send M-Pesa STK Push</button>
-            </form>
-            <div id="pay-status" style="margin-top:10px; font-weight:bold; font-size:0.9rem;"></div>
-            <button class="close-btn" onclick="closeMpesaBox()">Cancel / Close</button>
+        <!-- VIFUNGO VYA QUICK STAKE ($1, $5, $10...) KAMA PICHA YAKO -->
+        <div class="quick-stakes">
+            <button class="q-btn" onclick="setQuickStake(1)">$1</button>
+            <button class="q-btn" onclick="setQuickStake(5)">$5</button>
+            <button class="q-btn selected" id="q-10" onclick="setQuickStake(10)">$10</button>
+            <button class="q-btn" onclick="setQuickStake(25)">$25</button>
+            <button class="q-btn" onclick="setQuickStake(50)">$50</button>
+            <button class="q-btn" onclick="setQuickStake(100)">$100</button>
         </div>
-    </div>
 
-    <script>
-        let currentAccount = 'demo';
-        
-        function switchAccount(type) {
-            currentAccount = type;
-            const demoTab = document.getElementById('tab-demo');
-            const realTab = document.getElementById('tab-real');
-            const balanceTxt = document.getElementById('balance-txt');
-            demoTab.className = 'acc-tab'; realTab.className = 'acc-tab';
-            
-            if(type === 'demo') {
-                demoTab.classList.add('active-demo'); balanceTxt.innerText = "$ 10,000.00"; balanceTxt.style.color = "#ffaa00";
-            } else {
-                realTab.classList.add('active-real'); balanceTxt.innerText = "$ 0.00"; balanceTxt.style.color = "#00ff00";
-            }
-        }
-
+        <!-- VIFUNGO VIKUBWA VYA KUBONYEZA UKITAKA KU-TRADE (EVEN / ODD) -->
+        <div class="trade-actions">
+            <button class="trade-btn btn-even" onclick="executeTrade('EVEN')">PURCHASE EVEN</button>
