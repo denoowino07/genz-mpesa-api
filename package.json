@@ -1,7 +1,6 @@
 {
   "name": "genz-trading-backend",
   "version": "1.0.0",
-  "description": "Genz Trading Copy platform backend engine",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
