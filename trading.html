@@ -21,11 +21,14 @@
         .mode-tab { background-color: #151a24; padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; border: 1px solid #222b3c; color: #8a919e; }
         .mode-tab.active { background-color: #00bfff; color: #ffffff; border-color: #00bfff; }
 
-        .trading-box { background-color: #151a24; border: 1px solid #222b3c; border-radius: 12px; padding: 15px; width: 95%; max-width: 480px; box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5); }
+        .trading-box { background-color: #151a24; border: 1px solid #222b3c; border-radius: 12px; padding: 25px 15px; width: 95%; max-width: 480px; box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5); }
         
-        /* FIX: BOX LA CHATI MPYA YA TRADINGVIEW */
-        .chart-box { background-color: #0b0e14; border-radius: 8px; margin-bottom: 15px; height: 260px; overflow: hidden; border: 1px solid #222b3c; }
-        iframe { width: 100%; height: 100%; border: none; }
+        /* Kitufe Kikubwa cha Chati */
+        .open-chart-btn {
+            display: block; width: 85%; margin: 25px auto; padding: 18px; 
+            background-color: #00bfff; color: #ffffff; border-radius: 8px; 
+            font-size: 1.1rem; font-weight: bold; text-decoration: none; text-align: center;
+        }
 
         .execution-modes { display: flex; width: 100%; gap: 10px; margin-bottom: 15px; }
         .exec-btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; background-color: #222b3c; color: #ffffff; }
@@ -40,7 +43,6 @@
 
     <div class="header-bar">
         <div class="logo">GenzTrading.com</div>
-        
         <div style="display: flex; align-items: center;">
             <div class="account-switcher">
                 <div class="acc-tab active-demo" id="tab-demo" onclick="switchAccount('demo')">DEMO</div>
@@ -59,13 +61,13 @@
     <div class="trading-box">
         <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #8a919e; margin-bottom: 5px;">
             <span id="market-display">Volatility 10 (1S) - EVEN/ODD</span>
-            <span style="color: #00ff00;">Market Connected</span>
+            <span style="color: #00ff00;">Market Status: Active</span>
         </div>
 
-        <!-- FIXED: CHATI MPYA YA TRADINGVIEW AMBAYO HAIIBI LOG IN YA DERIV -->
-        <div class="chart-box">
-            <iframe src="https://tradingview.com"></iframe>
-        </div>
+        <!-- HAPA TUMEKOMBOA SKRINI: Kitufe hiki kinafungua soko la kweli bila vizuizi vya Render -->
+        <a href="https://deriv.com" target="_blank" class="open-chart-btn">
+            📊 View Volatility 10 Live Chart
+        </a>
 
         <div class="execution-modes">
             <button class="exec-btn" id="btn-auto" onclick="switchExecMode('auto')">AUTO</button>
@@ -115,6 +117,7 @@
             document.getElementById(`btn-${mode}`).classList.add('active');
         }
 
+        // Kitufe cha + na - kinabadilisha namba sasa hivi!
         function adjustStake(amount) {
             const input = document.getElementById('stake-value');
             let val = parseInt(input.value);
