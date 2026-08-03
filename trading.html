@@ -3,24 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenzTrading.com - Professional Copy Trading</title>
+    <title>GenzTrading.com - Live Dashboard</title>
     <style>
         body { background-color: #0b0e14; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .header-bar { width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222b3c; }
-        .logo { color: #00bfff; font-weight: bold; font-size: 1.4rem; }
-        .balance-badge { background-color: #151a24; padding: 5px 10px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; }
-        .deposit-btn { background-color: #00ff00; color: #0b0e14; padding: 6px 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-decoration: none; }
         
+        /* BAR YA JUU YENYE KUBADILISHA AKAUNTI */
+        .header-bar { width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222b3c; }
+        .logo { color: #00bfff; font-weight: bold; font-size: 1.2rem; }
+        
+        .account-switcher { display: flex; background-color: #151a24; border-radius: 6px; padding: 3px; border: 1px solid #222b3c; }
+        .acc-tab { padding: 5px 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; border-radius: 4px; color: #8a919e; }
+        .acc-tab.active-demo { background-color: #ffaa00; color: #0b0e14; }
+        .acc-tab.active-real { background-color: #00ff00; color: #0b0e14; }
+        
+        .balance-display { font-weight: bold; font-size: 0.9rem; margin-left: 5px; background-color: #151a24; padding: 5px 8px; border-radius: 6px; border: 1px solid #222b3c; }
+
         .market-modes { display: flex; justify-content: space-around; width: 100%; max-width: 480px; margin: 15px 0; gap: 5px; }
         .mode-tab { background-color: #151a24; padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; border: 1px solid #222b3c; color: #8a919e; }
         .mode-tab.active { background-color: #00bfff; color: #ffffff; border-color: #00bfff; }
 
         .trading-box { background-color: #151a24; border: 1px solid #222b3c; border-radius: 12px; padding: 15px; width: 95%; max-width: 480px; box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5); }
-        .chart-box { background-color: #0b0e14; border-radius: 8px; padding: 10px; text-align: center; margin-bottom: 15px; }
-        .price-badge { font-size: 2rem; font-weight: bold; margin: 5px 0; color: #ffffff; }
-        .ticker-container { display: flex; justify-content: center; gap: 5px; margin-top: 10px; }
-        .tick-circle { width: 28px; height: 28px; border-radius: 50%; background-color: #222b3c; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
-        #chart-canvas { width: 100%; height: 160px; background-color: #0b0e14; }
+        
+        /* SANDUKU LA CHATI */
+        .chart-box { background-color: #0b0e14; border-radius: 8px; padding: 5px; text-align: center; margin-bottom: 15px; height: 240px; overflow: hidden; border: 1px solid #222b3c; }
+        iframe { width: 100%; height: 100%; border: none; }
 
         .execution-modes { display: flex; width: 100%; gap: 10px; margin-bottom: 15px; }
         .exec-btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; background-color: #222b3c; color: #ffffff; }
@@ -33,39 +39,34 @@
 </head>
 <body>
 
+    <!-- BAR YA JUU YENYE SEHEMU YA KUBADILISHA AKAUNTI -->
     <div class="header-bar">
-        <!-- FIXED: Jina limebadilika kuwa GenzTrading.com -->
         <div class="logo">GenzTrading.com</div>
-        <div class="balance-badge" id="user-balance">$ 1,396,865.30</div>
-        <button class="deposit-btn" onclick="initiateDeposit()">DEPOSIT</button>
+        
+        <div style="display: flex; align-items: center;">
+            <div class="account-switcher">
+                <div class="acc-tab active-demo" id="tab-demo" onclick="switchAccount('demo')">DEMO</div>
+                <div class="acc-tab" id="tab-real" onclick="switchAccount('real')">REAL</div>
+            </div>
+            <div class="balance-display" id="balance-txt">$ 10,000.00</div>
+        </div>
     </div>
 
     <div class="market-modes">
         <div class="mode-tab" id="tab-differs" onclick="switchMarketMode('differs')">Matches/Differs</div>
         <div class="mode-tab active" id="tab-even" onclick="switchMarketMode('even')">Even/Odd</div>
-        <div class="mode-tab" id="tab-under" onclick="switchMarketMode('under')">Over/Under</div>
+        <div class="market-modes-sub" style="display:none"></div>
     </div>
 
     <div class="trading-box">
         <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #8a919e; margin-bottom: 5px;">
             <span id="market-display">Volatility 10 (1S) - EVEN/ODD</span>
-            <span style="color: #00ff00;" id="status-text">Market Live</span>
+            <span style="color: #00ff00;">Market Connected</span>
         </div>
 
+        <!-- SEHEMU YA CHATI INAYOTEMBEA LIVE -->
         <div class="chart-box">
-            <div class="price-badge" id="live-price">9379.60</div>
-            <canvas id="chart-canvas"></canvas>
-            <div class="ticker-container" id="ticker-box">
-                <div class="tick-circle">0</div>
-                <div class="tick-circle">1</div>
-                <div class="tick-circle">2</div>
-                <div class="tick-circle">3</div>
-                <div class="tick-circle">4</div>
-                <div class="tick-circle">5</div>
-                <div class="tick-circle">6</div>
-                <div class="tick-circle">7</div>
-                <div class="tick-circle">8</div>
-            </div>
+            <iframe src="https://deriv.com" allow="autoplay"></iframe>
         </div>
 
         <div class="execution-modes">
@@ -82,18 +83,37 @@
     </div>
 
     <script>
-        let currentMarketMode = 'even';
-        let currentExecMode = 'manual';
+        let currentAccount = 'demo';
+        
+        // LOGIC YA KUBADILISHA AKAUNTI (DEMO NA REAL)
+        function switchAccount(type) {
+            currentAccount = type;
+            const demoTab = document.getElementById('tab-demo');
+            const realTab = document.getElementById('tab-real');
+            const balanceTxt = document.getElementById('balance-txt');
+            
+            demoTab.className = 'acc-tab';
+            realTab.className = 'acc-tab';
+            
+            if(type === 'demo') {
+                demoTab.classList.add('active-demo');
+                balanceTxt.innerText = "$ 10,000.00";
+                balanceTxt.style.color = "#ffaa00";
+            } else {
+                realTab.classList.add('active-real');
+                balanceTxt.innerText = "$ 0.00"; // Akaunti halisi inaanzia sifuri hadi mteja aweke pesa
+                balanceTxt.style.color = "#00ff00";
+                alert("Real Account Activated! Please link your Deriv MT5 token to sync funds.");
+            }
+        }
 
         function switchMarketMode(mode) {
-            currentMarketMode = mode;
             document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
             document.getElementById(`tab-${mode}`).classList.add('active');
             document.getElementById('market-display').innerText = `Volatility 10 (1S) - ${mode.toUpperCase()}`;
         }
 
         function switchExecMode(mode) {
-            currentExecMode = mode;
             document.getElementById('btn-auto').classList.remove('active');
             document.getElementById('btn-manual').classList.remove('active');
             document.getElementById(`btn-${mode}`).classList.add('active');
@@ -103,73 +123,6 @@
             const input = document.getElementById('stake-value');
             let val = parseInt(input.value);
             if(val + amount >= 1) input.value = val + amount;
-        }
-
-        // INJINI YA PRIVATE LIVE DATA (Inasoma data moja kwa moja kutoka kwenye mtandao)
-        const priceText = document.getElementById('live-price');
-        const tickerBox = document.getElementById('ticker-box');
-        const canvas = document.getElementById('chart-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        canvas.width = canvas.parentElement.clientWidth - 20;
-        canvas.height = 160;
-
-        let basePrice = 9379.60;
-        let points = Array(25).fill(80);
-
-        // Unganisha na Public Data Stream ya Deriv bila kuzuiliwa na Render Backend
-        const publicSocket = new WebSocket('wss://://derivws.com');
-
-        publicSocket.onopen = () => {
-            publicSocket.send(JSON.stringify({ ticks: "1HZ10V" }));
-        };
-
-        publicSocket.onmessage = (msg) => {
-            const data = JSON.parse(msg.data);
-            if (data.msg_type === 'tick' && data.tick) {
-                let change = data.tick.quote - basePrice;
-                basePrice = data.tick.quote;
-                
-                // 1. Sasisha bei kulingana na soko la dunia
-                priceText.innerText = basePrice.toFixed(2);
-                priceText.style.color = change >= 0 ? "#00ff00" : "#ff4a5a";
-
-                // 2. Chora mstari wa grafu ya live tick
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                points.shift();
-                points.push(80 - (change * 15));
-                
-                ctx.beginPath();
-                ctx.strokeStyle = change >= 0 ? "#00ff00" : "#ff4a5a";
-                ctx.lineWidth = 3;
-                
-                let step = canvas.width / (points.length - 1);
-                for(let i=0; i<points.length; i++) {
-                    let x = i * step;
-                    let y = canvas.height/2 + (points[i] - 80);
-                    if(i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-                ctx.stroke();
-
-                // 3. Zungusha namba za kurukaruka za chini (Ticks)
-                const circles = tickerBox.getElementsByClassName('tick-circle');
-                let lastDigit = parseInt(basePrice.toFixed(2).slice(-1));
-                
-                for(let i=0; i<circles.length; i++) {
-                    if(i === lastDigit) {
-                        circles[i].style.backgroundColor = change >= 0 ? "#00ff00" : "#ff4a5a";
-                        circles[i].style.color = "#0b0e14";
-                    } else {
-                        circles[i].style.backgroundColor = "#222b3c";
-                        circles[i].style.color = "#ffffff";
-                    }
-                }
-            }
-        };
-
-        function initiateDeposit() {
-            alert("Redirecting to secure M-Pesa gateway...");
         }
     </script>
 </body>
