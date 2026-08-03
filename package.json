@@ -1,12 +1,13 @@
 {
-  "name": "genz-mpesa-api",
+  "name": "genz-trading-backend",
   "version": "1.0.0",
-  "description": "Trading platform with M-Pesa integration",
+  "description": "Genz Trading Copy platform backend engine",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "ws": "^8.16.0"
   }
 }
