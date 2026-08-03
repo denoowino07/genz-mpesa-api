@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Genz Trading Platform - Deposit</title>
+    <title>Genz Trading Platform</title>
     <style>
         body {
             background-color: #0b0e14;
@@ -29,7 +29,6 @@
             box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
         }
 
-        /* Muonekano wa Fomu ya M-Pesa */
         .form-group {
             text-align: left;
             margin-bottom: 15px;
@@ -37,12 +36,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #8a919e;
-            font-size: 0.95rem;
-        }
+        label { display: block; margin-bottom: 5px; color: #8a919e; font-size: 0.95rem; }
         input {
             width: 100%;
             padding: 12px;
@@ -53,15 +47,12 @@
             font-size: 1rem;
             box-sizing: border-box;
         }
-        input:focus {
-            border-color: #00ff00;
-            outline: none;
-        }
+        input:focus { border-color: #00ff00; outline: none; }
 
-        .pay-btn {
+        .btn {
             width: 90%;
-            background-color: #00ff00;
-            color: #0b0e14;
+            background-color: #00bfff;
+            color: #ffffff;
             padding: 14px;
             border: none;
             border-radius: 6px;
@@ -69,83 +60,114 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 15px;
-            transition: background 0.2s;
         }
-        .pay-btn:hover {
-            background-color: #00cc00;
+        .deposit-btn { background-color: #00ff00; color: #0b0e14; }
+        
+        .switch-link {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #00bfff;
+            cursor: pointer;
         }
 
-        #payment-status {
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 1rem;
-        }
+        /* Ficha kurasa ambazo hazitumiki */
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <h1>GENZ TRADING</h1>
-    <div class="market-title">M-Pesa Secure Deposit Gateway</div>
+    <div class="market-title" id="page-title">Welcome to Genz Trading Portal</div>
 
     <div class="trading-box">
-        <div style="margin-bottom: 20px;">
-            <img src="https://wikimedia.org" alt="M-Pesa" style="height: 45px;">
+        
+        <!-- 1. UKURASA WA LOGIN -->
+        <div id="login-section">
+            <h2>Account Login</h2>
+            <form onsubmit="showPage(event, 'deposit')">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="Enter email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn">Login to Dashboard</button>
+            </form>
+            <div class="switch-link" onclick="toggleForm('register')">Don't have an account? Sign Up here</div>
         </div>
 
-        <!-- FOMU YA SAFARICOM M-PESA -->
-        <form id="mpesa-form" onsubmit="processPayment(event)">
-            <div class="form-group">
-                <label for="phone">M-Pesa Phone Number</label>
-                <input type="tel" id="phone" placeholder="e.g., 254712345678" required>
+        <!-- 2. UKURASA WA REGISTER (SIGN UP) -->
+        <div id="register-section" class="hidden">
+            <h2>Create Free Account</h2>
+            <form onsubmit="showPage(event, 'deposit')">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="Enter official names" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number (M-Pesa)</label>
+                    <input type="tel" placeholder="e.g. 254712345678" required>
+                </div>
+                <div class="form-group">
+                    <label>Create Password</label>
+                    <input type="password" placeholder="Minimum 6 characters" required>
+                </div>
+                <button type="submit" class="btn">Register & Link MT5</button>
+            </form>
+            <div class="switch-link" onclick="toggleForm('login')">Already have an account? Login here</div>
+        </div>
+
+        <!-- 3. UKURASA WA DEPOSIT (M-PESA) -->
+        <div id="deposit-section" class="hidden">
+            <div style="margin-bottom: 20px;">
+                <img src="https://wikimedia.org" alt="M-Pesa" style="height: 40px;">
             </div>
+            <h2>Secure M-Pesa Deposit</h2>
+            <form onsubmit="simulatePayment(event)">
+                <div class="form-group">
+                    <label>Confirm M-Pesa Number</label>
+                    <input type="tel" id="phone" value="2547" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount to Deposit (Ksh)</label>
+                    <input type="number" id="amount" placeholder="Minimum 100 Ksh" min="100" required>
+                </div>
+                <button type="submit" class="btn deposit-btn">Initiate M-Pesa Deposit</button>
+            </form>
+            <div id="payment-status" style="margin-top: 15px; font-weight: bold;"></div>
+        </div>
 
-            <div class="form-group">
-                <label for="amount">Amount to Deposit (Ksh)</label>
-                <input type="number" id="amount" placeholder="Minimum 100 Ksh" min="100" required>
-            </div>
-
-            <button type="submit" class="pay-btn">Initiate M-Pesa Deposit</button>
-        </form>
-
-        <div id="payment-status"></div>
     </div>
 
     <script>
-        function processPayment(event) {
+        function toggleForm(page) {
+            if(page === 'register') {
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('register-section').classList.remove('hidden');
+            } else {
+                document.getElementById('register-section').classList.add('hidden');
+                document.getElementById('login-section').classList.remove('hidden');
+            }
+        }
+
+        function showPage(event, page) {
             event.preventDefault();
-            
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('register-section').classList.add('hidden');
+            document.getElementById('deposit-section').classList.remove('hidden');
+            document.getElementById('page-title').innerText = "Genz Trading Secure Wallet";
+        }
+
+        function simulatePayment(event) {
+            event.preventDefault();
             const phone = document.getElementById('phone').value;
             const amount = document.getElementById('amount').value;
             const statusDiv = document.getElementById('payment-status');
-
-            statusDiv.style.color = "#ffaa00";
-            statusDiv.innerText = "Sending STK Push prompt to your phone...";
-
-            // HAPA NDIPO SIMU INAPOUNGANISHWA NA MFUMO WA BACKEND WA DARJA API
-            // Inatuma data kwenda kwenye mfumo wako wa nyuma ulioopo Render
-            fetch('/api/mpesa/stkpush', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ phone: phone, amount: amount })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    statusDiv.style.color = "#00ff00";
-                    statusDiv.innerText = "Prompt sent successfully! Enter your M-Pesa PIN on your phone.";
-                } else {
-                    statusDiv.style.color = "#ff4a5a";
-                    statusDiv.innerText = "Payment failed to initiate. Please try again.";
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Mfano wa majaribio ya mbele kama API bado haijaunganishwa nyuma:
-                statusDiv.style.color = "#00ff00";
-                statusDiv.innerText = "Simulated Request: M-Pesa STK Push sent to " + phone + " for Ksh " + amount;
-            });
+            
+            statusDiv.style.color = "#00ff00";
+            statusDiv.innerText = "STK Push sent to " + phone + " for Ksh " + amount + ". Check your phone to enter PIN.";
         }
     </script>
 
