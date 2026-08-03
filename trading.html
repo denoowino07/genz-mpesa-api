@@ -1,235 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Genz Trading Dashboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #0b0e11;
-            color: #ffffff;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #1f2630;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #f0b90b;
-        }
-        .balance-card {
-            background: #161a1e;
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid #2b3139;
-        }
-        .main-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        @media (max-width: 768px) {
-            .main-grid { grid-template-columns: 1fr; }
-        }
-        .chart-section {
-            background: #161a1e;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #2b3139;
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .market-title {
-            font-size: 18px;
-            color: #909294;
-        }
-        .live-price {
-            font-size: 42px;
-            font-weight: bold;
-            color: #0ecb81;
-            margin: 10px 0;
-        }
-        .dummy-chart {
-            height: 250px;
-            background: #0b0e11;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px dashed #2b3139;
-            color: #474d57;
-        }
-        .trading-section {
-            background: #161a1e;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #2b3139;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 8px;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-buy { background-color: #0ecb81; color: white; }
-        .btn-buy:hover { background-color: #0b9a62; }
-        .btn-sell { background-color: #f6465d; color: white; }
-        .btn-sell:hover { background-color: #c7374a; }
-        .finance-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .btn-deposit { background-color: #f0b90b; color: #000; }
-        .btn-withdraw { background-color: #2b3139; color: #fff; border: 1px solid #474d57; }
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .input-group label { color: #909294; font-size: 14px; }
-        .input-group input {
-            background: #0b0e11;
-            border: 1px solid #2b3139;
-            padding: 12px;
-            border-radius: 8px;
-            color: white;
-            font-size: 16px;
-        }
-    </style>
-</head>
-<body>
+<!-- Futa msimbo wa zamani wa Tawk.to na uweke huu -->
+<script>
+    // Kufungua muunganisho wa soko la Deriv
+    const socket = new WebSocket('wss://://derivws.com');
 
-    <div class="container">
-        <header>
-            <div class="logo">GENZ TRADING</div>
-            <div class="balance-card">
-                <span style="color: #909294; font-size: 14px;">Your Balance:</span>
-                <div style="font-size: 20px; font-weight: bold; color: #f0b90b;">$1,450.00</div>
-            </div>
-        </header>
+    socket.onopen = function(evt) {
+        console.log("Umeunganishwa na soko la Deriv!");
+        // Kuomba data ya bei ya Volatility 10 (1S) Index moja kwa moja
+        socket.send(JSON.stringify({ ticks: "1HZ10V" }));
+    };
 
-        <div class="main-grid">
-            <!-- Chart & Price Section -->
-            <div class="chart-section">
-                <div>
-                    <div class="market-title">Volatility 10 (1S) Index</div>
-                    <div id="price-container" class="live-price">Loading price...</div>
-                </div>
-                <div class="dummy-chart">
-                    <p>Market is Live</p>
-                </div>
-            </div>
-
-            <!-- Order & Finance Section -->
-            <div class="trading-section">
-                <h3>Place Order</h3>
-                <div class="input-group">
-                    <label>Amount to Trade ($)</label>
-                    <input type="number" value="10" min="1">
-                </div>
-
-                <button class="btn btn-buy">BUY (Call)</button>
-                <button class="btn btn-sell">SELL (Put)</button>
-
-                <hr style="border-color: #2b3139; margin: 10px 0;">
-
-                <h3>Transactions</h3>
-                <div class="finance-buttons">
-                    <button class="btn btn-deposit" onclick="openDeposit()">DEPOSIT</button>
-                    <button class="btn btn-withdraw" onclick="openWithdraw()">WITHDRAW</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Deriv WebSocket Live Price Script -->
-    <script>
-        const priceContainer = document.getElementById('price-container');
-        let lastPrice = 0;
-
-        function connectMarket() {
-            // REPLACE '1089' WITH YOUR ACTUAL DERIV APP ID TO ENABLE LIVE PRICE PRODUCTION
-            const ws = new WebSocket('wss://://derivws.com');
-
-            ws.onopen = function() {
-                ws.send(JSON.stringify({ ticks: 'R_10' }));
-            };
-
-            ws.onmessage = function(event) {
-                const data = JSON.parse(event.data);
-                if (data.tick) {
-                    const currentPrice = data.tick.quote;
-                    priceContainer.innerText = currentPrice;
-                    
-                    if (currentPrice > lastPrice) {
-                        priceContainer.style.color = '#0ecb81'; // Green on tick up
-                    } else {
-                        priceContainer.style.color = '#f6465d'; // Red on tick down
-                    }
-                    lastPrice = currentPrice;
-                }
-            };
-
-            ws.onerror = function(err) {
-                console.log('Market WebSocket Error:', err);
-            };
-
-            ws.onclose = function() {
-                setTimeout(connectMarket, 5000); // Auto reconnect
-            };
+    socket.onmessage = function(msg) {
+        const data = JSON.parse(msg.data);
+        
+        // Mfumo ukipokea bei mpya kila sekunde
+        if (data.msg_type === 'tick' && data.tick) {
+            const beiYaSasa = data.tick.quote;
+            
+            // Hapa tunabadilisha lile neno "Loading price..." na kuweka bei halisi ya soko
+            const beiElement = document.getElementById("loading-price-id"); 
+            if(beiElement) {
+                beiElement.innerText = "$" + beiYaSasa;
+                beiElement.style.color = "#00ff00"; // Inabadilika kuwa ya kijani ikisoma
+            }
+            console.log("Bei ya sasa hivi: ", beiYaSasa);
         }
+    };
 
-        function openDeposit() {
-            alert("To deposit funds, please contact support via the Live Chat widget at the bottom right corner.");
-        }
-
-        function openWithdraw() {
-            alert("To withdraw your earnings, open a live chat session and provide your account details and amount.");
-        }
-
-        connectMarket();
-    </script>
-
-    <!--Start of Tawk.to Script-->
-    <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script");
-    s1.async=true;
-    s1.src='https://tawk.to';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-    })();
-    </script>
-    <!--End of Tawk.to Script-->
-
-</body>
-</html>
+    socket.onerror = function(err) {
+        console.error("Hitilafu ya soko: ", err);
+    };
+</script>
