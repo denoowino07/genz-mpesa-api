@@ -1,32 +1,130 @@
-<!-- Futa msimbo wa zamani wa Tawk.to na uweke huu -->
-<script>
-    // Kufungua muunganisho wa soko la Deriv
-    const socket = new WebSocket('wss://://derivws.com');
-
-    socket.onopen = function(evt) {
-        console.log("Umeunganishwa na soko la Deriv!");
-        // Kuomba data ya bei ya Volatility 10 (1S) Index moja kwa moja
-        socket.send(JSON.stringify({ ticks: "1HZ10V" }));
-    };
-
-    socket.onmessage = function(msg) {
-        const data = JSON.parse(msg.data);
-        
-        // Mfumo ukipokea bei mpya kila sekunde
-        if (data.msg_type === 'tick' && data.tick) {
-            const beiYaSasa = data.tick.quote;
-            
-            // Hapa tunabadilisha lile neno "Loading price..." na kuweka bei halisi ya soko
-            const beiElement = document.getElementById("loading-price-id"); 
-            if(beiElement) {
-                beiElement.innerText = "$" + beiYaSasa;
-                beiElement.style.color = "#00ff00"; // Inabadilika kuwa ya kijani ikisoma
-            }
-            console.log("Bei ya sasa hivi: ", beiYaSasa);
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genz Trading Platform</title>
+    <style>
+        /* Muonekano wa Jukwaa la Biashara */
+        body {
+            background-color: #0b0e14;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-    };
 
-    socket.onerror = function(err) {
-        console.error("Hitilafu ya soko: ", err);
-    };
-</script>
+        h1 {
+            color: #00bfff;
+            margin-bottom: 5px;
+        }
+
+        .market-title {
+            color: #8a919e;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Sanduku la Bei na Grafu */
+        .trading-box {
+            background-color: #151a24;
+            border: 2px solid #222b3c;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .price-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff4a5a; /* Rangi ya nyekundu ya mwanzo wakati inatafuta */
+            margin: 20px 0;
+            letter-spacing: 1px;
+            transition: color 0.2s ease;
+        }
+
+        .status-badge {
+            background-color: #222b3c;
+            color: #00ff00;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>GENZ TRADING</h1>
+    <div class="market-title">Volatility 10 (1S) Index Live Market</div>
+
+    <!-- Sanduku la Biashara la Ukweli -->
+    <div class="trading-box">
+        <div class="status-badge" id="connection-status">Inajunganisha na soko...</div>
+        
+        <!-- Hapa ndipo bei halisi itakapocheza -->
+        <div class="price-display" id="loading-price-id">Loading price...</div>
+        
+        <p style="color: #8a919e; font-size: 0.9rem;">Bei inajisasisha kila sekunde moja</p>
+    </div>
+
+    <!-- UTENGENEZAJI WA SOKO (JAVASCRIPT & DERIV API) -->
+    <script>
+        // Unganisha na Mfumo Rasmi wa Deriv API WebSocket
+        const socket = new WebSocket('wss://://derivws.com');
+
+        const statusElement = document.getElementById("connection-status");
+        const priceElement = document.getElementById("loading-price-id");
+
+        // 1. Soko likiunganishwa salama
+        socket.onopen = function(evt) {
+            statusElement.innerText = "Soko Liko Wazi (Connected)";
+            statusElement.style.color = "#00ff00";
+            
+            // Omba data ya bei ya Volatility 10 (1S) Index
+            socket.send(JSON.stringify({ ticks: "1HZ10V" }));
+        };
+
+        // 2. Mfumo unapopokea bei mpya kila sekunde
+        let beiYaZamani = 0;
+        socket.onmessage = function(msg) {
+            const data = JSON.parse(msg.data);
+            
+            if (data.msg_type === 'tick' && data.tick) {
+                const beiYaSasa = data.tick.quote;
+                
+                // Badilisha neno "Loading price..." kuwa bei ya sasa yenye nukta mbili za kifedha
+                priceElement.innerText = "$" + parseFloat(beiYaSasa).toFixed(2);
+                
+                // Bonasi ya Muonekano: Bei ikipanda inakuwa ya Kijani, ikishuka inakuwa Nyekundu
+                if (beiYaSasa > beiYaZamani) {
+                    priceElement.style.color = "#00ff00"; // Kijani (Up)
+                } else if (beiYaSasa < beiYaZamani) {
+                    priceElement.style.color = "#ff4a5a"; // Nyekundu (Down)
+                }
+                
+                beiYaZamani = beiYaSasa; // Hifadhi bei kwa ajili ya mabadiliko yajayo
+            }
+        };
+
+        // 3. Kama mtandao ukikata au kukitokea hitilafu
+        socket.onerror = function(err) {
+            console.error("Hitilafu ya soko: ", err);
+            statusElement.innerText = "Hitilafu ya Muunganisho!";
+            statusElement.style.color = "#ff4a5a";
+        };
+
+        socket.onclose = function() {
+            statusElement.innerText = "Muunganisho Umefungwa.";
+            statusElement.style.color = "#ff4a5a";
+        };
+    </script>
+
+</body>
+</html>
