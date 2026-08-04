@@ -3,135 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenzTrending - Professional Trading Platform</title>
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>GenzTrading.com - Professional Portal</title>
     <style>
-        :root {
-            --bg-color: #0c1017;
-            --card-bg: #161d26;
-            --primary-green: #00e676;
-            --text-main: #ffffff;
-            --text-muted: #8492a6;
-            --border-color: #242f3d;
-            --accent-blue: #2196f3;
-            --danger-red: #ff4a4a;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-size: 14px; overflow-x: hidden; }
-
-        .screen { display: none; }
-        .active-screen { display: block; }
-
-        /* NAV BAR */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; max-width: 1400px; margin: 0 auto; }
-        .logo { font-size: 24px; font-weight: 800; color: var(--text-main); text-decoration: none; cursor: pointer; }
-        .logo span { color: var(--primary-green); }
-        .nav-links a { color: var(--text-main); text-decoration: none; margin-right: 25px; font-size: 15px; font-weight: 500; cursor: pointer; }
-        .btn-nav { background-color: var(--primary-green); color: #000; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 14px; cursor: pointer; }
+        body { background-color: #0b0e14; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         
-        .hero-section { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 60px 20px; max-width: 800px; margin: 0 auto; }
-        .badge { background: rgba(0, 230, 118, 0.1); color: var(--primary-green); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; margin-bottom: 30px; border: 1px solid rgba(0, 230, 118, 0.2); }
-        h1 { font-size: 50px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; }
-        h1 span { color: var(--primary-green); }
-        .hero-desc { color: var(--text-muted); font-size: 18px; line-height: 1.6; margin-bottom: 40px; max-width: 600px; }
-        .cta-buttons { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 320px; margin-bottom: 40px; }
-        .btn-main { background-color: var(--primary-green); color: #000; border: none; padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; text-align: center; width: 100%; }
-        .btn-demo { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 500; cursor: pointer; text-align: center; width: 100%; }
+        .header-bar { width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222b3c; }
+        .logo { color: #00bfff; font-weight: bold; font-size: 1.2rem; }
         
-        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; }
-        .feature-item { font-size: 14px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .feature-item span { color: var(--primary-green); }
-
-        /* AUTH SCREEN */
-        .auth-container { max-width: 400px; margin: 60px auto; padding: 30px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; text-align: center; }
-        .auth-container h2 { margin-bottom: 20px; font-weight: 800; }
-        .auth-form { display: flex; flex-direction: column; gap: 15px; }
-        .auth-form input { background: #0c1017; border: 1px solid var(--border-color); padding: 14px; color: #fff; border-radius: 8px; font-size: 15px; width: 100%; outline: none; }
-        .auth-toggle { margin-top: 15px; font-size: 14px; color: var(--text-muted); }
-        .auth-toggle span { color: var(--primary-green); cursor: pointer; font-weight: 700; text-decoration: underline; }
-
-        /* TRADING INTERFACE */
-        .trade-layout { padding: 15px; max-width: 1200px; margin: 0 auto; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #11171f; border-bottom: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; }
-        .account-badge { background-color: #1e293b; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
-        .btn-action { color: #000; font-weight: 700; padding: 8px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px; }
-
-        .trade-tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; }
-        .tab-btn { background-color: #1c2633; color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
-
-        .market-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .asset-price { font-size: 26px; font-weight: 800; font-family: monospace; }
-
-        .chart-wrapper { background-color: #11171f; border: 1px solid var(--border-color); border-radius: 12px; height: 250px; width: 100%; padding: 10px; margin-bottom: 15px; position: relative; }
-        canvas { width: 100%; height: 100%; display: block; }
-        .price-axis-tag { position: absolute; right: 10px; background-color: var(--primary-green); color: #000; font-weight: 800; font-family: monospace; font-size: 11px; padding: 3px 6px; border-radius: 4px; pointer-events: none; transition: top 0.1s ease; box-shadow: 0 0 10px rgba(0,230,118,0.4); }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 15px; }
-        .stat-bubble { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px; text-align: center; font-size: 12px; }
-        .bubble-num { color: #fff; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 700; margin-bottom: 2px; }
-        .bubble-pct { font-weight: 700; font-size: 11px; }
-
-        .stake-section { background-color: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .amount-control { display: flex; justify-content: space-between; align-items: center; background-color: #0c1017; border: 1px solid var(--border-color); border-radius: 8px; padding: 4px; margin-bottom: 15px; }
-        .amt-btn { background: #1c2633; border: none; color: #ff9100; font-size: 20px; font-weight: 700; width: 38px; height: 36px; border-radius: 6px; cursor: pointer; }
-        .amt-val { background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 700; text-align: center; width: 100%; outline: none; }
+        .account-switcher { display: flex; background-color: #151a24; border-radius: 6px; padding: 3px; border: 1px solid #222b3c; }
+        .acc-tab { padding: 5px 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; border-radius: 4px; color: #8a919e; }
+        .acc-tab.active-demo { background-color: #ff4a5a; color: #ffffff; }
+        .acc-tab.active-real { background-color: #00ff00; color: #0b0e14; }
         
-        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn-trade { border: none; padding: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; font-size: 15px; text-transform: uppercase; }
+        .balance-display { font-weight: bold; font-size: 0.9rem; margin-left: 5px; background-color: #151a24; padding: 5px 8px; border-radius: 6px; border: 1px solid #222b3c; color: #ffaa00; }
+        .top-deposit-btn { background-color: #00ff00; color: #0b0e14; padding: 6px 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-left: 5px; }
+
+        .market-modes { display: flex; justify-content: space-around; width: 100%; max-width: 480px; margin: 15px 0; gap: 5px; }
+        .mode-tab { background-color: #151a24; padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; border: 1px solid #222b3c; color: #8a919e; }
+        .mode-tab.active { background-color: #00bfff; color: #ffffff; border-color: #00bfff; }
+
+        .trading-box { background-color: #151a24; border: 1px solid #222b3c; border-radius: 12px; padding: 15px; width: 95%; max-width: 480px; box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5); }
+        
+        /* CHATI YA NDANI ISITEGEMEE IFRAME */
+        .chart-box { background-color: #0b0e14; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; border: 1px solid #222b3c; height: 240px; }
+        .price-badge { font-size: 2.2rem; font-weight: bold; margin: 5px 0; color: #ffffff; }
+        
+        .ticker-container { display: flex; justify-content: center; gap: 4px; margin-top: 15px; }
+        .tick-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .tick-circle { width: 28px; height: 28px; border-radius: 50%; background-color: #222b3c; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; }
+        .percentage-lbl { font-size: 0.7rem; color: #8a919e; font-weight: bold; }
+        
+        #chart-canvas { width: 100%; height: 130px; background-color: #0d1117; margin-top: 10px; display: block; border-radius: 6px; border: 1px solid #1f242c; }
+
+        .execution-modes { display: flex; width: 100%; gap: 10px; margin-bottom: 15px; }
+        .exec-btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; background-color: #222b3c; color: #ffffff; }
+        .exec-btn.active { background-color: #2d3748; color: #00ff00; border: 1px solid #00ff00; }
+
+        .stake-box { display: flex; align-items: center; justify-content: center; gap: 15px; background-color: #0b0e14; padding: 10px; border-radius: 8px; border: 1px solid #222b3c; }
+        .stake-input { background: none; border: none; color: #ffffff; font-size: 1.5rem; width: 80px; text-align: center; font-weight: bold; }
+        .math-btn { background-color: #222b3c; color: #ffffff; border: none; width: 35px; height: 35px; border-radius: 6px; font-size: 1.2rem; cursor: pointer; }
+        
+        .quick-stakes { display: flex; justify-content: space-between; gap: 4px; margin: 10px 0 20px 0; }
+        .q-btn { flex: 1; background-color: #1a2333; border: 1px solid #222b3c; color: #8a919e; padding: 8px 0; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+        .q-btn.selected { background-color: #00bfff; color: white; border-color: #00bfff; }
+
+        .trade-actions { display: flex; gap: 15px; margin-top: 15px; }
+        .trade-btn { flex: 1; padding: 16px; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: transform 0.1s; }
+        .trade-btn:active { transform: scale(0.97); }
+        .btn-even { background-color: #00ff00; color: #0b0e14; }
+        .btn-odd { background-color: #ff4a5a; color: white; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background-color: #151a24; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #222b3c; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #8a919e; font-size: 0.9rem; }
+        .form-group input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #2d3748; background-color: #0b0e14; color: #ffffff; box-sizing: border-box; }
+        .close-btn { background-color: #ff4a5a; color: white; padding: 10px; border: none; border-radius: 6px; width: 100%; margin-top: 10px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- GLOBAL NAV -->
-    <nav id="global-nav">
-        <div class="logo" onclick="changeScreen('home-screen')">Genz<span>Trending</span></div>
-        <div class="nav-links">
-            <a onclick="changeScreen('home-screen')">Home</a>
-            <a onclick="openAuth('login')">Log In</a>
-        </div>
-        <a class="btn-nav" onclick="openAuth('signup')">Sign Up</a>
-    </nav>
-
-    <!-- SCREEN 1: HERO LANDING -->
-    <div id="home-screen" class="screen active-screen">
-        <section class="hero-section">
-            <div class="badge">✨ Over 1 million traders and counting</div>
-            <h1>Trading Made Easy, <br><span>Trade Smart</span></h1>
-            <p class="hero-desc">The best Trusted Binary Automated trading platform with fast withdrawals and fast response customer service</p>
-            <div class="cta-buttons">
-                <button class="btn-main" onclick="openAuth('signup')">Get Started — It's Free →</button>
-                <button class="btn-demo" onclick="enterDirectDemo()">▷ Try Demo</button>
+    <div class="header-bar">
+        <div class="logo">GenzTrading.com</div>
+        <div style="display: flex; align-items: center;">
+            <div class="account-switcher">
+                <div class="acc-tab active-demo" id="tab-demo" onclick="switchAccount('demo')">DEMO</div>
+                <div class="acc-tab" id="tab-real" onclick="switchAccount('real')">REAL</div>
             </div>
-            <div class="features-grid">
-                <div class="feature-item"><span>⚡</span> &lt;1s execution</div>
-                <div class="feature-item"><span>%</span> Up to 95% payout</div>
-                <div class="feature-item"><span>🛡️</span> Bank-level security</div>
-                <div class="feature-item"><span>💰</span> Zero fees</div>
-            </div>
-        </section>
-    </div>
-
-    <!-- SCREEN 2: AUTHENTICATION -->
-    <div id="auth-screen" class="screen">
-        <div class="auth-container">
-            <h2 id="auth-title">Create Account</h2>
-            <form class="auth-form" onsubmit="handleAuthForm(event)">
-                <input type="email" placeholder="Email Address" required>
-                <input type="password" placeholder="Password" required>
-                <button type="submit" class="btn-main" style="border-radius:8px;" id="auth-btn">Sign Up & Start Trading</button>
-            </form>
-            <div class="auth-toggle" id="auth-toggle-text">
-                Already have an account? <span onclick="openAuth('login')">Log in here</span>
-            </div>
+            <div class="balance-display" id="balance-txt">$ 10,000.00</div>
+            <button class="top-deposit-btn" onclick="openMpesaBox()">DEPOSIT</button>
         </div>
     </div>
 
-    <!-- SCREEN 3: PROFESSIONAL TRADING PLATFORM -->
-    <div id="trading-screen" class="screen">
-        <div class="trade-layout">
-            <header>
-                <div class="account-badge">
-                    <select id="account-type" onchange="toggleWalletType()" style="background:transparent; color:#ffa726; border:none; font-weight:800; outline:none; cursor:pointer; font-size:14px;">
+    <div class="market-modes">
+        <div class="mode-tab" id="tab-differs" onclick="switchMarketMode('differs')">Matches/Differs</div>
+        <div class="mode-tab active" id="tab-even" onclick="switchMarketMode('even')">Even/Odd</div>
+        <div class="mode-tab" id="tab-under" onclick="switchMarketMode('under')">Over/Under</div>
+    </div>
+
+    <div class="trading-box">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #8a919e; margin-bottom: 5px;">
+            <span id="market-display">Volatility 10 (1S) - EVEN/ODD</span>
+            <span style="color: #00ff00;">● Live Market Active</span>
+        </div>
+
+        <div class="chart-box">
+            <div style="font-size: 0.9rem; color: #8a919e;">VOL 10 (1S)</div>
+            <div class="price-badge" id="live-price">9379.60</div>
+            
+            <canvas id="chart-canvas"></canvas>
+            
+            <div class="ticker-container" id="ticker-box">
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-0">0</div><div class="percentage-lbl" id="pc-0">12%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-1">1</div><div class="percentage-lbl" id="pc-1">8%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-2">2</div><div class="percentage-lbl" id="pc-2">10%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-3">3</div><div class="percentage-lbl" id="pc-3">11%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-4">4</div><div class="percentage-lbl" id="pc-4">9%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-5">5</div><div class="percentage-lbl" id="pc-5">13%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-6">6</div><div class="percentage-lbl" id="pc-6">7%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-7">7</div><div class="percentage-lbl" id="pc-7">11%</div></div>
+                <div class="tick-wrapper"><div class="tick-circle" id="tc-8">8</div><div class="percentage-lbl" id="pc-8">9%</div></div>
+            </div>
+        </div>
+
+        <div class="execution-modes">
+            <button class="exec-btn" id="btn-auto" onclick="switchExecMode('auto')">AUTO</button>
+            <button class="exec-btn active" id="btn-manual" onclick="switchExecMode('manual')">MANUAL</button>
+        </div>
+
+        <div class="stake-box">
+            <button class="math-btn" onclick="adjustStake(-1)">-</button>
+            <span style="color: #8a919e; font-size: 1.2rem;">$</span>
+            <input type="number" class="stake-input" id="stake-value" value="10" readonly>
+            <button class="math-btn" onclick="adjustStake(1)">+</button>
+        </div>
+
+        <div class="quick-stakes">
+            <button class="q-btn" onclick="setQuickStake(1)">$1</button>
+            <button class="q-btn" onclick="setQuickStake(5)">$5</button>
+            <button class="q-btn selected" id="q-10" onclick="setQuickStake(10)">$10</button>
+            <button class="q-btn" onclick="setQuickStake(25)">$25</button>
+            <button class="q-btn" onclick="setQuickStake(50)">$50</button>
+            <button class="q-btn" onclick="setQuickStake(100)">$100</button>
+        </div>
+
+        <div class="trade-actions">
+            <button class="trade-btn btn-even" onclick="executeTrade('EVEN')">PURCHASE EVEN</button>
+            <button class="trade-btn btn-odd" onclick="executeTrade('ODD')">PURCHASE ODD</button>
+        </div>
+    </div>
+
+    <!-- POPUP YA MPESA -->
+    <div class="modal" id="mpesa-modal">
+        <div class="modal-content">
